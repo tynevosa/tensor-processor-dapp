@@ -10,6 +10,7 @@ export default function page() {
       <div className="px-6 py-12 w-full h-full">
         <h1 className="font-bold text-3xl text-white">My Models</h1>
         <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-6">
+
           {Models.map(
             (
               {
@@ -54,6 +55,7 @@ export default function page() {
               </Link>
             )
           )}
+
         </div>
       </div>
     </ScrollArea>

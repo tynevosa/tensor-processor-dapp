@@ -27,7 +27,7 @@ const SidebarItem = ({
   const path = usePathname();
   const Icon = Icons[icon];
 
-  const focused = selected || path === href;
+  const focused = selected || path.includes(href);
 
   return (
     <div
@@ -37,7 +37,11 @@ const SidebarItem = ({
       )}
     >
       <Link href={href}>
-        <div className="w-full flex gap-2 items-center p-4">
+        <div
+          className={cn("w-full flex gap-2 items-center p-4", {
+            "bg-item-gradient": focused,
+          })}
+        >
           <Icon color={focused ? "#97AEF3" : "white"} size={24} />
           <span className="font-semibold text-md leading-6 text-white">
             {title}
