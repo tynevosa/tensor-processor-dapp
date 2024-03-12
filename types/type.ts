@@ -12,3 +12,10 @@ export type GPUNumberRange = {
   gte?: number;
   lte?: number;
 };
+
+export type ModelType = {
+  model_name: string;
+  description: string;
+  model_number: number;
+  imgSrc?: string;
+};
