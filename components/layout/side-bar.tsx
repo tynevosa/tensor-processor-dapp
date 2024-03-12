@@ -74,10 +74,7 @@ export const Sidebar = () => {
           selected
         />
       </div>
-      <Separator
-        orientation="vertical"
-        className="bg-transparent bg-separator-vertical"
-      />
+      <Separator orientation="vertical" className="bg-separator-vertical" />
     </div>
   );
 };

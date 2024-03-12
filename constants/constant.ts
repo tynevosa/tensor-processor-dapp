@@ -1,4 +1,4 @@
-import { sideItem } from "@/types/type";
+import type { GPUNumberRange, GPUType, sideItem } from "@/types/type";
 
 export const sideItems: sideItem[] = [
   {
@@ -22,3 +22,116 @@ export const sideItems: sideItem[] = [
     name: "Instance",
   },
 ];
+
+export const GPUNums: { [key: string]: GPUNumberRange } = {
+  any: {},
+  "0x": { gte: 0, lte: 0 },
+  "1x": { gte: 1, lte: 1 },
+  "2x": { gte: 2, lte: 2 },
+  "4x": { gte: 4, lte: 4 },
+  "8x": { gte: 8, lte: 8 },
+  "8x+": { gte: 8, lte: 16 },
+};
+
+export const GPUTypes: { [key: string]: string } = {
+  bid: "Interruptible",
+  ask: "On-Demand",
+  reserved: "Reserved",
+};
+
+export const GPUNames = [
+  "Any GPU",
+  "H100 PCIE",
+  "H100 SXM",
+  "L40",
+  "RTX 6000Ada",
+  "RTX 4090",
+  "RTX 4080",
+  "RTX 4080 S",
+  "RTX 4070",
+  "A100 PCIE",
+  "A100 SXM4",
+  "A100x",
+  "A40",
+  "A10",
+  "RTX A6000",
+  "RTX A5000",
+  "RTX A4000",
+  "RTX 3090",
+  "RTX 5000Ada",
+  "RTX 3090 Ti",
+  "RTX 3080 Ti",
+  "RTX 3080",
+  "RTX 3070",
+  "RTX 3060",
+  "Q RTX 8000",
+  "Tesla V100",
+];
+
+export const Geolocations: { [key: string]: string[] } = {
+  "Planet Earth": [],
+  "North America": ["US", "CA"],
+  "South America": ["BR", "AR", "CL"],
+  Europe: [
+    "SE",
+    "UA",
+    "GB",
+    "PL",
+    "PT",
+    "SI",
+    "DE",
+    "IT",
+    "CH",
+    "LT",
+    "GR",
+    "FI",
+    "IS",
+    "AT",
+    "FR",
+    "RO",
+    "MD",
+    "HU",
+    "NO",
+    "MK",
+    "BG",
+    "ES",
+    "HR",
+    "NL",
+    "CZ",
+    "EE",
+  ],
+  Asia: [
+    "CN",
+    "JP",
+    "KR",
+    "ID",
+    "IN",
+    "HK",
+    "MY",
+    "IL",
+    "TH",
+    "QA",
+    "TR",
+    "RU",
+    "VN",
+    "TW",
+    "OM",
+    "SG",
+    "AE",
+    "KZ",
+  ],
+  Africa: ["EG", "ZA"],
+  Oceania: ["AU", "NZ"],
+};
+
+export const SortOptions: { [key: string]: { [key: string]: string[] } } = {
+  "Auto Sort": { "0": ["score", "desc"] },
+  "DLPerf/$/Hr": { "0": ["dlperf_per_dphtotal", "desc"] },
+  DLPerf: { "0": ["dlperf", "desc"] },
+  "TFlops/$/Hr": { "0": ["flops_per_dphtotal", "desc"] },
+  Flops: { "0": ["total_flops", "desc"] },
+  "Price(inc.)": { "0": ["dph_total", "asc"], "1": ["total_flops", "asc"] },
+  "Price(dec.)": { "0": ["dph_total", "desc"], "1": ["total_flops", "desc"] },
+  "Video RAM": { "0": ["gpu_totalram", "desc"] },
+  "Video RAM/$/HR": { "0": ["vram_costperhour", "asc"] },
+};

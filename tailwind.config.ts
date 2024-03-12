@@ -75,6 +75,8 @@ const config = {
       backgroundImage: {
         "separator-vertical":
           "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 80%, rgba(255,255,255,0) 100%)",
+        "scrollarea-gradient":
+          "linear-gradient(180deg, rgba(151, 174, 243, 0) 0%, #97AEF3 100%)",
       },
     },
   },
