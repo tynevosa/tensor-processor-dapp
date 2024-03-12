@@ -28,6 +28,14 @@ const languages = [
   },
 ];
 
+const code = `
+import Tensor processor
+             
+output = replicate.run("stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+input={"prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic"})
+
+print(output)`;
+
 const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
@@ -47,9 +55,6 @@ const ModelDetailPage = ({ params }: Props) => {
       <div className="flex justify-center w-full">
         <div className="flex flex-col gap-4 mt-10 w-3/4">
           <div className="flex justify-between items-center bg-[#151C2B] p-2 rounded-[8px]">
-            {/* <p className="ml-4 max-w-[600px] font-[500] text-ellipsis text-lg text-nowrap text-white overflow-hidden">
-              Alien female, blue, gold spiral, posses mind bending...
-            </p> */}
             <input
               type="text"
               className="flex-1 border-0 bg-transparent mx-4 font-[500] text-lg text-nowrap text-white outline-none"
@@ -64,7 +69,11 @@ const ModelDetailPage = ({ params }: Props) => {
             <div className="flex gap-4 px-4 py-[14px] border-b border-b-[#242835]">
               {languages?.map((language) => (
                 <Button
-                  className={`${activeLang === language?.value ? "bg-[#97AEF3] text-black font-[600]" : "bg-transparent text-[#7782A4] font-[500]"} hover:text-black hover:bg-[#97AEF3] py-4 text-lg`}
+                  className={`${
+                    activeLang === language?.value
+                      ? "bg-[#97AEF3] text-black font-[600]"
+                      : "bg-transparent text-[#7782A4] font-[500]"
+                  } hover:text-black hover:bg-[#97AEF3] py-4 text-lg`}
                   key={language?.value}
                   onClick={() => setActiveLang(language?.value)}
                 >
@@ -74,13 +83,12 @@ const ModelDetailPage = ({ params }: Props) => {
             </div>
             <div className="flex gap-4 px-4 py-[14px]">
               <CopyBlock
-             text={`import Tensor processor
-             
-output = replicate.run("stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-input={"prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic"})
-
-print(output)`}
+                text={code}
                 language={activeLang}
+                customStyle={{
+                  padding: "12px",
+                  width: "100%",
+                }}
                 theme={atomOneDark}
                 showLineNumbers={false}
                 wrapLongLines
