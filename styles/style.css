@@ -1,0 +1,39 @@
+.side-item-hover {
+  border-radius: 2px;
+  background: linear-gradient(
+    to left,
+    rgb(192, 205, 247) 0%,
+    rgba(151, 174, 243, 0) 100%
+  ) !important;
+  background-size: cover;
+  clip-path: polygon(
+    1px 1px,
+    calc(100% - 28px) 0,
+    100% 20px,
+    100% 100%,
+    0 100%
+  );
+  overflow: hidden;
+}
+
+.side-item-hover::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 0px;
+  z-index: -1;
+  background-image: linear-gradient(
+    to left,
+    rgba(0, 5, 16, 1) 0%,
+    rgba(0, 5, 16, 1) 100%
+  );
+  clip-path: polygon(
+    0 0px,
+    calc(100% - 27.5px) 0px,
+    100% 19.5px,
+    100% 100%,
+    0 100%
+  );
+}
