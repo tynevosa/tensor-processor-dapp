@@ -22,3 +22,5 @@ export const sideItems: sideItem[] = [
     name: "Instance",
   },
 ];
+
+export const gpuItems: string[] = ["any", "0x", "1x", "2x", "4x", "8x", "8x+"];
