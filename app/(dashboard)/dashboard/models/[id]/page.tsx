@@ -31,8 +31,8 @@ const languages = [
 const code = `
 import Tensor processor
              
-output = replicate.run("stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-input={"prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic"})
+output = tpu.run("tpu-img-to-vid/sdxl:39ed",
+input={"prompt": "A video of a cat playing with a ball", "num_frames": 100, "fps": 30, "resolution": "720p", "style": "none", "audio": "none", "text": "none", "seed": "none", "truncation": "1", "class": "none", "class_weight": "1", "class_bias": "0", "class_temperature})
 
 print(output)`;
 
