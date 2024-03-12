@@ -65,7 +65,7 @@ const ModelDetailPage = ({ params }: Props) => {
             </Button>
           </div>
           {/* Code Section */}
-          <div className="flex flex-col bg-[#0B0B0E] rounded-[8px]">
+          <div className="flex flex-col bg-[#0B0B0E] rounded-[8px] border border-[#242835]">
             <div className="flex gap-4 px-4 py-[14px] border-b border-b-[#242835]">
               {languages?.map((language) => (
                 <Button
