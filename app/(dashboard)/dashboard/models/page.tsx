@@ -9,7 +9,7 @@ export default function page() {
       <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]?.map((item) => (
           <Link
-            href={`/models/${item}`}
+            href={`/dashboard/models/${item}`}
             key={item}
             className="flex gap-4 col-span-1 bg-[#121218] p-2 rounded-[8px]"
           >
