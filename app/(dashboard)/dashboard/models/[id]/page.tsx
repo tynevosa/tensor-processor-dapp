@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { CopyBlock, atomOneDark } from "react-code-blocks";
 
 type Props = {
   params: {
@@ -71,11 +72,30 @@ const ModelDetailPage = ({ params }: Props) => {
                 </Button>
               ))}
             </div>
-            <div className="flex gap-4 px-4 py-[14px]"></div>
+            <div className="flex gap-4 px-4 py-[14px]">
+              <CopyBlock
+             text={`import Tensor processor
+             
+output = replicate.run("stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+input={"prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic"})
+
+print(output)`}
+                language={activeLang}
+                theme={atomOneDark}
+                showLineNumbers={false}
+                wrapLongLines
+              />
+            </div>
           </div>
           {/* Output Section */}
           <div className="flex justify-center bg-[#121218] p-2 rounded-[8px] w-full">
-            <Image src="/images/default-output.png" alt="default-image" width={300} height={300} className="rounded-[4px] w-full h-[263px] object-contain" />
+            <Image
+              src="/images/default-output.png"
+              alt="default-image"
+              width={300}
+              height={300}
+              className="rounded-[4px] w-full h-[263px] object-contain"
+            />
           </div>
           <Button className="bg-[#D9E3FF] hover:bg-[#D9E3FF] px-9 py-4 w-full font-[600] text-black text-lg">
             Run lucatso / xtts-v2 with an API
