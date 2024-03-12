@@ -5,3 +5,10 @@ export type sideItem = {
   icon: keyof typeof Icons;
   href: string;
 };
+
+export type GPUType = "ask" | "reserved" | "bid";
+
+export type GPUNumberRange = {
+  gte?: number;
+  lte?: number;
+};
