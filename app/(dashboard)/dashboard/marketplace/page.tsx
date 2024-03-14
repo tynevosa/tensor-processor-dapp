@@ -10,11 +10,11 @@ import {
   SortOptions,
 } from "@/constants/constant";
 import { GPUInfoType } from "@/types/type";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios from "axios";
 import useDebounce from "@/components/hooks/use-debounce";
 
-export default function page() {
+const Page: FC = () => {
   const { param } = useParam();
   const debounce = useDebounce(param, 500);
 
@@ -66,8 +66,8 @@ export default function page() {
         <span className="text-3xl text-white font-bold">
           List of Tensor Processors
         </span>
-        {dataSource.map((item) => (
-          <ModelCard {...item} />
+        {dataSource.map((item, key) => (
+          <ModelCard {...item} key={key} />
         ))}
         {dataSource.length === 0 && (
           <div className="text-white text-2xl text-center py-52">
@@ -77,4 +77,6 @@ export default function page() {
       </div>
     </ScrollArea>
   );
-}
+};
+
+export default Page;
