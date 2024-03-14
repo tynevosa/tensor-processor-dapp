@@ -11,21 +11,10 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { useRef } from "react";
+import { GPUInfoType } from "@/types/type";
+import { HOURS_A_DAY } from "@/constants/constant";
 
-type Props = {
-  host_id: number;
-  geolocation: string;
-  duration: number;
-  reliability2: number;
-  verification: string;
-  total_flops: number;
-  cuda_max_good: number;
-  gpu_ram: number;
-  gpu_mem_bw: number;
-  storage_cost: number;
-};
-
-export const ModelCard = () => {
+export const ModelCard = (props: GPUInfoType) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -35,31 +24,57 @@ export const ModelCard = () => {
     }
   };
 
+  const normalizeDuration = (duration: number) => {
+    if (duration < HOURS_A_DAY) return `${Math.floor(duration / 3600)} hours`;
+    const days = Math.floor(duration / HOURS_A_DAY);
+    if (days > 30) {
+      const months = `${Math.floor(days / 30)} months`;
+      if (days % 30) months.concat(` ${days % 30} d`);
+      return months;
+    } else {
+      return `${days} days`;
+    }
+  };
+
+  const normalizeCapacity = (
+    capacity: number,
+    fixed: number = 2,
+    visibleUnit: boolean = true
+  ) => {
+    if (capacity > 1024)
+      return `${(capacity / 1024).toFixed(fixed)}${visibleUnit ? "GB" : ""}`;
+    else return `${capacity}${visibleUnit ? "GB" : ""}`;
+  };
+
+  const ratio = props.cpu_cores_effective / props.cpu_cores;
+
   return (
     <Card className="bg-[#121218] border border-[#242835] p-4 w-full flex flex-col gap-2">
       <CardHeader className="p-0 flex flex-col gap-3">
         <div className="flex items-stretch">
           <div className="flex-grow flex flex-col gap-2 items-stretch">
             <div className="flex justify-start gap-6 text-[#97AEF3]">
-              <span className="text-sm font-bold">host:80558</span>
-              <span className="text-sm font-bold">Virginia, US</span>
+              <span className="text-sm font-bold">{`host: ${props.host_id}`}</span>
+              <span className="text-sm font-bold">{props.geolocation}</span>
             </div>
-            <div className="text-3xl font-semibold text-white">1x RTX 4090</div>
+            <div className="text-3xl font-semibold text-white">{`${props.num_gpus}x ${props.gpu_name}`}</div>
           </div>
           <div className="flex gap-8 items-stretch">
             <div className="flex flex-col justify-start gap-1">
               <span className="text-base text-[#97AEF3] font-semibold">
-                10 days
+                {normalizeDuration(props.duration)}
               </span>
               <span className="text-base text-white">Max Duration</span>
             </div>
             <div className="flex flex-col justify-start gap-1">
               <span className="text-base text-[#97AEF3] font-semibold">
-                99.07%
+                {(props.reliability * 100).toFixed(2) + " %"}
               </span>
               <span className="text-base text-white">Reliability</span>
             </div>
-            <span className="text-white text-xl font-semibold">Verified</span>
+            <span className="text-white text-xl font-semibold capitalize">
+              {props.verification}
+            </span>
           </div>
         </div>
         <Separator className="bg-[#252b3d]" />
@@ -80,62 +95,82 @@ export const ModelCard = () => {
               <div className="flex-grow flex flex-col gap-8 items-start">
                 <div className="flex gap-16 items-end">
                   <div className="flex flex-col gap-2 items-stretch text-white">
-                    <span className="text-lg font-semibold">ROME2D32GM</span>
+                    <span className="text-lg font-semibold">
+                      {props.mobo_name}
+                    </span>
                     <div className="flex gap-6">
                       <span className="font-semibold text-sm">
-                        PCIE 4.0, 16x
+                        {`PCIE ${props.pci_gen.toFixed(1)}, ${
+                          props.gpu_lanes
+                        }x`}
                       </span>
-                      <span className="font-semibold text-sm">14.9 GB/s</span>
+                      <span className="font-semibold text-sm">{`${props.pcie_bw.toFixed(
+                        1
+                      )} GB/s`}</span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-3 items-stretch text-[#97AEF3]">
                     <div className="flex">
                       <ArrowUp size={20} />
-                      <span className="text-sm font-bold">396 Mbps</span>
+                      <span className="text-sm font-bold">{`${props.inet_up.toFixed(
+                        0
+                      )} Mbps`}</span>
                     </div>
                     <div className="flex">
                       <ArrowDown size={20} />
-                      <span className="text-sm font-bold">670 Mbps</span>
+                      <span className="text-sm font-bold">{`${props.inet_down.toFixed(
+                        0
+                      )} Mbps`}</span>
                     </div>
                   </div>
                   <span className="text-sm text-white font-semibold">
-                    12 ports
+                    {`${props.direct_port_count} ports`}
                   </span>
                 </div>
                 <div className="flex gap-16 items-stretch">
                   <div className="flex gap-2 max-w-44 flex-col text-white">
                     <span className="truncate text-lg">
-                      AMD EPYC 9554 64-Core Processor
+                      {props.cpu_name || "No CPU Available"}
                     </span>
                     <div className="flex gap-6">
                       <span className="font-semibold text-sm truncate">
-                        32.0/256 cpu
+                        {`${props.cpu_cores_effective.toFixed(1)}/${
+                          props.cpu_cores
+                        } cpu`}
                       </span>
-                      <span className="font-semibold text-sm">64/516GB</span>
+                      <span className="font-semibold text-sm">
+                        {`${normalizeCapacity(
+                          props.cpu_ram,
+                          0,
+                          false
+                        )}/${normalizeCapacity(props.cpu_ram * ratio, 0)}`}
+                      </span>
                     </div>
                   </div>
                   <div className="flex gap-2 max-w-44 flex-col text-white">
-                    <span className="truncate text-lg">
-                      SAMSUNG MZQL27T6HBLA-00A07
+                    <span className="truncate text-lg uppercase">
+                      {props.disk_name || "No Disk Available"}
                     </span>
                     <div className="flex gap-6">
                       <span className="font-semibold text-sm truncate">
-                        1979 MB/s
+                        {`${props.disk_bw.toFixed(0)} MB/s`}
                       </span>
-                      <span className="font-semibold text-sm">748.3 GB</span>
+                      <span className="font-semibold text-sm">
+                        {`${props.disk_space.toFixed(1)} GB`}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-2 items-baseline">
                       <span className="text-lg font-semibold text-white">
-                        100.6
+                        {props.dlperf.toFixed(1)}
                       </span>
                       <span className="text-sm text-[#97AEF3] font-bold">
                         DLPerf
                       </span>
                     </div>
                     <span className="text-sm font-semibold text-white">
-                      246.8 DLP/$/hr
+                      {props.dlperf_per_dphtotal.toFixed(1)} DLP/$/hr
                     </span>
                   </div>
                 </div>
@@ -149,22 +184,28 @@ export const ModelCard = () => {
         <div className="flex gap-6 items-stretch">
           <div className="flex flex-col gap-2">
             <div className="flex gap-1 items-end text-white">
-              <span className="text-2xl font-semibold">81.4</span>
+              <span className="text-2xl font-semibold">
+                {props.total_flops.toFixed(2)}
+              </span>
               <span className="text-base uppercase">TFLOPS</span>
             </div>
             <span className="text-[#97AEF3] text-sm font-semibold">
-              Max CUDA: 12.2
+              {`Max CUDA: ${props.cuda_max_good.toFixed(1)} `}
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-white">24 GB</span>
+            <span className="text-2xl font-semibold text-white">
+              {normalizeCapacity(props.gpu_ram)}
+            </span>
             <span className="text-[#97AEF3] text-sm font-semibold">
-              3474.6 GB/s
+              {props.gpu_mem_bw} GB/s
             </span>
           </div>
         </div>
         <div className="flex gap-3 items-center">
-          <span className="text-white text-2xl font-semibold">$0.408/hr</span>
+          <span className="text-white text-2xl font-semibold">{`$${(
+            props.storage_total_cost * 100
+          ).toFixed(2)}/hr`}</span>
           <Button
             variant={"secondary"}
             className="bg-[#97AEF3] py-3 px-9 gap-2 hover:bg-[#97aef3] hover:opacity-70 transition-all font-semibold text-lg"
