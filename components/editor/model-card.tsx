@@ -3,9 +3,7 @@ import iconAI from "@/public/images/prompt-icon.png"
 import noteIcon from "@/public/images/note.png"
 
 const AIPrompt = (props: any) => {
-    
     return (
-
         <div className="md:w-1/4 mb-6 cursor-pointer">
             <div className="m-4 px-8 pt-6 pb-6 rounded-[4px] text-white border border-2 border-[#191B24]" style={{ backgroundColor: "#121218" }}>
                 <div className="flex items-center">

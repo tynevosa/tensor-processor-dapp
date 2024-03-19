@@ -64,3 +64,49 @@
   overflow: visible !important;
   position: absolute !important;
 }
+
+.react-flow__panel{
+  bottom: 75px !important;
+}
+
+.react-flow__minimap{
+  right:250px !important;
+  background-color:black
+}
+
+/* .react-flow__panel > button{
+  background-color: #18181b;
+  color: white;
+} */
+
+
+.right-side{
+
+  right: 5px;
+  margin-right: 6px;
+}
+
+.bottom-side{
+  bottom: 65px;
+  left: calc(50%);
+}
+
+
+.react-flow__node-custom{
+  background-color: transparent !important;
+}
+
+.edgebutton {
+  width: 20px;
+  height: 20px;
+  background: #eee;
+  border: 1px solid #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.edgebutton:hover {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.08);
+}

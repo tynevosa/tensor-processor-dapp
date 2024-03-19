@@ -25,7 +25,7 @@ function Page() {
       <div className="flex flex-col gap-6 items-stretch p-8">
         <div className="flex flex-row justify-between px-4 mt-8">
           <div className="flex gap-3 text-white text-[24px] font-bold">
-            <div className={`${kind === 'prompt' ? 'text-white':'text-[#999999]'} text-[24px] font-bold cursor-pointer`} onClick={()=> handleKind('prompt')}>Prompt</div>
+            <div className={`${kind === 'prompt' ? 'text-white':'text-[#999999]'}  text-[24px] font-bold cursor-pointer`} onClick={()=> handleKind('prompt')}>Prompt</div>
             |
             <div className={`${kind === 'workflow' ? 'text-white':'text-[#999999]'} text-[24px] font-bold cursor-pointer`}  onClick={() => handleKind('workflow')}>Workflows</div>
           </div>
