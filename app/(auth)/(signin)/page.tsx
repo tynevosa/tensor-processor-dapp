@@ -14,13 +14,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import {
-  ConnectWallet,
-  metamaskWallet,
-  useAddress,
-  useAuth,
-  useConnect,
-} from "@thirdweb-dev/react";
+import { metamaskWallet, useAddress, useConnect } from "@thirdweb-dev/react";
+import { useEffect } from "react";
+import axios from "axios";
 
 const WhyteInktrap = localFont({
   src: "../../../public/fonts/WhyteInktrap.ttf",
@@ -31,9 +27,13 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
-const walletConfig = metamaskWallet();
+const metamaskConfig = metamaskWallet();
 
 const Page = () => {
+  const router = useRouter();
+  const address = useAddress();
+  const connect = useConnect();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,13 +42,28 @@ const Page = () => {
     },
   });
 
-  const router = useRouter();
-  const address = useAddress();
+  const getUser = async () => {
+    const host = process.env.NEXT_PUBLIC_SERVER_URL;
 
-  if (address) {
-    router.push("/dashboard/marketplace");
-    return null;
-  }
+    const response = await axios.post(`${host}/credential`, {
+      wallet: address,
+    });
+
+    if (response.status === 200) {
+      localStorage.setItem("token", response.data.token);
+      router.push("dashboard/models");
+    }
+  };
+
+  useEffect(() => {
+    if (address) {
+      getUser();
+    }
+  }, [address]);
+
+  const WalletLogin = async () => {
+    await connect(metamaskConfig);
+  };
 
   return (
     <div className="flex w-full h-screen items-stretch">
@@ -183,12 +198,12 @@ const Page = () => {
             </form>
           </Form>
           <span className="text-white text-center text-sm font-medium">OR</span>
-          <ConnectWallet
-            onConnect={async () => {
-              router.push("/dashboard");
-            }}
+          <Button
+            onClick={WalletLogin}
             className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
-          />
+          >
+            Connect Wallet
+          </Button>
         </div>
       </div>
     </div>
