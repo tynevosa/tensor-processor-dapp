@@ -40,8 +40,6 @@ const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
 
-  const predictModel = async () => {};
-
   return (
     <div className="flex flex-col px-6 py-12">
       <button
@@ -63,10 +61,7 @@ const ModelDetailPage = ({ params }: Props) => {
               className="flex-1 border-0 bg-transparent mx-4 font-[500] text-lg text-nowrap text-white outline-none"
               placeholder="Write prompt here..."
             />
-            <Button
-              className="bg-[#97AEF3] hover:bg-[#97AEF3] px-9 py-4 font-[600] text-black text-lg"
-              onClick={predictModel}
-            >
+            <Button className="bg-[#97AEF3] hover:bg-[#97AEF3] px-9 py-4 font-[600] text-black text-lg">
               Run model
             </Button>
           </div>
