@@ -10,6 +10,7 @@ import { sideItems } from "@/constants/constant";
 import { cn } from "@/lib/utils";
 
 import "@/styles/style.css";
+import { useAddress } from "@thirdweb-dev/react";
 
 type SidebarItemProps = {
   title: string;
@@ -53,6 +54,12 @@ const SidebarItem = ({
 };
 
 export const Sidebar = () => {
+  const address = useAddress();
+
+  const normalizeAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
   return (
     <div className="fixed h-screen  lg:flex hidden gap-0">
       <div className="flex flex-col h-full w-64 p-8 gap-24 bg-[#000510]">
@@ -72,7 +79,7 @@ export const Sidebar = () => {
         </div>
 
         <SidebarItem
-          title="0x656589...3669"
+          title={address ? normalizeAddress(address) : "Loading ..."}
           icon="userRound"
           href="/dashboard"
           selected
