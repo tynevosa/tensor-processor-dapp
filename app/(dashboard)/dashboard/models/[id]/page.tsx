@@ -37,24 +37,31 @@ input={"prompt": "A video of a cat playing with a ball", "num_frames": 100, "fps
 
 print(output)`;
 
-const host = process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN;
-
 const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
   const [prompt, setPrompt] = React.useState("");
+  const [replica, setReplica] = React.useState<string>("");
 
   const predictModel = async () => {
-    const response = await axios.post(`${host}/api/prediction`, {
-      "model": "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-      "input": {
-        "prompt": prompt
-      }
+    const response = await fetch('/api/prediction',{
+      method: "POST",
+      body: JSON.stringify({
+        model: "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+        input: {
+          prompt: prompt
+        }
+      })
     });
 
 
-    console.log(response);
+    if(response.ok){
+      const data = await response.json();
+      setReplica(data.replica)
+    }
   };
+
+ 
 
   return (
     <div className="flex flex-col px-6 py-12">
@@ -120,7 +127,7 @@ const ModelDetailPage = ({ params }: Props) => {
           {/* Output Section */}
           <div className="flex justify-center bg-[#121218] p-2 rounded-[8px] w-full">
             <Image
-              src="/images/default-output.png"
+              src={replica.length ? replica : "/images/default-output.png"}
               alt="default-image"
               width={300}
               height={300}
