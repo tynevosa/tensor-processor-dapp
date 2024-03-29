@@ -14,8 +14,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { metamaskWallet, useAddress, useConnect } from "@thirdweb-dev/react";
-import { useEffect } from "react";
+import {  metamaskWallet, useAddress, useAuth,  useConnect,  useConnectionStatus,  useLogin, useUser } from "@thirdweb-dev/react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const WhyteInktrap = localFont({
@@ -27,12 +27,15 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
+const host = process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN;
 const metamaskConfig = metamaskWallet();
 
 const Page = () => {
   const router = useRouter();
-  const address = useAddress();
   const connect = useConnect();
+  const connectionStatus = useConnectionStatus();
+  const { login } = useLogin();
+  const {isLoggedIn} = useUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,28 +45,13 @@ const Page = () => {
     },
   });
 
-  const getUser = async () => {
-    const host = process.env.NEXT_PUBLIC_SERVER_URL;
-
-    const response = await axios.post(`${host}/credential`, {
-      wallet: address,
-    });
-
-    if (response.status === 200) {
-      localStorage.setItem("token", response.data.token);
-      router.push("dashboard/models");
-    }
-  };
 
   useEffect(() => {
-    if (address) {
-      getUser();
+    if(isLoggedIn) {
+      router.push("/dashboard/models");
     }
-  }, [address]);
+  }, [isLoggedIn])
 
-  const WalletLogin = async () => {
-    await connect(metamaskConfig);
-  };
 
   return (
     <div className="flex w-full h-screen items-stretch">
@@ -198,12 +186,24 @@ const Page = () => {
             </form>
           </Form>
           <span className="text-white text-center text-sm font-medium">OR</span>
-          <Button
-            onClick={WalletLogin}
-            className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
-          >
-            Connect Wallet
-          </Button>
+          
+          {
+            connectionStatus === "connected" ? 
+            <Button
+              onClick = {() => login()}
+              className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
+            >
+              {"Sign in with Wallet"}
+            </Button>
+            : 
+            <Button
+              onClick = {() => connect(metamaskConfig)}
+              className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
+            >
+              {"Connect Wallet"}
+            </Button>
+          
+          }
         </div>
       </div>
     </div>

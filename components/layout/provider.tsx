@@ -8,7 +8,10 @@ import {
   rainbowWallet,
 } from "@thirdweb-dev/react";
 
+
+
 export const Provider = ({ children }: { children: React.ReactNode }) => {
+
   return (
     <ThirdwebProvider
       supportedWallets={[
@@ -19,7 +22,11 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         coinbaseWallet(),
         walletConnect(),
       ]}
-      clientId={`${process.env.THIRDWEB_CLIENT_ID}`}
+      clientId={process.env.THIRDWEB_CLIENT_ID}
+      authConfig={{
+        domain: "",
+        authUrl: '/api/auth',
+      }}
     >
       {children}
     </ThirdwebProvider>
