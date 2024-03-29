@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -36,11 +37,24 @@ input={"prompt": "A video of a cat playing with a ball", "num_frames": 100, "fps
 
 print(output)`;
 
+const host = process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN;
+
 const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
+  const [prompt, setPrompt] = React.useState("");
 
-  const predictModel = async () => {};
+  const predictModel = async () => {
+    const response = await axios.post(`${host}/api/prediction`, {
+      "model": "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+      "input": {
+        "prompt": prompt
+      }
+    });
+
+
+    console.log(response);
+  };
 
   return (
     <div className="flex flex-col px-6 py-12">
@@ -61,7 +75,9 @@ const ModelDetailPage = ({ params }: Props) => {
             <input
               type="text"
               className="flex-1 border-0 bg-transparent mx-4 font-[500] text-lg text-nowrap text-white outline-none"
+              value={prompt}
               placeholder="Write prompt here..."
+              onChange={(e) => setPrompt(e.target.value)}
             />
             <Button
               className="bg-[#97AEF3] hover:bg-[#97AEF3] px-9 py-4 font-[600] text-black text-lg"
