@@ -16,9 +16,26 @@ export type GPUNumberRange = {
 export type ModelType = {
   model_name: string;
   description: string;
-  model_number: number;
+  model_count: number;
+  owner: string;
   imgSrc?: string;
 };
+
+export type ModelInfoType = {
+  cover_image_url: string;
+  created_at: string;
+  default_example: any;
+  description: string;
+  github_url: string;
+  latest_version: any;
+  license_url?: string;
+  name: string;
+  owner: string;
+  paper_url?: string;
+  run_count: number;
+  url: string;
+  visibility: string;
+}
 
 export type FilterOptions = {
   diskSpace: number;

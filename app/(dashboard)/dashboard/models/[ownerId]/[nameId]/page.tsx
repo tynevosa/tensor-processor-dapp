@@ -1,16 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { ModelInfoType } from "@/types/type";
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CopyBlock, atomOneDark } from "react-code-blocks";
 
 type Props = {
   params: {
-    id: string;
+    nameId: string;
+    ownerId: string;  
   };
 };
 
@@ -42,12 +44,22 @@ const ModelDetailPage = ({ params }: Props) => {
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
   const [prompt, setPrompt] = React.useState("");
   const [replica, setReplica] = React.useState<string>("");
+  const {ownerId, nameId} = params;
+  const [model, setModel] = React.useState<ModelInfoType | null>();
 
   const predictModel = async () => {
+    if(!model) return null;
+    console.log(model);
+    const modelId = model.owner + "/" + model.name + ":" + model.latest_version.id;
+    console.log(modelId);
+    
     const response = await fetch('/api/prediction',{
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        model: "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+        model: modelId as string,
         input: {
           prompt: prompt
         }
@@ -57,11 +69,28 @@ const ModelDetailPage = ({ params }: Props) => {
 
     if(response.ok){
       const data = await response.json();
-      setReplica(data.replica)
+      if(data.length) setReplica(data[0] as string);
     }
   };
 
- 
+  const getModel = async () => {
+
+    const response = await fetch(`/api/model/${ownerId}/${nameId}`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if(response.ok){
+      const data = await response.json();
+      setModel(data as ModelInfoType);
+    }
+  }
+
+  useEffect(() => {
+    getModel();
+  }, []);
 
   return (
     <div className="flex flex-col px-6 py-12">
@@ -88,6 +117,7 @@ const ModelDetailPage = ({ params }: Props) => {
             />
             <Button
               className="bg-[#97AEF3] hover:bg-[#97AEF3] px-9 py-4 font-[600] text-black text-lg"
+              disabled={!model}
               onClick={predictModel}
             >
               Run model
@@ -126,8 +156,8 @@ const ModelDetailPage = ({ params }: Props) => {
           </div>
           {/* Output Section */}
           <div className="flex justify-center bg-[#121218] p-2 rounded-[8px] w-full">
-            <Image
-              src={replica.length ? replica : "/images/default-output.png"}
+            <img
+              src={replica === '' ? "/images/default-output.png" : replica}
               alt="default-image"
               width={300}
               height={300}
