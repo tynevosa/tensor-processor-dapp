@@ -8,29 +8,28 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function page() {
-
   const [models, setModels] = useState<ModelInfoType[]>([]);
 
   const fetchModels = async () => {
-    const response = await fetch('/api/model/list',{
+    const response = await fetch("/api/model/list", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         page: 1,
-        count: 20
-      })
+        count: 50,
+      }),
     });
 
-    if(response.ok){
+    if (response.ok) {
       const data = await response.json();
-      if(data && data.length > 0) {
+      if (data && data.length > 0) {
         console.log(data);
         setModels(data as ModelInfoType[]);
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchModels();
@@ -57,8 +56,12 @@ export default function page() {
                 key={key}
                 className="flex gap-4 bg-[#121218] p-2 rounded-[8px]"
               >
-                <div className='w-40 h-40 min-w-40 overflow-hidden relative'>
-                  <img alt="model" src={cover_image_url ?? "/images/model.svg"} className="h-full absolute w-full"/>
+                <div className="w-40 h-40 min-w-40 overflow-hidden relative">
+                  <img
+                    alt="model"
+                    src={cover_image_url ?? "/images/model.svg"}
+                    className="h-full absolute w-full"
+                  />
                 </div>
                 <div className="flex flex-col justify-between flex-shrink flex-grow w-[calc(100%-176px)]">
                   <div className="flex flex-col gap-4 items-stretch">
