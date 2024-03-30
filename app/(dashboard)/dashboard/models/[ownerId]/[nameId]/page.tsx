@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { toast } from "@/components/ui/use-toast";
 import { ModelInfoType } from "@/types/type";
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
@@ -44,16 +45,32 @@ const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
   const [prompt, setPrompt] = React.useState("");
-  const [replica, setReplica] = React.useState<string>("");
+  const [replica, setReplica] = React.useState<string | JSON>("");
   const { ownerId, nameId } = params;
   const [model, setModel] = React.useState<ModelInfoType | null>(null);
+  const [isFetching, setFetching] = React.useState<boolean>(false);
+
+  const isJson = (str: string) => {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  };
 
   const predictModel = async () => {
     if (!model) return null;
-    console.log(model);
+    setFetching(true);
     const modelId =
       model.owner + "/" + model.name + ":" + model.latest_version.id;
-    console.log(modelId);
+
+    if (isJson(prompt) === false) {
+      toast({
+        title: "Invalid Input",
+      });
+      return;
+    }
 
     const response = await fetch("/api/prediction", {
       method: "POST",
@@ -66,10 +83,21 @@ const ModelDetailPage = ({ params }: Props) => {
       }),
     });
 
+    if (response.status !== 200) {
+      toast({
+        title: "Invalid Input",
+      });
+    }
+
     if (response.ok) {
       const data = await response.json();
-      if (data.length) setReplica(data[0] as string);
+      console.log(data);
+
+      if (data.length > 0 && Array.isArray(data)) setReplica(data[0] as string);
+      else setReplica(data as JSON);
+      console.log(replica);
     }
+    setFetching(false);
   };
 
   const getModel = async () => {
@@ -133,7 +161,7 @@ print(output)`;
                 disabled={!model}
                 onClick={predictModel}
               >
-                Run model
+                {isFetching ? "Loading..." : "Run model"}
               </Button>
             </div>
             {/* Code Section */}
@@ -153,41 +181,52 @@ print(output)`;
                   </Button>
                 ))}
               </div>
-              <div className="flex gap-4 px-4 py-[14px] max-w-full w-full">
-                <CopyBlock
-                  text={generateCodeSample()}
-                  language={activeLang}
-                  customStyle={{
-                    padding: "12px",
-                    width: "100%",
-                    maxWidth: "100%",
-                  }}
-                  codeBlock={true}
-                  codeContainerStyle={{
-                    width: "100%",
-                    maxWidth: "100%",
-                  }}
-                  theme={atomOneDark}
-                  showLineNumbers={false}
-                  wrapLongLines={true}
-                />
+              <div className="flex gap-4 px-4 py-[14px] !w-full">
+                <ScrollArea className="!w-3/4 !max-w-3/4 whitespace-nowrap">
+                  <CopyBlock
+                    text={generateCodeSample()}
+                    language={activeLang}
+                    customStyle={{
+                      padding: "12px",
+                      width: "100%",
+                      maxWidth: "100%",
+                    }}
+                    codeBlock={true}
+                    codeContainerStyle={{
+                      width: "100%",
+                      maxWidth: "100%",
+                    }}
+                    theme={atomOneDark}
+                    showLineNumbers={false}
+                    wrapLongLines={true}
+                  />
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               </div>
             </div>
             {/* Output Section */}
             <div className="flex justify-center bg-[#121218] p-2 rounded-[8px] w-full">
-              <img
-                src={
-                  replica === ""
-                    ? model
-                      ? model.cover_image_url
-                      : "/images/default-output.png"
-                    : replica
-                }
-                alt="default-image"
-                width={300}
-                height={300}
-                className="rounded-[4px] w-full h-[263px] object-contain"
-              />
+              {!(isJson(JSON.stringify(replica)) && replica !== "") && (
+                <img
+                  // @ts-ignore
+                  src={
+                    typeof replica === "string" && replica === ""
+                      ? model
+                        ? model.cover_image_url
+                        : "/images/default-output.png"
+                      : replica
+                  }
+                  alt="default-image"
+                  width={300}
+                  height={300}
+                  className="rounded-[4px] w-full h-[263px] object-contain"
+                />
+              )}
+              {isJson(JSON.stringify(replica)) && replica !== "" && (
+                <pre className="mx-3.5 my-3 w-full max-w-full rounded-md bg-[#97AEF31A] p-4 box-border flex-shrink whitespace-pre-wrap">
+                  <code className="text-white">{JSON.stringify(replica)}</code>
+                </pre>
+              )}
             </div>
             <Button className="bg-[#D9E3FF] hover:bg-[#D9E3FF] px-9 py-4 w-full font-[600] text-black text-lg">
               Run lucatso / xtts-v2 with an API
