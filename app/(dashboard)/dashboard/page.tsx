@@ -1,9 +1,5 @@
-const page = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="bg-black">
-      <h1>Dashboard</h1>
-    </div>
-  );
+const page = () => {
+  return <div className="bg-black w-full">Dashboard</div>;
 };
 
 export default page;

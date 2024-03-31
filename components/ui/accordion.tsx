@@ -25,6 +25,7 @@ const AccordionTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
+  
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(

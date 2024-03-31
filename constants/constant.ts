@@ -1,4 +1,10 @@
-import type { GPUNumberRange, GPUType, sideItem } from "@/types/type";
+import type {
+  FilterOptions,
+  GPUNumberRange,
+  GPUType,
+  ModelType,
+  sideItem,
+} from "@/types/type";
 
 export const sideItems: sideItem[] = [
   {
@@ -24,7 +30,7 @@ export const sideItems: sideItem[] = [
 ];
 
 export const GPUNums: { [key: string]: GPUNumberRange } = {
-  any: {},
+  any: { gte: 0, lte: 16 },
   "0x": { gte: 0, lte: 0 },
   "1x": { gte: 1, lte: 1 },
   "2x": { gte: 2, lte: 2 },
@@ -135,3 +141,91 @@ export const SortOptions: { [key: string]: { [key: string]: string[] } } = {
   "Video RAM": { "0": ["gpu_totalram", "desc"] },
   "Video RAM/$/HR": { "0": ["vram_costperhour", "asc"] },
 };
+
+export const Models: ModelType[] = [
+  {
+    model_name: "sylvanix-ai/sentinel-pro-v2",
+    description:
+      "Cutting-edge language model for superior accuracy and efficiency.",
+    model_number: 35300,
+    imgSrc: "/images/model01.png",
+  },
+  {
+    model_name: "turboNLP/accelerant-10x",
+    description:
+      "High-speed NLP model optimized for scalability and real-time processing.",
+    model_number: 50000,
+    imgSrc: "/images/model02.png",
+  },
+  {
+    model_name: "neuronet/neuroscribe-elite",
+    description:
+      "Elite-grade language model with advanced text generation capabilities.",
+    model_number: 42000,
+    imgSrc: "/images/model03.png",
+  },
+  {
+    model_name: "cypherAI/quantum-lingua",
+    description:
+      "Innovative language model powered by breakthrough quantum computing.",
+    model_number: 23000,
+    imgSrc: "/images/model04.png",
+  },
+  {
+    model_name: "lexarizon/omnilingua-prodigy",
+    description:
+      "Versatile model for fluent text understanding and generation across languages.",
+    model_number: 20301,
+    imgSrc: "/images/model05.png",
+  },
+  {
+    model_name: "deepsense/delta-coreX",
+    description:
+      "Next-gen model for deep semantic understanding and context-aware generation.",
+    model_number: 32500,
+    imgSrc: "/images/model06.png",
+  },
+  {
+    model_name: "mindforge/epochal-9x",
+    description:
+      "Groundbreaking model revolutionizing text processing with advanced algorithms.",
+    model_number: 50000,
+    imgSrc: "/images/model07.png",
+  },
+  {
+    model_name: "polyglotAI/synerglot-max",
+    description:
+      "Multilingual model facilitating seamless communication across linguistic domains.",
+    model_number: 40200,
+    imgSrc: "/images/model08.png",
+  },
+  {
+    model_name: "sentientAI/novaevo-quantum",
+    description:
+      "Quantum-inspired model unlocking new frontiers in text analysis and generation.",
+    model_number: 32100,
+    imgSrc: "/images/model09.png",
+  },
+  {
+    model_name: "linguaXplore/phenom-nova",
+    description:
+      "Extraordinary model renowned for exceptional performance in linguistic tasks.",
+    model_number: 25000,
+    imgSrc: "/images/model10.png",
+  },
+];
+
+export const initialParam: FilterOptions = {
+  diskSpace: 8,
+  duration: 3,
+  reliability: 90,
+  type: "ask",
+  gpuNumber: "any",
+  gpuName: "Any GPU",
+  geolocation: "Planet Earth",
+  order: "Auto Sort",
+  visibleUnverified: false,
+  showIncompatible: false,
+};
+
+export const HOURS_A_DAY = 24 * 60 * 60;
