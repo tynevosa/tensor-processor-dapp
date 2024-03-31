@@ -69,6 +69,7 @@ const ModelDetailPage = ({ params }: Props) => {
       toast({
         title: "Invalid Input",
       });
+      setFetching(false);
       return;
     }
 
@@ -94,7 +95,8 @@ const ModelDetailPage = ({ params }: Props) => {
       console.log(data);
 
       if (data.length > 0 && Array.isArray(data)) setReplica(data[0] as string);
-      else setReplica(data as JSON);
+      else if(isJson(data)) setReplica(data as JSON);
+      else setReplica(String(data));
       console.log(replica);
     }
     setFetching(false);
