@@ -182,7 +182,7 @@ print(output)`;
                 ))}
               </div>
               <div className="flex gap-4 px-4 py-[14px] !w-full">
-                <ScrollArea className="!w-3/4 !max-w-3/4 whitespace-nowrap">
+                <ScrollArea className="!w-full whitespace-nowrap rounded-sm">
                   <CopyBlock
                     text={generateCodeSample()}
                     language={activeLang}
