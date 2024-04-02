@@ -10,7 +10,7 @@ import {
   SortOptions,
 } from "@/constants/constant";
 import { GPUInfoType } from "@/types/type";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import useDebounce from "@/components/hooks/use-debounce";
 
@@ -20,7 +20,7 @@ const Page: FC = () => {
 
   const [dataSource, setDataSource] = useState<GPUInfoType[]>([]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const host = process.env.NEXT_PUBLIC_SERVER_URL;
 
     const query = {
@@ -55,10 +55,22 @@ const Page: FC = () => {
     if (data && data.list.offers) {
       setDataSource(data.list.offers.map((item: any) => item as GPUInfoType));
     }
-  };
+  }, [
+    param.diskSpace,
+    param.duration,
+    param.geolocation,
+    param.gpuName,
+    param.gpuNumber,
+    param.order,
+    param.reliability,
+    param.showIncompatible,
+    param.type,
+    param.visibleUnverified,
+  ]);
+
   useEffect(() => {
     fetchData();
-  }, [debounce]);
+  }, [debounce, fetchData]);
 
   return (
     <ScrollArea className="w-full h-full pr-5">

@@ -1,16 +1,15 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Models } from "@/constants/constant";
-import { ModelInfoType, ModelType } from "@/types/type";
+import { ModelInfoType } from "@/types/type";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-export default function page() {
+export default function Page() {
   const [models, setModels] = useState<ModelInfoType[]>([]);
 
-  const fetchModels = async () => {
+  const fetchModels = useCallback(async () => {
     const response = await fetch("/api/model/list", {
       method: "POST",
       headers: {
@@ -25,15 +24,14 @@ export default function page() {
     if (response.ok) {
       const data = await response.json();
       if (data && data.length > 0) {
-        console.log(data);
         setModels(data as ModelInfoType[]);
       }
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchModels();
-  }, []);
+  }, [fetchModels]);
 
   return (
     <ScrollArea className="w-full h-full">
@@ -56,11 +54,14 @@ export default function page() {
                 key={key}
                 className="flex gap-4 bg-[#121218] p-2 rounded-[8px]"
               >
-                <div className="w-40 h-40 min-w-40 overflow-hidden relative">
-                  <img
+                <div className="w-40 h-40 min-w-40  relative">
+                  <Image
                     alt="model"
                     src={cover_image_url ?? "/images/model.svg"}
                     className="h-full absolute w-full"
+                    width={500}
+                    height={500}
+                    priority
                   />
                 </div>
                 <div className="flex flex-col justify-between flex-shrink flex-grow w-[calc(100%-176px)]">
@@ -76,7 +77,7 @@ export default function page() {
                         {`${owner} / ${name}`}
                       </h2>
                     </div>
-                    <div className="font-[400] text-sm text-white max-h-10 overflow-hidden">
+                    <div className="font-[400] text-sm text-white max-h-10 overflow-hidden text-ellipsis">
                       {description}
                     </div>
                   </div>

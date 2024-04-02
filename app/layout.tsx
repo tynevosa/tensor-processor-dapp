@@ -27,7 +27,7 @@ export default function RootLayout({
       <Head>
         <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 64x64" />
       </Head>
-      <body className={cn(chakra.className, "h-screen overflow-hidden")}>
+      <body className={cn(chakra.className, "h-screen")}>
         <Toaster />
         <Provider>{children}</Provider>
       </body>
