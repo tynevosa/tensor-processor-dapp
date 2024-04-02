@@ -16,7 +16,6 @@ const CodeBlockComponent: React.FC<MyCoolCodeBlockProps> = ({
       language={language}
       showLineNumbers={false}
       theme={atomOneDark}
-      codeBlock
     />
   );
 };
