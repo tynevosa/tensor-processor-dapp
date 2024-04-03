@@ -6,7 +6,15 @@ export type sideItem = {
   href: string;
 };
 
+export type navItem = {
+  name: string;
+  icon: string;
+  href: string;
+};
+
 export type GPUType = "ask" | "reserved" | "bid";
+
+export type StyleType = "multi" | "single" | "tripple";
 
 export type GPUNumberRange = {
   gte?: number;
@@ -20,10 +28,28 @@ export type ModelType = {
   imgSrc?: string;
 };
 
+export type ModelInfoType = {
+  cover_image_url: string;
+  created_at: string;
+  default_example: any;
+  description: string;
+  github_url: string;
+  latest_version: any;
+  license_url?: string;
+  name: string;
+  owner: string;
+  paper_url?: string;
+  run_count: number;
+  url: string;
+  visibility: string;
+};
+
 export type FilterOptions = {
   diskSpace: number;
   duration: number;
   reliability: number;
+  prompt_str: number;
+  control_dep_str: number;
   type: GPUType;
   gpuNumber: string;
   gpuName: string;

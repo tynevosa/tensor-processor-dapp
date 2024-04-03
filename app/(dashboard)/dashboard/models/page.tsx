@@ -1,56 +1,97 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Models } from "@/constants/constant";
+import { ModelInfoType } from "@/types/type";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
-export default function page() {
+export default function Page() {
+  const [models, setModels] = useState<ModelInfoType[]>([]);
+
+  const fetchModels = useCallback(async () => {
+    try {
+      const response = await fetch("/api/model/list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          page: 1,
+          count: 50,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setModels(data as ModelInfoType[]);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchModels();
+  }, [fetchModels]);
+
   return (
     <ScrollArea className="w-full h-full">
-      <div className="px-6 py-12 w-full h-full">
+      <div className="container px-1 py-12 w-full h-full">
         <h1 className="font-bold text-3xl text-white">My Models</h1>
-        <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-6">
-          {Models.map(
+        <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6">
+          {models.map(
             (
               {
-                imgSrc = "/images/model.svg",
+                cover_image_url = "/images/model.svg",
                 description,
-                model_name,
-                model_number,
+                name,
+                owner,
+                run_count,
               },
               key
             ) => (
               <Link
-                href={`/dashboard/models/${key}`}
+                href={`/dashboard/models/${owner}/${name}`}
                 key={key}
-                className="flex gap-4 col-span-1 bg-[#121218] p-2 rounded-[8px]"
+                className="flex gap-4 bg-[#121218] p-2 rounded-[8px]"
               >
-                <Image alt="model" src={imgSrc} width={160} height={160} />
-                <div className="flex flex-col justify-between">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex gap-2">
+                <div className="w-40 h-40 min-w-40  relative">
+                  <Image
+                    alt="model"
+                    src={cover_image_url ?? "/images/model.svg"}
+                    className="h-full absolute w-full"
+                    width={500}
+                    height={500}
+                    priority
+                  />
+                </div>
+                <div className="flex flex-col justify-between flex-shrink flex-grow w-[calc(100%-176px)]">
+                  <div className="flex flex-col gap-4 items-stretch">
+                    <div className="flex gap-2 max-w-full">
                       <Avatar className="rounded-none !w-5 ">
                         <AvatarImage
                           className="!w-5 !h-5 rounded-full"
                           src="/images/model-avatar.png"
                         />
                       </Avatar>
-                      <h2 className="font-[600] text-sm text-white">
-                        {`tpu / ${model_name}`}
+                      <h2 className="inline-block font-[600] text-sm text-white truncate flex-shrink">
+                        {`${owner} / ${name}`}
                       </h2>
                     </div>
-                    <p className="font-[400] text-sm text-white">
+                    <div className="font-[400] text-sm text-white max-h-10 overflow-hidden text-ellipsis">
                       {description}
-                    </p>
+                    </div>
                   </div>
-                  <p className="font-[600] text-[#7D9EFF] text-sm">
+                  <span className="font-[600] text-[#7D9EFF] text-sm">
                     {`${
-                      model_number > 1000
-                        ? (model_number / 1000).toFixed(1) + "K"
-                        : model_number
+                      run_count > 1000
+                        ? (run_count / 1000).toFixed(1) + "K"
+                        : run_count
                     } runs`}
-                  </p>
+                  </span>
                 </div>
               </Link>
             )

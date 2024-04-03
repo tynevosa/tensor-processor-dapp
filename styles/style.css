@@ -37,3 +37,13 @@
     0 100%
   );
 }
+
+.w-calc {
+  width: calc(100vw - 257px);
+}
+
+@media (max-width: 1023px) {
+  .w-calc {
+    width: 100%;
+  }
+}
