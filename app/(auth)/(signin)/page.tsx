@@ -166,7 +166,7 @@ const Page = () => {
                 </Button>
                 <div className="flex gap-2 justify-end items-center">
                   <span className="text-sm font-medium text-white">
-                    Don't have an account?
+                    Don&apos;t have an account?
                   </span>
                   <Button
                     variant={"link"}
