@@ -4,6 +4,7 @@ import type {
   GPUType,
   ModelType,
   sideItem,
+  navItem,
 } from "@/types/type";
 
 export const sideItems: sideItem[] = [
@@ -29,6 +30,29 @@ export const sideItems: sideItem[] = [
   },
 ];
 
+export const navItems: navItem[] = [
+  {
+    href: "/dashboard/models",
+    icon: "/images/navbar/model.svg",
+    name: "Playground",
+  },
+  {
+    href: "/dashboard/marketplace",
+    icon: "/images/navbar/marketplace.svg",
+    name: "Marketplace",
+  },
+  {
+    href: "/dashboard/instance",
+    icon: "/images/navbar/instance.svg",
+    name: "Instance",
+  },
+  {
+    href: "/dashboard/editor",
+    icon: "/images/navbar/editor.svg",
+    name: "Editors",
+  },
+];
+
 export const GPUNums: { [key: string]: GPUNumberRange } = {
   any: { gte: 0, lte: 16 },
   "0x": { gte: 0, lte: 0 },
@@ -43,6 +67,12 @@ export const GPUTypes: { [key: string]: string } = {
   bid: "Interruptible",
   ask: "On-Demand",
   reserved: "Reserved",
+};
+
+export const StyleTypes: { [key: string]: string } = {
+  multi: "Multicolored",
+  single: "Singlecolored",
+  tripple: "Tripplecolored",
 };
 
 export const GPUNames = [
@@ -216,6 +246,8 @@ export const Models: ModelType[] = [
 ];
 
 export const initialParam: FilterOptions = {
+  prompt_str: 0.2,
+  control_dep_str: 0.8,
   diskSpace: 8,
   duration: 3,
   reliability: 90,

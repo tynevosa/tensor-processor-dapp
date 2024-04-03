@@ -22,38 +22,41 @@ const Page: FC = () => {
 
   const fetchData = useCallback(async () => {
     const host = process.env.NEXT_PUBLIC_SERVER_URL;
+    try {
+      const query = {
+        disk_space: { gte: param.diskSpace },
+        duration: { gte: param.duration * HOURS_A_DAY },
+        rentable: { eq: true },
+        num_gpus: GPUNums[param.gpuNumber],
+        sort_option: SortOptions[param.order],
+        order: Object.values(SortOptions[param.order]),
+        allocated_storage: param.diskSpace,
+        type: param.type,
+        limit: 64,
+        ...(param.showIncompatible && { show_incompatible: { eq: true } }),
+        ...(!param.visibleUnverified && { verified: { eq: true } }),
+        ...(param.gpuName != "Any GPU" && {
+          gpu_name: { eq: param.gpuName },
+          gpu_option: { eq: param.gpuName },
+        }),
+        ...(param.geolocation != "Planet Earth" && {
+          geolocation: { in: Geolocations[param.geolocation] },
+        }),
+        reliability2: { gte: param.reliability / 100 },
+      };
 
-    const query = {
-      disk_space: { gte: param.diskSpace },
-      duration: { gte: param.duration * HOURS_A_DAY },
-      rentable: { eq: true },
-      num_gpus: GPUNums[param.gpuNumber],
-      sort_option: SortOptions[param.order],
-      order: Object.values(SortOptions[param.order]),
-      allocated_storage: param.diskSpace,
-      type: param.type,
-      limit: 64,
-      ...(param.showIncompatible && { show_incompatible: { eq: true } }),
-      ...(!param.visibleUnverified && { verified: { eq: true } }),
-      ...(param.gpuName != "Any GPU" && {
-        gpu_name: { eq: param.gpuName },
-        gpu_option: { eq: param.gpuName },
-      }),
-      ...(param.geolocation != "Planet Earth" && {
-        geolocation: { in: Geolocations[param.geolocation] },
-      }),
-      reliability2: { gte: param.reliability / 100 },
-    };
+      const response = await axios.post(`${host}/api/v1/list`, query);
 
-    const response = await axios.post(`${host}/api/v1/list`, query);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch data from server");
+      }
 
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch data from server");
-    }
-
-    const data = await response.data;
-    if (data && data.list.offers) {
-      setDataSource(data.list.offers.map((item: any) => item as GPUInfoType));
+      const data = await response.data;
+      if (data && data.list.offers) {
+        setDataSource(data.list.offers.map((item: any) => item as GPUInfoType));
+      }
+    } catch (error) {
+      console.error(error);
     }
   }, [
     param.diskSpace,

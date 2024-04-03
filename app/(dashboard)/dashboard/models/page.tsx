@@ -10,22 +10,26 @@ export default function Page() {
   const [models, setModels] = useState<ModelInfoType[]>([]);
 
   const fetchModels = useCallback(async () => {
-    const response = await fetch("/api/model/list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        page: 1,
-        count: 50,
-      }),
-    });
+    try {
+      const response = await fetch("/api/model/list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          page: 1,
+          count: 50,
+        }),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data && data.length > 0) {
-        setModels(data as ModelInfoType[]);
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setModels(data as ModelInfoType[]);
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
   }, []);
 
@@ -35,7 +39,7 @@ export default function Page() {
 
   return (
     <ScrollArea className="w-full h-full">
-      <div className="px-6 py-12 w-full h-full">
+      <div className="container px-1 py-12 w-full h-full">
         <h1 className="font-bold text-3xl text-white">My Models</h1>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6">
           {models.map(
