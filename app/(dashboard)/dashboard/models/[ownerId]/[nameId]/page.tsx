@@ -127,26 +127,6 @@ const ModelDetailPage = ({ params }: Props) => {
   
     output = tpu.run("${model.owner}/${model.name}:${model.latest_version.id}",
                      input=${JSON.stringify(model.default_example?.input)})
-                     kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-                     dddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     ddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     d
-                     ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     ddddddddddddddddddddddddddddddddddddddsfafdafaf
-                     asdf
-                     adfafadfadsfsssssssssssssssssssssssssssssss
-                     adfffffffffffffffffffffffffffffffffff
-                     adfffffffffffffffffffffffffffffffffffffff
-                     dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-                     dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-
-  
     print(output)`;
     return code;
   };

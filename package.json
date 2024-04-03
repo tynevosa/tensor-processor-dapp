@@ -10,7 +10,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@codemirror/lang-javascript": "^6.2.2",
     "@hookform/resolvers": "^3.3.4",
     "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -30,7 +29,6 @@
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@thirdweb-dev/auth": "^4.1.48",
     "@thirdweb-dev/react": "^4.4.23",
-    "@uiw/react-codemirror": "^4.21.25",
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -41,7 +39,6 @@
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-code-blocks": "^0.0.8",
-    "react-codemirror2": "^7.3.0",
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",
     "react-router-dom": "^6.22.3",
@@ -49,6 +46,7 @@
     "reactflow": "^11.10.4",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "typescript-plugin-styled-components": "^3.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
