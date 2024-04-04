@@ -99,7 +99,6 @@ export const Header = () => {
             alt="profile"
             priority
           />
-          {/* <ProfileSvg /> */}
         </Button>
       </div>
     </div>

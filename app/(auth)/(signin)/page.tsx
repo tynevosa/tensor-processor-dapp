@@ -24,7 +24,6 @@ import {
   useUser,
 } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 const WhyteInktrap = localFont({
   src: "../../../public/fonts/WhyteInktrap.ttf",
