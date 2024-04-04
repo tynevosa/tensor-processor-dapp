@@ -4,6 +4,7 @@ import type {
   GPUType,
   ModelType,
   sideItem,
+  navItem,
 } from "@/types/type";
 
 export const sideItems: sideItem[] = [
@@ -29,6 +30,29 @@ export const sideItems: sideItem[] = [
   },
 ];
 
+export const navItems: navItem[] = [
+  {
+    href: "/dashboard/models",
+    icon: "/images/navbar/model.svg",
+    name: "Playground",
+  },
+  {
+    href: "/dashboard/marketplace",
+    icon: "/images/navbar/marketplace.svg",
+    name: "Marketplace",
+  },
+  {
+    href: "/dashboard/instance",
+    icon: "/images/navbar/instance.svg",
+    name: "Instance",
+  },
+  {
+    href: "/dashboard/editor",
+    icon: "/images/navbar/editor.svg",
+    name: "Editors",
+  },
+];
+
 export const GPUNums: { [key: string]: GPUNumberRange } = {
   any: { gte: 0, lte: 16 },
   "0x": { gte: 0, lte: 0 },
@@ -43,6 +67,12 @@ export const GPUTypes: { [key: string]: string } = {
   bid: "Interruptible",
   ask: "On-Demand",
   reserved: "Reserved",
+};
+
+export const StyleTypes: { [key: string]: string } = {
+  multi: "Multicolored",
+  single: "Singlecolored",
+  tripple: "Tripplecolored",
 };
 
 export const GPUNames = [
@@ -216,6 +246,8 @@ export const Models: ModelType[] = [
 ];
 
 export const initialParam: FilterOptions = {
+  prompt_str: 0.2,
+  control_dep_str: 0.8,
   diskSpace: 8,
   duration: 3,
   reliability: 90,
@@ -229,3 +261,42 @@ export const initialParam: FilterOptions = {
 };
 
 export const HOURS_A_DAY = 24 * 60 * 60;
+
+export const buttonTab = [
+  { name: "Playground", url: "/images/model/play.svg" },
+  { name: "API", url: "/images/model/api.svg" },
+  { name: "Examples", url: "/images/model/file-w.svg" },
+  { name: "README", url: "/images/model/google-doc.svg" },
+  { name: "Versions", url: "/images/model/cloud-loading.svg" },
+];
+
+export const outputBtn = [
+  { name: "Tweeks it", url: "/images/model/settings.svg" },
+  { name: "Share", url: "/images/model/share.svg" },
+  { name: "Download", url: "/images/model/download.svg" },
+  { name: "Report", url: "/images/model/report.svg" },
+];
+
+export const viewModels = [
+  { name: "model01", url: "/images/model01.png" },
+  { name: "model02", url: "/images/model02.png" },
+  { name: "model03", url: "/images/model03.png" },
+  { name: "model04", url: "/images/model04.png" },
+  { name: "model05", url: "/images/model05.png" },
+  { name: "model06", url: "/images/model06.png" },
+];
+
+export const inputTab = [
+  { name: "Form", value: "form" },
+  { name: "Node.js", value: "node.js" },
+  { name: "Python", value: "python" },
+  { name: "Elixir", value: "elixir" },
+  { name: "HTTP", value: "http" },
+  { name: "Cog", value: "cog" },
+  { name: "Docker", value: "docker" },
+];
+
+export const ouputTab = [
+  { name: "Preview", value: "preview" },
+  { name: "Json", value: "json" },
+];

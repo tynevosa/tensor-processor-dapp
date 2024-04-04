@@ -14,9 +14,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import {  metamaskWallet, useAddress, useAuth,  useConnect,  useConnectionStatus,  useLogin, useUser } from "@thirdweb-dev/react";
+import {
+  metamaskWallet,
+  useAddress,
+  useAuth,
+  useConnect,
+  useConnectionStatus,
+  useLogin,
+  useUser,
+} from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 const WhyteInktrap = localFont({
   src: "../../../public/fonts/WhyteInktrap.ttf",
@@ -35,7 +42,7 @@ const Page = () => {
   const connect = useConnect();
   const connectionStatus = useConnectionStatus();
   const { login } = useLogin();
-  const {isLoggedIn} = useUser();
+  const { isLoggedIn } = useUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,13 +52,11 @@ const Page = () => {
     },
   });
 
-
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       router.push("/dashboard/models");
     }
-  }, [isLoggedIn])
-
+  }, [isLoggedIn, router]);
 
   return (
     <div className="flex w-full h-screen items-stretch">
@@ -186,24 +191,22 @@ const Page = () => {
             </form>
           </Form>
           <span className="text-white text-center text-sm font-medium">OR</span>
-          
-          {
-            connectionStatus === "connected" ? 
+
+          {connectionStatus === "connected" ? (
             <Button
-              onClick = {() => login()}
+              onClick={() => login()}
               className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
             >
               {"Sign in with Wallet"}
             </Button>
-            : 
+          ) : (
             <Button
-              onClick = {() => connect(metamaskConfig)}
+              onClick={() => connect(metamaskConfig)}
               className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
             >
               {"Connect Wallet"}
             </Button>
-          
-          }
+          )}
         </div>
       </div>
     </div>

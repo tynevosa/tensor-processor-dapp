@@ -77,6 +77,8 @@ const config = {
           "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 80%, rgba(255,255,255,0) 100%)",
         "scrollarea-gradient":
           "linear-gradient(180deg, rgba(151, 174, 243, 0) 0%, #97AEF3 100%)",
+        "scrollarea-gradient-vertical":
+          "linear-gradient(90deg, rgba(151, 174, 243, 0) 0%, #97AEF3 100%)",
         "item-gradient":
           "linear-gradient(270deg, rgba(151, 175, 255, 0.3) 0%, rgba(151, 174, 243, 0) 100%)",
         auth: "url('../public/images/auth-bg.png')",

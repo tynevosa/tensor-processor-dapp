@@ -37,3 +37,7 @@
     0 100%
   );
 }
+
+#scrollbar > div {
+  display: flex !important;
+}
