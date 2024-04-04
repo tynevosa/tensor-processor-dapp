@@ -3,13 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
-import { ModelInfoType } from "@/types/type";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import CodeBlockComponent from "@/components/ui/code-block";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { ModelInfoType } from "@/types/type";
 
 type Props = {
   params: {
@@ -33,14 +35,58 @@ const languages = [
   },
 ];
 
+interface Model {
+  owner?: string;
+  name?: string;
+  latest_version?: {
+    id?: string;
+  };
+  default_example?: {
+    input?: any;
+  };
+}
+
 const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
   const [prompt, setPrompt] = React.useState("");
   const [replica, setReplica] = React.useState<string | JSON>("");
-  const { ownerId, nameId } = params;
-  const [model, setModel] = React.useState<ModelInfoType | null>(null);
   const [isFetching, setFetching] = React.useState<boolean>(false);
+  const { ownerId, nameId } = params;
+
+  const { data: model, error } = useQuery<ModelInfoType, Error>({
+    queryKey: ["model-detail"],
+    queryFn: () =>
+      axios
+        .get(`/api/model/${ownerId}/${nameId}`, {
+          headers: {
+            "Content-Type": "applicatoin/json",
+          },
+        })
+        .then((res) => res.data),
+  });
+
+  const modelId =
+    model?.owner + "/" + model?.name + ":" + model?.latest_version?.id;
+
+  const { data: response } = useQuery({
+    queryKey: ["model-predication"],
+    queryFn: () =>
+      axios
+        .post(
+          "/api/model/list",
+          {
+            model: modelId as string,
+            input: JSON.parse(prompt),
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => res.data),
+  });
 
   const isJson = (str: string) => {
     try {
@@ -54,10 +100,8 @@ const ModelDetailPage = ({ params }: Props) => {
   const predictModel = async () => {
     if (!model) return null;
     setFetching(true);
-    const modelId =
-      model.owner + "/" + model.name + ":" + model.latest_version.id;
 
-    if (isJson(prompt) === false) {
+    if (!isJson(prompt)) {
       toast({
         title: "Invalid Input",
       });
@@ -65,57 +109,19 @@ const ModelDetailPage = ({ params }: Props) => {
       return;
     }
 
-    const response = await fetch("/api/prediction", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: modelId as string,
-        input: JSON.parse(prompt),
-      }),
-    });
-
-    if (response.status !== 200) {
+    try {
+      const data = await response;
+      if (data.length > 0 && Array.isArray(data)) setReplica(data[0] as string);
+      else if (isJson(data)) setReplica(data as JSON);
+      else setReplica(String(data));
+    } catch (error) {
       toast({
         title: "Invalid Input",
       });
     }
 
-    if (response.ok) {
-      const data = await response.json();
-
-      if (data.length > 0 && Array.isArray(data)) setReplica(data[0] as string);
-      else if (isJson(data)) setReplica(data as JSON);
-      else setReplica(String(data));
-    }
     setFetching(false);
   };
-
-  const getModel = useCallback(async () => {
-    const response = await fetch(`/api/model/${ownerId}/${nameId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setModel(data as ModelInfoType);
-    }
-  }, [nameId, ownerId]);
-
-  interface Model {
-    owner?: string;
-    name?: string;
-    latest_version?: {
-      id?: string;
-    };
-    default_example?: {
-      input?: any;
-    };
-  }
 
   const generateCodeSample = (model: Model | undefined): string => {
     if (!model || !model.owner || !model.name || !model.latest_version) {
@@ -124,42 +130,19 @@ const ModelDetailPage = ({ params }: Props) => {
 
     const code: string = `
     import Tensor processor           
-  
+    
     output = tpu.run("${model.owner}/${model.name}:${model.latest_version.id}",
-                     input=${JSON.stringify(model.default_example?.input)})
-                     kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-                     dddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     ddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     d
-                     ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddddd
-                     dddddddddddddddddddddddddddddddddddddddddddddd
-                     ddddddddddddddddddddddddddddddddddddddsfafdafaf
-                     asdf
-                     adfafadfadsfsssssssssssssssssssssssssssssss
-                     adfffffffffffffffffffffffffffffffffff
-                     adfffffffffffffffffffffffffffffffffffffff
-                     dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-                     dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-
-  
+    input=${JSON.stringify(model.default_example?.input)})
     print(output)`;
     return code;
   };
 
-  useEffect(() => {
-    getModel();
-  }, [getModel]);
-
+  if (error) return "An error has occurred: " + error.message;
   if (!model) return null;
 
   return (
-    <ScrollArea className="flex h-full">
-      <div className="container flex flex-col px-6 sm:py-6 py-2">
+    <ScrollArea className="w-full h-full">
+      <div className="container flex flex-col px-6 sm:py-6 py-2 w-full h-full">
         <button
           type="button"
           onClick={() => router.back()}

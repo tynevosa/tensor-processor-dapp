@@ -261,3 +261,42 @@ export const initialParam: FilterOptions = {
 };
 
 export const HOURS_A_DAY = 24 * 60 * 60;
+
+export const buttonTab = [
+  { name: "Playground", url: "/images/model/play.svg" },
+  { name: "API", url: "/images/model/api.svg" },
+  { name: "Examples", url: "/images/model/file-w.svg" },
+  { name: "README", url: "/images/model/google-doc.svg" },
+  { name: "Versions", url: "/images/model/cloud-loading.svg" },
+];
+
+export const outputBtn = [
+  { name: "Tweeks it", url: "/images/model/settings.svg" },
+  { name: "Share", url: "/images/model/share.svg" },
+  { name: "Download", url: "/images/model/download.svg" },
+  { name: "Report", url: "/images/model/report.svg" },
+];
+
+export const viewModels = [
+  { name: "model01", url: "/images/model01.png" },
+  { name: "model02", url: "/images/model02.png" },
+  { name: "model03", url: "/images/model03.png" },
+  { name: "model04", url: "/images/model04.png" },
+  { name: "model05", url: "/images/model05.png" },
+  { name: "model06", url: "/images/model06.png" },
+];
+
+export const inputTab = [
+  { name: "Form", value: "form" },
+  { name: "Node.js", value: "node.js" },
+  { name: "Python", value: "python" },
+  { name: "Elixir", value: "elixir" },
+  { name: "HTTP", value: "http" },
+  { name: "Cog", value: "cog" },
+  { name: "Docker", value: "docker" },
+];
+
+export const ouputTab = [
+  { name: "Preview", value: "preview" },
+  { name: "Json", value: "json" },
+];
