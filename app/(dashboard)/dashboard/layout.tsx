@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
-import { Sidebar } from "@/components/layout/side-bar";
+import { ParamsProvider } from "@/components/contexts/param-context";
 
 export const metadata: Metadata = {
   title: "TPU Processor Dashboard",
@@ -13,12 +13,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen overflow-hidden w-full">
-      <Sidebar />
-      <main className="flex flex-col bg-black w-full items-stretch lg:ml-64 ml-0">
+    <ParamsProvider>
+      <div className="flex w-full flex-col h-full">
         <Header />
-        {children}
-      </main>
-    </div>
+        <main className="flex flex-col bg-black h-full overflow-hidden">
+          {children}
+        </main>
+      </div>
+    </ParamsProvider>
   );
 }

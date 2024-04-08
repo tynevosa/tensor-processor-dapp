@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import {  metamaskWallet, useAddress, useAuth,  useConnect,  useConnectionStatus,  useLogin, useUser } from "@thirdweb-dev/react";
+import { metamaskWallet, useAddress, useAuth,  useConnect,  useConnectionStatus,  useLogin, useUser } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -45,13 +45,11 @@ const Page = () => {
     },
   });
 
-
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       router.push("/dashboard/models");
     }
-  }, [isLoggedIn])
-
+  }, [isLoggedIn, router]);
 
   return (
     <div className="flex w-full h-screen items-stretch">
@@ -166,7 +164,11 @@ const Page = () => {
                 </Button>
                 <div className="flex gap-2 justify-end items-center">
                   <span className="text-sm font-medium text-white">
+<<<<<<< HEAD
                     Don't have an account?
+=======
+                    Don&apos;t have an account?
+>>>>>>> de9623c484ed6ea3859e8995276c6febe8a09e18
                   </span>
                   <Button
                     variant={"link"}
@@ -186,24 +188,41 @@ const Page = () => {
             </form>
           </Form>
           <span className="text-white text-center text-sm font-medium">OR</span>
+<<<<<<< HEAD
           
           {
             connectionStatus === "connected" ? 
             <Button
               onClick = {() => login()}
+=======
+
+          {connectionStatus === "connected" ? (
+            <Button
+              onClick={() => login()}
+>>>>>>> de9623c484ed6ea3859e8995276c6febe8a09e18
               className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
             >
               {"Sign in with Wallet"}
             </Button>
+<<<<<<< HEAD
             : 
             <Button
               onClick = {() => connect(metamaskConfig)}
+=======
+          ) : (
+            <Button
+              onClick={() => connect(metamaskConfig)}
+>>>>>>> de9623c484ed6ea3859e8995276c6febe8a09e18
               className="!text-lg !font-semibold py-[9px] !h-[42px] !rounded-sm !outline-none !ring-0 !ring-offset-0"
             >
               {"Connect Wallet"}
             </Button>
+<<<<<<< HEAD
           
           }
+=======
+          )}
+>>>>>>> de9623c484ed6ea3859e8995276c6febe8a09e18
         </div>
       </div>
     </div>
