@@ -1,11 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { ScrollArea } from "../ui/scroll-area";
 import { Slider } from "../ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Separator } from "../ui/separator";
+import { Checkbox } from "../ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
+import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { ChevronDownIcon, RefreshCw } from "lucide-react";
 import {
   GPUNames,
@@ -13,34 +21,35 @@ import {
   GPUTypes,
   Geolocations,
   SortOptions,
+  initialParam,
 } from "@/constants/constant";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-
-import { Separator } from "../ui/separator";
-import { Checkbox } from "../ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
-import type { GPUNumberRange, GPUType } from "@/types/type";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { useParam } from "../contexts/param-context";
+import type { GPUType } from "@/types/type";
 
 import createImage from "@/public/create-template-icon.png";
 
 export const MarketSidebar = () => {
-  // Filter Options
-  const [diskSpace, setDiskSpace] = useState<number>(8);
-  const [duration, setDuration] = useState<number>(3);
-  const [reliability, setReliability] = useState<number>(90);
-  const [type, setType] = useState<GPUType>("ask");
-  const [gpuNumber, setGPUNumber] = useState<GPUNumberRange>({});
-  const [gpuName, setGPUName] = useState<string>("Any GPU");
-  const [geolocation, setGeolocation] = useState<string>("Planet Earth");
-  const [order, setOrder] = useState<{ [key: string]: string[] }>(
-    SortOptions["Auto Sort"]
-  );
-  const [visibleUnverified, setVisibleUnverified] = useState<boolean>(false);
-  const [showIncompatible, setShowIncompatible] = useState<boolean>(false);
+  const { param, setParam } = useParam();
+  const {
+    diskSpace,
+    duration,
+    reliability,
+    type,
+    gpuNumber,
+    gpuName,
+    geolocation,
+    order,
+    visibleUnverified,
+    showIncompatible,
+  } = param;
+
+  const updateParam = (key: string, value: any) => {
+    setParam({ ...param, [key]: value });
+  };
+
+  useEffect(() => {
+    console.log(param);
+  }, [param]);
 
   // Dialog Open Status
   const [open, setOpen] = useState<boolean>(false);
@@ -194,13 +203,14 @@ export const MarketSidebar = () => {
               step={0.01}
               min={8}
               className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
-              onValueChange={(value) => setDiskSpace(value[0])}
+              onValueChange={(value) => updateParam("diskSpace", value[0])}
             />
           </div>
           <div>
             <Button
               variant={"secondary"}
               className="bg-[#97AEF3] p-2 gap-2 hover:bg-[#97aef3] hover:opacity-70 transition-all"
+              onClick={() => setParam(initialParam)}
             >
               <span className="font-semibold text-base">Reset Filter</span>
               <RefreshCw color="black" size={24} />
@@ -213,7 +223,8 @@ export const MarketSidebar = () => {
                 <ToggleGroup
                   type="single"
                   className="justify-between"
-                  onValueChange={(value) => setGPUNumber(GPUNums[value])}
+                  defaultValue={gpuNumber}
+                  onValueChange={(value) => updateParam("gpuNumber", value)}
                 >
                   {Object.keys(GPUNums).map((key, index) => (
                     <ToggleGroupItem
@@ -228,7 +239,7 @@ export const MarketSidebar = () => {
               </div>
               <Select
                 defaultValue={type}
-                onValueChange={(value) => setType(value as GPUType)}
+                onValueChange={(value) => updateParam("type", value as GPUType)}
               >
                 <SelectTrigger className="bg-[#121218] border border-[#242835] py-3 px-4 rounded-sm text-white font-semibold text-base flex justify-between items-center focus:!ring-0 focus-visible:!ring-0 outline-none">
                   <SelectValue className="w-full">
@@ -252,7 +263,7 @@ export const MarketSidebar = () => {
               </Select>
               <Select
                 defaultValue={gpuName}
-                onValueChange={(value) => setGPUName(value)}
+                onValueChange={(value) => updateParam("gpuName", value)}
               >
                 <SelectTrigger className="bg-[#121218] border border-[#242835] py-3 px-4 rounded-sm text-white font-semibold text-base flex justify-between items-center focus:!ring-0 focus-visible:!ring-0 outline-none">
                   <SelectValue className="w-full">
@@ -276,7 +287,9 @@ export const MarketSidebar = () => {
               </Select>
               <Select
                 defaultValue={geolocation}
-                onValueChange={(value) => setGeolocation(value)}
+                onValueChange={(value) =>
+                  updateParam("geolocation", value as string)
+                }
               >
                 <SelectTrigger className="bg-[#121218] border border-[#242835] py-3 px-4 rounded-sm text-white font-semibold text-base flex justify-between items-center focus:!ring-0 focus-visible:!ring-0 outline-none">
                   <SelectValue className="w-full focus:!ring-0 focus-visible:!ring-0 outline-none">
@@ -299,16 +312,12 @@ export const MarketSidebar = () => {
                 </SelectContent>
               </Select>
               <Select
-                defaultValue={"Auto Sort"}
-                onValueChange={(value) => setOrder(SortOptions[value])}
+                defaultValue={order}
+                onValueChange={(value) => updateParam("order", value)}
               >
                 <SelectTrigger className="bg-[#121218] border border-[#242835] py-3 px-4 rounded-sm text-white font-semibold text-base flex justify-between items-center focus:!ring-0 focus-visible:!ring-0 outline-none">
                   <SelectValue className="w-full focus:!ring-0 focus-visible:!ring-0 outline-none">
-                    <span className="w-full flex">
-                      {Object.keys(SortOptions).find(
-                        (key) => SortOptions[key] == order
-                      )}
-                    </span>
+                    <span className="w-full flex">{order}</span>
                   </SelectValue>
                   <ChevronDownIcon size={17} />
                 </SelectTrigger>
@@ -347,7 +356,9 @@ export const MarketSidebar = () => {
                   min={11.31}
                   step={0.01}
                   className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
-                  onValueChange={(value) => setReliability(value[0])}
+                  onValueChange={(value) =>
+                    updateParam("reliability", value[0])
+                  }
                 />
               </div>
               <div className="flex flex-col gap-4 items-stretch">
@@ -362,7 +373,7 @@ export const MarketSidebar = () => {
                   max={100}
                   step={1}
                   className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
-                  onValueChange={(value) => setDuration(value[0])}
+                  onValueChange={(value) => updateParam("duration", value[0])}
                 />
               </div>
             </div>
@@ -379,7 +390,7 @@ export const MarketSidebar = () => {
                     id="unverified"
                     checked={visibleUnverified}
                     onCheckedChange={(checked: boolean) =>
-                      setVisibleUnverified(checked)
+                      updateParam("visibleUnverified", checked)
                     }
                   />
                   <label
@@ -394,7 +405,7 @@ export const MarketSidebar = () => {
                     id="incompatible"
                     checked={showIncompatible}
                     onCheckedChange={(checked: boolean) =>
-                      setShowIncompatible(checked)
+                      updateParam("showIncompatible", checked)
                     }
                   />
                   <label

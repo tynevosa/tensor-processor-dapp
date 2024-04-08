@@ -1,4 +1,5 @@
 import type {
+  FilterOptions,
   GPUNumberRange,
   GPUType,
   ModelType,
@@ -29,7 +30,7 @@ export const sideItems: sideItem[] = [
 ];
 
 export const GPUNums: { [key: string]: GPUNumberRange } = {
-  any: {},
+  any: { gte: 0, lte: 16 },
   "0x": { gte: 0, lte: 0 },
   "1x": { gte: 1, lte: 1 },
   "2x": { gte: 2, lte: 2 },
@@ -213,3 +214,18 @@ export const Models: ModelType[] = [
     imgSrc: "/images/model10.png",
   },
 ];
+
+export const initialParam: FilterOptions = {
+  diskSpace: 8,
+  duration: 3,
+  reliability: 90,
+  type: "ask",
+  gpuNumber: "any",
+  gpuName: "Any GPU",
+  geolocation: "Planet Earth",
+  order: "Auto Sort",
+  visibleUnverified: false,
+  showIncompatible: false,
+};
+
+export const HOURS_A_DAY = 24 * 60 * 60;

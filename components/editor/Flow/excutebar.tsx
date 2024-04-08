@@ -1,20 +1,10 @@
 import React from 'react';
-import Image from "next/image";
-import {
-  Boxes,
-  TrendingUp,
-  LayoutDashboard,
-  UserRound,
-  LucideIcon,
-} from "lucide-react";
 
+type ExcuteProps = {
+  run:() => void
+}
 
-function ExcuteBar() {
-
-  const onDragStart = (event: any, nodeType: any) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+const ExcuteBar : React.FC<ExcuteProps> = ({run}) => {
 
   return (
     <div className=' absolute z-2 bottom-side'>
@@ -31,7 +21,7 @@ function ExcuteBar() {
           </div>
         </div>
 
-        <div className='cursor-pointer hover:bg-[white] rounded-[8px] gap-3 items-center px-10 bg-[#97AEF3] pt-2  pb-2'>
+        <div className='cursor-pointer hover:bg-[white] rounded-[8px] gap-3 items-center px-10 bg-[#97AEF3] pt-2  pb-2' onClick={run}>
           <div className='text-[black] text-[20px] font-bold'>Run</div>
         </div>
       </div>

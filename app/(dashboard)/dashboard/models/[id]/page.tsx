@@ -39,6 +39,7 @@ print(output)`;
 const ModelDetailPage = ({ params }: Props) => {
   const router = useRouter();
   const [activeLang, setActiveLang] = React.useState(languages[0]?.value);
+
   return (
     <div className="flex flex-col px-6 py-12">
       <button
