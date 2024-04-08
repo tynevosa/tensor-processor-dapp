@@ -33,6 +33,12 @@ export type FilterOptions = {
   showIncompatible: boolean;
 };
 
+export type navItem = {
+  name: string;
+  icon: string;
+  href: string;
+};
+
 export type GPUInfoType = {
   host_id: number;
   duration: number;

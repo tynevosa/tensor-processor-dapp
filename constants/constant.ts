@@ -4,6 +4,7 @@ import type {
   GPUType,
   ModelType,
   sideItem,
+  navItem
 } from "@/types/type";
 
 export const sideItems: sideItem[] = [
@@ -227,5 +228,28 @@ export const initialParam: FilterOptions = {
   visibleUnverified: false,
   showIncompatible: false,
 };
+
+export const navItems: navItem[] = [
+  {
+    href: "/dashboard/models",
+    icon: "/images/navbar/model.svg",
+    name: "Playground",
+  },
+  {
+    href: "/dashboard/marketplace",
+    icon: "/images/navbar/marketplace.svg",
+    name: "Marketplace",
+  },
+  {
+    href: "/dashboard/instance",
+    icon: "/images/navbar/instance.svg",
+    name: "Instance",
+  },
+  {
+    href: "/dashboard/editor",
+    icon: "/images/navbar/editor.svg",
+    name: "Editors",
+  },
+];
 
 export const HOURS_A_DAY = 24 * 60 * 60;
