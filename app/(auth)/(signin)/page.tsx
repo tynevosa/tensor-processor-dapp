@@ -34,7 +34,7 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
-const host = process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN;
+// const host = process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN;
 const metamaskConfig = metamaskWallet();
 
 const Page = () => {
@@ -71,7 +71,7 @@ const Page = () => {
                 height={264}
               />
               <span className="top-1 right-4 absolute font-semibold text-white text-xl leading-6">
-                50k runs
+                50K runs
               </span>
             </div>
             <h1 className="font-semibold text-white text-xl leading-6">

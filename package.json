@@ -48,6 +48,7 @@
     "react-router-dom": "^6.22.3",
     "react-syntax-highlighter": "^15.5.0",
     "reactflow": "^11.10.4",
+    "sharp": "^0.33.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript-plugin-styled-components": "^3.0.0",
