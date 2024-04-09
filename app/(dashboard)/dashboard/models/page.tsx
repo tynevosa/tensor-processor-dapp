@@ -34,7 +34,7 @@ export default function Page() {
             headers: {
               "Content-Type": "application/json",
             },
-          },
+          }
         )
         .then((res) => res.data),
   });
@@ -70,11 +70,11 @@ export default function Page() {
                 name,
                 run_count,
               },
-              index,
+              index
             ) => {
               return (
                 <Link
-                  href={`/dashboard/models/${name?.split(" ")?.join("-")?.toLowerCase()}`}
+                  href={`/dashboard/models/${name}`}
                   key={index}
                   className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
                 >
@@ -129,7 +129,7 @@ export default function Page() {
                   </div>
                 </Link>
               );
-            },
+            }
           )}
         </div>
         <div
