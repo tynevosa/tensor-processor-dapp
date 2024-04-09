@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModelInfoType } from "@/types/type";
 import Image from "next/image";
@@ -35,7 +34,7 @@ export default function Page() {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         )
         .then((res) => res.data),
   });
@@ -45,6 +44,7 @@ export default function Page() {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
+  // console.log(isPending);
 
   useEffect(() => {
     if (modelPage?.length > 0) {
@@ -53,12 +53,13 @@ export default function Page() {
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
+  // console.log(modelDatas?.map((item) => item?.name));
 
   return (
     <ScrollArea className="w-full h-full">
-      <div className="container px-1 py-12 w-full h-full">
-        <h1 className="font-bold text-3xl text-white lg:ml-6 ml-10">
-          My Playground
+      <div className="px-1 py-12 w-full h-full container">
+        <h1 className="ml-10 lg:ml-6 font-bold text-3xl text-white">
+          My Models
         </h1>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6 px-10 lg:px-6">
           {modelDatas.map(
@@ -67,101 +68,68 @@ export default function Page() {
                 cover_image_url = "/images/model.svg",
                 description,
                 name,
-                owner,
                 run_count,
               },
-              index
+              index,
             ) => {
-              if (index + 1 === modelDatas.length)
-                return (
-                  <Link
-                    href={`/dashboard/models/${owner}/${name}`}
-                    key={index}
-                    ref={ref}
-                    className="flex gap-4 bg-[#121218] p-2 rounded-[8px]"
-                  >
-                    <div className="w-40 h-40 min-w-40  relative">
+              return (
+                <Link
+                  href={`/dashboard/models/${name}`}
+                  key={index}
+                  className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
+                >
+                  <div className="relative overflow-hidden">
+                    {cover_image_url?.toLowerCase().endsWith(".mp4") ? (
+                      <video
+                        autoPlay
+                        loop
+                        width={400}
+                        height={264}
+                        style={{
+                          clipPath:
+                            "polygon(60% 0, 70% 16%, 100% 16%, 100% 100%, 0 100%, 0% 60%, 0 0)",
+                        }}
+                        className="rounded-md w-full h-[300px] object-cover"
+                      >
+                        <source src={cover_image_url} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
                       <Image
                         alt="model"
-                        src={cover_image_url ?? "/images/model.svg"}
-                        className="h-full absolute w-full"
-                        width={500}
-                        height={500}
+                        src={cover_image_url || "/images/model.svg"}
+                        width={400}
+                        onError={({ currentTarget }) =>
+                          (currentTarget.src = "/images/model.svg")
+                        }
+                        height={264}
                         priority
+                        className="rounded-md w-full h-[300px] object-cover"
+                        style={{
+                          clipPath:
+                            "polygon(60% 0, 70% 16%, 100% 16%, 100% 100%, 0 100%, 0% 60%, 0 0)",
+                        }}
                       />
-                    </div>
-                    <div className="flex flex-col justify-between flex-shrink flex-grow w-[calc(100%-176px)]">
-                      <div className="flex flex-col gap-4 items-stretch">
-                        <div className="flex gap-2 max-w-full">
-                          <Avatar className="rounded-none !w-5 ">
-                            <AvatarImage
-                              className="!w-5 !h-5 rounded-full"
-                              src="/images/model-avatar.png"
-                            />
-                          </Avatar>
-                          <h2 className="inline-block font-[600] text-sm text-white truncate flex-shrink">
-                            {`${owner} / ${name}`}
-                          </h2>
-                        </div>
-                        <div className="font-[400] text-sm text-white max-h-10 overflow-hidden text-ellipsis">
-                          {description}
-                        </div>
-                      </div>
-                      <span className="font-[600] text-[#7D9EFF] text-sm">
-                        {`${
-                          run_count > 1000
-                            ? (run_count / 1000).toFixed(1) + "K"
-                            : run_count
-                        } runs`}
-                      </span>
-                    </div>
-                  </Link>
-                );
-              else
-                return (
-                  <Link
-                    href={`/dashboard/models/${owner}/${name}`}
-                    key={index}
-                    className="flex gap-4 bg-[#121218] p-2 rounded-[8px]"
-                  >
-                    <div className="w-40 h-40 min-w-40  relative">
-                      <Image
-                        alt="model"
-                        src={cover_image_url ?? "/images/model.svg"}
-                        className="h-full absolute w-full"
-                        width={500}
-                        height={500}
-                        priority
-                      />
-                    </div>
-                    <div className="flex flex-col justify-between flex-shrink flex-grow w-[calc(100%-176px)]">
-                      <div className="flex flex-col gap-4 items-stretch">
-                        <div className="flex gap-2 max-w-full">
-                          <Avatar className="rounded-none !w-5 ">
-                            <AvatarImage
-                              className="!w-5 !h-5 rounded-full"
-                              src="/images/model-avatar.png"
-                            />
-                          </Avatar>
-                          <h2 className="inline-block font-[600] text-sm text-white truncate flex-shrink">
-                            {`${owner} / ${name}`}
-                          </h2>
-                        </div>
-                        <div className="font-[400] text-sm text-white max-h-10 overflow-hidden text-ellipsis">
-                          {description}
-                        </div>
-                      </div>
-                      <span className="font-[600] text-[#7D9EFF] text-sm">
-                        {`${
-                          run_count > 1000
-                            ? (run_count / 1000).toFixed(1) + "K"
-                            : run_count
-                        } runs`}
-                      </span>
-                    </div>
-                  </Link>
-                );
-            }
+                    )}
+                    <p className="top-2 right-2 z-[10px] absolute font-bold text-2xl text-white leading-6">
+                      {`${
+                        run_count > 1000
+                          ? (run_count / 1000).toFixed(1) + "K"
+                          : run_count
+                      } runs`}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="font-medium text-base text-white leading-6">
+                      {name}
+                    </p>
+                    <p className="font-medium text-[#ffffffa9] text-sm leading-6">
+                      {description}
+                    </p>
+                  </div>
+                </Link>
+              );
+            },
           )}
         </div>
         <div
@@ -169,7 +137,7 @@ export default function Page() {
             "mt-[20%]": modelDatas.length === 0,
           })}
         >
-          {isPending && <Spinner />}
+          {isPending === "fetching" && <Spinner />}
         </div>
       </div>
     </ScrollArea>
