@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["tjzk.replicate.delivery", "replicate.delivery"],
+    domains: [
+      "tjzk.replicate.delivery",
+      "replicate.delivery",
+      "cdn.playground.com",
+    ],
   },
   webpack: (config) => {
     config.externals.push("pino-pretty", "lokijs", "encoding");
@@ -12,7 +16,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://135.181.241.81:5000/api/:path*",
+        destination: "http://95.217.158.17:5000/api/:path*",
       },
     ];
   },
