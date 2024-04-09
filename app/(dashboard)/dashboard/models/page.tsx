@@ -74,7 +74,7 @@ export default function Page() {
             ) => {
               return (
                 <Link
-                  href={`/dashboard/models/${name}`}
+                  href={`/dashboard/models/${name?.split(" ")?.join("-")?.toLowerCase()}`}
                   key={index}
                   className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
                 >

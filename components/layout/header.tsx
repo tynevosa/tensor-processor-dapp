@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { navItems } from "@/constants/constant";
 import { cn } from "@/lib/utils";
-import logoText from "@/public/logo-text.png";
 import logo from "@/public/logo.png";
 import { useAddress, useLogout } from "@thirdweb-dev/react";
 import { Copy, Power } from "lucide-react";
@@ -86,7 +85,7 @@ export const Header = () => {
     <div className="flex justify-between items-center border-[#242835] bg-[#000510] px-8 py-4 border-b w-full text-white">
       <div className="flex justify-start items-center gap-3 w-3/12">
         <Image src={logo} alt="Logo" priority />
-        <Image src={logoText} alt="Logo Text" />
+        <p className="font-bold text-3xl text-white">TPU</p>
       </div>
       <div className="lg:flex flex-row justify-center gap-7 hidden w-6/12">
         {navItems.map((item, idx) => (
