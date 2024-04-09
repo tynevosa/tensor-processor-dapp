@@ -2,10 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      "tjzk.replicate.delivery",
-      "replicate.delivery",
-      "cdn.playground.com",
+    domains: ["tjzk.replicate.delivery", "replicate.delivery"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
     ],
   },
   webpack: (config) => {
