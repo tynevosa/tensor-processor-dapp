@@ -74,17 +74,17 @@ export const CardCarousel = (props: Props) => {
           }}
           plugins={[
             Autoplay({
-              delay: 2500,
+              delay: 4000,
             }),
           ]}
         >
           <CarouselContent className="">
             {carouselItems?.map((item, i) => (
-              <CarouselItem key={i}>
+              <CarouselItem key={i} className="flex flex-col gap-4">
                 <div className="relative">
                   <Image
                     alt="model"
-                    src={`/images/model/model-${i+1}.png`}
+                    src={`/images/model/model-${i + 1}.png`}
                     width={312}
                     height={264}
                   />
