@@ -70,9 +70,21 @@ export const GPUTypes: { [key: string]: string } = {
 };
 
 export const StyleTypes: { [key: string]: string } = {
-  multi: "Multicolored",
-  single: "Singlecolored",
-  tripple: "Tripplecolored",
+  DDIM: "DDIM",
+  DPMSolverMultistep: "DPMSolverMultistep",
+  HeunDscrete: "HeunDscrete",
+  KarrasDPM: "KarrasDPM",
+  K_EULER_ANCESTRAL: "K_EULER_ANCESTRAL",
+  K_EULER: "K_EULER",
+  PNDM: "PNDM",
+  DPMMSDE: "DPM++2MSDE",
+};
+
+export const NumImages: { [key: number]: number } = {
+  1: 1,
+  2: 2,
+  3: 3,
+  4: 4,
 };
 
 export const GPUNames = [
@@ -248,6 +260,9 @@ export const Models: ModelType[] = [
 export const initialParam: FilterOptions = {
   prompt_str: 0.2,
   control_dep_str: 0.8,
+  inference_steps: 5,
+  guidance_scale: 10,
+  num_output: 4,
   diskSpace: 8,
   duration: 3,
   reliability: 90,
@@ -265,9 +280,7 @@ export const HOURS_A_DAY = 24 * 60 * 60;
 export const buttonTab = [
   { name: "Playground", url: "/images/model/play.svg" },
   { name: "API", url: "/images/model/api.svg" },
-  { name: "Examples", url: "/images/model/file-w.svg" },
-  { name: "README", url: "/images/model/google-doc.svg" },
-  { name: "Versions", url: "/images/model/cloud-loading.svg" },
+  { name: "Info", url: "/images/model/file-w.svg" },
 ];
 
 export const outputBtn = [

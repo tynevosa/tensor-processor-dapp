@@ -16,6 +16,8 @@ export type GPUType = "ask" | "reserved" | "bid";
 
 export type StyleType = "multi" | "single" | "tripple";
 
+export type NumImagesTypes = "1" | "2" | "3" | "4";
+
 export type GPUNumberRange = {
   gte?: number;
   lte?: number;
@@ -50,6 +52,9 @@ export type FilterOptions = {
   reliability: number;
   prompt_str: number;
   control_dep_str: number;
+  inference_steps: number;
+  guidance_scale: number;
+  num_output: number;
   type: GPUType;
   gpuNumber: string;
   gpuName: string;
@@ -94,4 +99,15 @@ export type GPUInfoType = {
   dlperf_per_dphtotal: number;
 
   storage_total_cost: number;
+};
+
+export type InputType = {
+  prompt?: string;
+  negative_prompt?: string;
+  width?: number;
+  height?: number;
+  guidance_scale?: number;
+  num_inference_steps?: number;
+  num_outputs?: number;
+  scheduler?: string;
 };
