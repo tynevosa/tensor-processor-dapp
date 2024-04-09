@@ -24,6 +24,7 @@ import {
   useUser,
 } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
+import { CardCarousel } from "@/components/auth/card-carousel";
 
 const WhyteInktrap = localFont({
   src: "../../../public/fonts/WhyteInktrap.ttf",
@@ -62,26 +63,7 @@ const Page = () => {
     <div className="flex items-stretch w-full h-screen">
       <div className="bg-[url(/backgrounds/auth-left.png)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
         <div className="flex flex-col flex-grow justify-center items-center gap-12">
-          <div className="flex flex-col gap-3 bg-[url(/backgrounds/card.png)] bg-cover bg-center p-4 rounded-[16px] w-[calc(312px+32px)]">
-            <div className="relative">
-              <Image
-                alt="model"
-                src="/images/model/model-1.png"
-                width={312}
-                height={264}
-              />
-              <span className="top-1 right-4 absolute font-semibold text-white text-xl leading-6">
-                50K runs
-              </span>
-            </div>
-            <h1 className="font-semibold text-white text-xl leading-6">
-              Cooperate Detective Cat
-            </h1>
-            <p className="font-semibold text-[#ABB5C9] text-sm leading-6">
-              Investigator detective cat, officially solving money laundering
-              cases
-            </p>
-          </div>
+          <CardCarousel />
         </div>
         <div className="flex flex-col justify-center items-center font-medium text-white">
           <span>Rune and fine-tune open-source models</span>
