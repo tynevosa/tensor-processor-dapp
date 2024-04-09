@@ -17,53 +17,52 @@ export default function Page() {
 
   const { ref, inView } = useInView();
 
-  const {
-    data: modelPage,
-    fetchStatus: isPending,
-    error,
-  } = useQuery({
-    queryKey: ["models-list", page],
-    queryFn: () =>
-      axios
-        .post(
-          "/api/model/list",
-          {
-            page: page,
-            count: 15,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => res.data),
-  });
+  // const {
+  //   data: modelPage,
+  //   fetchStatus: isPending,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["models-list", page],
+  //   queryFn: () =>
+  //     axios
+  //       .post(
+  //         "/api/model/list",
+  //         {
+  //           page: page,
+  //           count: 15,
+  //         },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       )
+  //       .then((res) => res.data),
+  // });
 
   useEffect(() => {
     if (inView) {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
-  console.log(isPending);
-  
+  // console.log(isPending);
 
-  useEffect(() => {
-    if (modelPage?.length > 0) {
-      setModelDatas((prev) => [...prev, ...modelPage]);
-    }
-  }, [modelPage]);
+  // useEffect(() => {
+  //   if (modelPage?.length > 0) {
+  //     setModelDatas((prev) => [...prev, ...modelPage]);
+  //   }
+  // }, [modelPage]);
 
-  if (error) return "An error has occurred: " + error.message;
+  // if (error) return "An error has occurred: " + error.message;
 
   return (
     <ScrollArea className="w-full h-full">
       <div className="px-1 py-12 w-full h-full container">
         <h1 className="ml-10 lg:ml-6 font-bold text-3xl text-white">
-          My Playground
+          My Models
         </h1>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6 px-10 lg:px-6">
-          {modelDatas.map(
+          {/* {modelDatas.map(
             (
               {
                 cover_image_url = "/images/model.svg",
@@ -166,15 +165,38 @@ export default function Page() {
                   </Link>
                 );
             }
-          )}
+          )} */}
+          <div className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]">
+            <div className="relative overflow-hidden">
+              <Image
+                alt="model"
+                src="/images/model.svg"
+                width={400}
+                height={264}
+                className="rounded-md w-full h-[300px] object-cover"
+                style={{
+                  clipPath:
+                    "polygon(64% 1%, 73% 16%, 100% 16%, 100% 100%, 0 100%, 0% 60%, 0 0)",
+                }}
+              />
+              <p className="top-2 right-2 z-[10px] absolute font-bold text-2xl text-white leading-6">
+                50k runs
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-base text-white leading-6">
+                Coqui XTTS-v2: Multilingual Text To Speech Voice Cloning
+              </p>
+            </div>
+          </div>
         </div>
-        <div
+        {/* <div
           className={cn("flex justify-center items-center  mt-10", {
             "mt-[20%]": modelDatas.length === 0,
           })}
         >
           {isPending === "fetching" && <Spinner />}
-        </div>
+        </div> */}
       </div>
     </ScrollArea>
   );
