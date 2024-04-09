@@ -60,52 +60,27 @@ const Page = () => {
 
   return (
     <div className="flex items-stretch w-full h-screen">
-      <div className="lg:flex flex-col justify-stretch items-stretch hidden bg-auth bg-cover bg-center py-12 w-1/2">
+      <div className="bg-[url(/backgrounds/auth-left.png)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
         <div className="flex flex-col flex-grow justify-center items-center gap-12">
-          <div className="flex gap-4 col-span-1 bg-[#121218] lg:mr-32 p-2 rounded-[8px] w-96">
-            <Image alt="model" src={Model08} width={160} height={160} />
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <Avatar className="rounded-none !w-5">
-                    <AvatarImage
-                      className="rounded-full !w-5 !h-5"
-                      src="/images/model-avatar.png"
-                    />
-                  </Avatar>
-                  <h2 className="font-[600] text-sm text-white">
-                    {`lucataco / xtts-v2`}
-                  </h2>
-                </div>
-                <p className="font-[400] text-sm text-white">
-                  Coqui XTTS-v2: Multilingual Text To Speech Voice Cloning
-                </p>
-              </div>
-              <p className="font-[600] text-[#7D9EFF] text-sm">50K runs</p>
+          <div className="flex flex-col gap-3 bg-[url(/backgrounds/card.png)] bg-cover bg-center p-4 rounded-[16px] w-[calc(312px+32px)]">
+            <div className="relative">
+              <Image
+                alt="model"
+                src="/images/model/model-1.png"
+                width={312}
+                height={264}
+              />
+              <span className="top-1 right-4 absolute font-semibold text-white text-xl leading-6">
+                50k runs
+              </span>
             </div>
-          </div>
-
-          <div className="flex gap-4 col-span-1 bg-[#121218] lg:ml-32 p-2 rounded-[8px] w-96">
-            <Image alt="model" src={Model10} width={160} height={160} />
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <Avatar className="rounded-none !w-5">
-                    <AvatarImage
-                      className="rounded-full !w-5 !h-5"
-                      src="/images/model-avatar.png"
-                    />
-                  </Avatar>
-                  <h2 className="font-[600] text-sm text-white">
-                    {`lucataco / xtts-v2`}
-                  </h2>
-                </div>
-                <p className="font-[400] text-sm text-white">
-                  Coqui XTTS-v2: Multilingual Text To Speech Voice Cloning
-                </p>
-              </div>
-              <p className="font-[600] text-[#7D9EFF] text-sm">50K runs</p>
-            </div>
+            <h1 className="font-semibold text-white text-xl leading-6">
+              Cooperate Detective Cat
+            </h1>
+            <p className="font-semibold text-[#ABB5C9] text-sm leading-6">
+              Investigator detective cat, officially solving money laundering
+              cases
+            </p>
           </div>
         </div>
         <div className="flex flex-col justify-center items-center font-medium text-white">
@@ -113,25 +88,25 @@ const Page = () => {
           <span>Deploy custom models at scale. All with one line of code</span>
         </div>
       </div>
-      <div className="flex flex-col flex-grow justify-center items-center gap-6 bg-[#000510]">
+      <div className="flex flex-col flex-grow justify-center items-center gap-6 bg-[#000510] bg-[url(/backgrounds/auth.png)]">
         <div className="flex flex-col items-center gap-8">
           <Image src={Logo} alt="logo" />
           <div className="flex flex-col justify-center items-center gap-3">
             <span
               className={cn(
                 "text-4xl font-bold text-center bg-text-gradient bg-clip-text text-transparent",
-                WhyteInktrap.className
+                WhyteInktrap.className,
               )}
             >
               Welcome back
             </span>
-            <span className="font-medium text-white">
+            {/* <span className="font-medium text-white">
               Please enter your details
-            </span>
+            </span> */}
           </div>
         </div>
         <div className="flex flex-col items-stretch gap-6 w-96">
-          <Form {...form}>
+          {/* <Form {...form}>
             <form className="flex flex-col items-stretch gap-4">
               <FormField
                 control={form.control}
@@ -189,20 +164,20 @@ const Page = () => {
                 Sign in
               </Button>
             </form>
-          </Form>
-          <span className="font-medium text-center text-sm text-white">OR</span>
+          </Form> */}
+          {/* <span className="font-medium text-center text-sm text-white">OR</span> */}
 
           {connectionStatus === "connected" ? (
             <Button
               onClick={() => login()}
-              className="py-[9px] !rounded-sm !h-[42px] !font-semibold !text-lg !outline-none !ring-0 !ring-offset-0"
+              className="!bg-gradient-to-b from-[#fff] to-[#B3B3B3] py-[9px] !rounded-sm !h-[42px] !font-semibold !text-black !text-lg !outline-none !ring-0 !ring-offset-0"
             >
               {"Sign in with Wallet"}
             </Button>
           ) : (
             <Button
               onClick={() => connect(metamaskConfig)}
-              className="py-[9px] !rounded-sm !h-[42px] !font-semibold !text-lg !outline-none !ring-0 !ring-offset-0"
+              className="!bg-gradient-to-b from-[#fff] to-[#B3B3B3] py-[9px] !rounded-sm !h-[42px] !font-semibold !text-black !text-lg !outline-none !ring-0 !ring-offset-0"
             >
               {"Connect Wallet"}
             </Button>
