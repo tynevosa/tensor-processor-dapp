@@ -44,7 +44,7 @@ export default function Page() {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
-  console.log(isPending);
+  // console.log(isPending);
 
   useEffect(() => {
     if (modelPage?.length > 0) {
@@ -53,6 +53,7 @@ export default function Page() {
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
+  // console.log(modelDatas?.map((item) => item?.name));
 
   return (
     <ScrollArea className="w-full h-full">
@@ -118,8 +119,11 @@ export default function Page() {
                       } runs`}
                     </p>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-2">
                     <p className="font-medium text-base text-white leading-6">
+                      {name}
+                    </p>
+                    <p className="font-medium text-[#ffffffa9] text-sm leading-6">
                       {description}
                     </p>
                   </div>

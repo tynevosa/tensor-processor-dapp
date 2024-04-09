@@ -9,12 +9,7 @@ import { navItems } from "@/constants/constant";
 import { cn } from "@/lib/utils";
 import logoText from "@/public/logo-text.png";
 import logo from "@/public/logo.png";
-import {
-  useAddress,
-  useLogout,
-  useSetIsWalletModalOpen,
-  useSetWalletModalConfig,
-} from "@thirdweb-dev/react";
+import { useAddress, useLogout } from "@thirdweb-dev/react";
 import { Copy, Power } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -85,6 +80,7 @@ export const Header = () => {
     navigator.clipboard.writeText(str);
   };
   const { logout, isLoading } = useLogout();
+
   const router = useRouter();
   return (
     <div className="flex justify-between items-center border-[#242835] bg-[#000510] px-8 py-4 border-b w-full text-white">
