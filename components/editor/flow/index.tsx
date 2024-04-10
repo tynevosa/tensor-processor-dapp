@@ -20,8 +20,7 @@ import { getWorkflow, createWorkflow, updateWorkflow, nodeRun } from '@/app/(das
 
 import 'reactflow/dist/style.css';
 import '@/styles/overview.css';
-import { AxiosResponse } from 'axios';
-import {FaBolt,FaExpand} from "react-icons/fa";
+import { FaBolt, FaExpand } from "react-icons/fa";
 
 const initialNodes = [
   {
@@ -52,31 +51,6 @@ const initialNodes = [
   }
 ];
 
-type PromptModel = {
-  id: number;
-  template: string;
-  generated_prompt: string;
-  result: string;
-  title: string;
-  model_id: number;
-  config: any;
-  system_template: string;
-  published_template: string;
-  published_system_template: string;
-  published_config: any;
-  tiptap_output: any;
-  tiptap_system_output: any;
-  title_tsvector: string;
-  models: any;
-  vectors: any;
-  supported_inputs: any;
-  supported_system_inputs: any;
-  created_at: string;
-  updated_at: string;
-  published_at: string;
-  user_id: number;
-}
-
 const edges: Edge<any>[] = [];
 
 const myNodeTypes = {
@@ -95,18 +69,16 @@ let id = 2;
 const getId = () => `dndnode_${id++}`;
 let flag = false
 
-let change_input_id:any = '';
-let change_node_index:any = 0;
+let change_input_id: any = '';
+let change_node_index: any = 0;
 
 const OverviewFlow: React.FC = () => {
 
-  // const router = useRouter();
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>(initialNodes);
   const [edgesEle, setEdges, onEdgesChange] = useEdgesState(edges);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
   const [title, setTitle] = useState('UNTITLED')
-  const [workflowId, setWorkflowId] = useState<string | null>(null);
   const [questions, setQeustions] = useState<any>([])
   const [msgText, setMsgText] = useState('')
   const [msgDlgFlag, setMsgDlgFlag] = useState(true)
@@ -115,7 +87,6 @@ const OverviewFlow: React.FC = () => {
   const fetchData = async () => {
 
     const storedWorkflowId = localStorage.getItem('workflow_id');
-    setWorkflowId(storedWorkflowId);
 
     if (storedWorkflowId == '0') {
 
@@ -143,13 +114,31 @@ const OverviewFlow: React.FC = () => {
         });
     }
   };
-
+ 
   useEffect(() => {
 
     if (!flag) {
 
       flag = true
       fetchData();
+
+      const noode_flag = localStorage.getItem('nodeCall')
+      if(noode_flag && noode_flag!.startsWith('t'))
+      {
+        const prompt:any|null = localStorage.getItem('prompt_data')
+        const promptdata = JSON.parse(prompt)
+        nodes.forEach(element => {
+          if(element.id === noode_flag!.split('-')[1])
+          {
+            element.data = promptdata
+          }
+
+        });
+        localStorage.removeItem('prompt_data')
+        localStorage.removeItem('prompt_id')
+        localStorage.removeItem('nodecall')
+      }
+      
     }
 
     return () => {
@@ -184,7 +173,7 @@ const OverviewFlow: React.FC = () => {
         "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f",
         "sequence": []
       }
-
+      console.log(data)
       createWorkflow(data).
         then(res => {
           if (res.status === 200) {
@@ -206,7 +195,7 @@ const OverviewFlow: React.FC = () => {
         "updated_at": new Date(),
         "sequence": [],
       }
-
+      console.log(data)
       updateWorkflow(data, work_id).
         then(res => {
           if (res.status === 200) {
@@ -260,11 +249,11 @@ const OverviewFlow: React.FC = () => {
   );
 
   const handleRunPromp = async () => {
-    
+
     await saveWorkFlow()
 
-    edgesEle.forEach((oneEdge:any, index) => {
-    
+    edgesEle.forEach((oneEdge: any, index) => {
+
       if (oneEdge.targetHandle === null) {
         const value = oneEdge.target + '-' + oneEdge.source;
         edgesEle[index].targetHandle = value;
@@ -277,7 +266,7 @@ const OverviewFlow: React.FC = () => {
 
     });
 
-    const data:any = {}
+    const data: any = {}
     console.log(edgesEle)
     questions.forEach((oneQue: any) => {
       if (oneQue.param) {
@@ -289,7 +278,7 @@ const OverviewFlow: React.FC = () => {
 
     const jsonArray = JSON.stringify(data);
     const comitData = {
-      input:data
+      input: data
     }
     const workflow_id = localStorage.getItem('workflow_id');
     const result = await nodeRun(comitData, workflow_id)
@@ -340,7 +329,7 @@ const OverviewFlow: React.FC = () => {
 
 
 
-  const handleInputChange = (id: any, index: any , text:string, title:string) => {
+  const handleInputChange = (id: any, index: any, text: string, title: string) => {
     change_input_id = id;
     change_node_index = index
     setMsgText(text)
@@ -358,15 +347,15 @@ const OverviewFlow: React.FC = () => {
 
     const string = msgText;
     const indexes = change_input_id.split("-");
-    
+
     const updatedNodes = nodes.map((node, i) => {
       if (i === change_node_index) {
         console.log(node.data)
         const updatedInput = {
           ...node.data.input,
-          [Object.keys(node.data.input)[indexes[2]]]: string 
+          [Object.keys(node.data.input)[indexes[2]]]: string
         };
-        
+
         return {
           ...node,
           data: {
@@ -375,10 +364,10 @@ const OverviewFlow: React.FC = () => {
           }
         };
       } else {
-        return node; 
+        return node;
       }
     });
- 
+
     setNodes(updatedNodes)
 
     const inputs: any = []
@@ -392,49 +381,54 @@ const OverviewFlow: React.FC = () => {
     setMsgDlgFlag(true)
   }
 
+  console.log()
+
   return (
-    <div className='dndflow'>
-      <div className={`${msgDlgFlag ? 'hidden' :'absolute' } absolute w-full h-full z-20 flex items-center justify-center`}>
-        <div className='bg-[#18181C] w-full h-full max-w-[700px] max-h-[500px] z-50 border border-[#9CA3AF] hover:border-[#4F4F54] p-6 rounded-[16px]'>
-          <div className='bg-[#2B3654] border border-[#B4C4F9] text-[white] flex items-center px-2 pt-1 pb-1 font-bold justify-between'>
-            <div className='flex items-center gap-1'><FaBolt className='text-[yellow]'/> {msgTitle}</div>
-            <FaExpand className='cursor-pointer' onClick={handleMsgClose}/>
+    <>
+      {/* <Prompt/> */}
+      <div className='dndflow'>
+        <div className={`${msgDlgFlag ? 'hidden' : 'absolute'} absolute w-full h-full z-20 flex items-center justify-center`}>
+          <div className='bg-[#18181C] w-full h-full max-w-[700px] max-h-[500px] z-50 border border-[#9CA3AF] hover:border-[#4F4F54] p-6 rounded-[16px]'>
+            <div className='bg-[#2B3654] border border-[#B4C4F9] text-[white] flex items-center px-2 pt-1 pb-1 font-bold justify-between'>
+              <div className='flex items-center gap-1'><FaBolt className='text-[yellow]' /> {msgTitle}</div>
+              <FaExpand className='cursor-pointer' onClick={handleMsgClose} />
+            </div>
+            <textarea
+              placeholder="Enter your description"
+              value={msgText}
+              className="w-full h-[85%] text-[18px] text-[white] bg-[transparent] mt-4"
+              onChange={handleMsgBox}
+            />
           </div>
-          <textarea
-            placeholder="Enter your description"
-            value={msgText}
-            className="w-full h-[85%] text-[18px] text-[white] bg-[transparent] mt-4"
-            onChange={handleMsgBox}
-          />
+          <div className='absolute inset-0 backdrop-blur-sm  w-full h-full opacity-75 bg-[#1A1A1D]'></div>
         </div>
-        <div className='absolute inset-0 backdrop-blur-sm  w-full h-full opacity-75 bg-[#1A1A1D]'></div>
+        <ReactFlowProvider>
+          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edgesEle}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onInit={setReactFlowInstance}
+              attributionPosition="top-right"
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              nodeTypes={myNodeTypes}
+              edgeTypes={myEdgeTypes}
+              fitView
+            >
+              <MiniMap style={minimapStyle} zoomable pannable />
+              <Controls />
+              <Background color="#aaa" gap={16} />
+            </ReactFlow>
+            <SlideBar workflow={title} titleChange={handleTitleChange} />
+            <OutputBar question={questions} queChange={handleInputChange} />
+            <ExcuteBar run={handleRunPromp} />
+          </div>
+        </ReactFlowProvider>
       </div>
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edgesEle}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            attributionPosition="top-right"
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            nodeTypes={myNodeTypes}
-            edgeTypes={myEdgeTypes}
-            fitView
-          >
-            <MiniMap style={minimapStyle} zoomable pannable />
-            <Controls />
-            <Background color="#aaa" gap={16} />
-          </ReactFlow>
-          <SlideBar workflow={title} titleChange={handleTitleChange} />
-          <OutputBar question={questions} queChange={handleInputChange} />
-          <ExcuteBar run={handleRunPromp} />
-        </div>
-      </ReactFlowProvider>
-    </div>
+    </>
   );
 };
 

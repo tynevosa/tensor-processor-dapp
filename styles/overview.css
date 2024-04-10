@@ -70,7 +70,7 @@
 }
 
 .react-flow__minimap{
-  right:250px !important;
+  right:170px !important;
   background-color:black
 }
 
@@ -89,6 +89,10 @@
 .bottom-side{
   bottom: 65px;
   left: calc(50%);
+}
+
+.react-flow__panel.right {
+  right: -55px !important;
 }
 
 

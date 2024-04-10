@@ -19,6 +19,10 @@ function Page() {
   const [kind, setKind] = useState('prompt')
   const router = useRouter()
 
+
+  useEffect(() => {
+
+    
   const fetchData = async () => {
     
     if(kind === 'prompt'){
@@ -46,7 +50,6 @@ function Page() {
     
   };
 
-  useEffect(() => {
     fetchData();
   }, [kind]);
 

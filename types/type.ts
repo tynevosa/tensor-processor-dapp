@@ -75,3 +75,28 @@ export type GPUInfoType = {
 
   storage_total_cost: number;
 };
+
+type PromptModel = {
+  id: number;
+  template: string;
+  generated_prompt: string;
+  result: string;
+  title: string;
+  model_id: number;
+  config: any;
+  system_template: string;
+  published_template: string;
+  published_system_template: string;
+  published_config: any;
+  tiptap_output: any;
+  tiptap_system_output: any;
+  title_tsvector: string;
+  models: any;
+  vectors: any;
+  supported_inputs: any;
+  supported_system_inputs: any;
+  created_at: string;
+  updated_at: string;
+  published_at: string;
+  user_id: number;
+}

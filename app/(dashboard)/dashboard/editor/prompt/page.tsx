@@ -4,7 +4,7 @@ import Split from "react-split";
 import { createPrompt, getModelList, getPrompt, updatePrompt, updateWorkflow } from '../api';
 import { FaHome, FaCloudUploadAlt, FaCaretRight, FaInfoCircle, FaExpand, FaCompressAlt, } from "react-icons/fa";
 import { useRouter } from 'next/navigation'
-import { Switch } from "@nextui-org/react";
+import { Switch, Textarea, input } from "@nextui-org/react";
 import { TemplateContext } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 let sel_input_id = 0;
@@ -33,15 +33,15 @@ export default function Prompt() {
   const [outputText, setOutputText] = useState()
   const [msgDlgFlag, setMsgDlgFlag] = useState(false)
   const [msgText, setMsgText] = useState<string>('')
-  const [inputs, setInputs] = useState([])
+  const [inputs, setInputs] = useState<any[]>([])
   const router = useRouter()
   const [prePenalty, setPrePenalty] = useState()
-
+  const [nodeCall, setNodeCall] = useState<string | null>('false')
 
   const tempInputs = {
-    'interaction':'friendship',
-    'character_1':'val',
-    'character_2':'me'
+    'interaction': 'friendship',
+    'character_1': 'val',
+    'character_2': 'me'
   }
 
 
@@ -76,22 +76,32 @@ export default function Prompt() {
           console.log('Error :', err)
         });
     }
+  };
 
-    await getModelList()
+  useEffect(() => {
+    
+    const node_call = localStorage.getItem('nodeCall')
+    setNodeCall(node_call)
+
+    if (!flag) {
+
+      getModelList()
       .then(res => {
         setModelList(res.data)
       })
       .catch((err) => {
         console.log("Err :", err)
       })
-  };
-
-  useEffect(() => {
-
-    if (!flag) {
 
       flag = true
-      fetchData();
+      if(nodeCall && node_call!.startsWith('t'))
+      {
+        setContent()
+
+      }else{
+        
+        fetchData();
+      }
     }
 
     return () => {
@@ -106,21 +116,12 @@ export default function Prompt() {
 
   const savePrompt = () => {
 
-    // { "template": "I", 
-    // "model_id": 9, 
-    // "model": "mistral-7b-instruct", 
-    // "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": null, "frequency_penalty": null }, 
-    // "config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": true, "frequency_penalty": 0 }, 
-    // "input": { "character1": "val", "character2": "lucky", "relationship": "friend" },
-    //  "system_template": "You are a helpful assistant.", 
-    //  "id": "6294", 
-    //  "userId": "0ca9a6e2-cc92-44a3-9862-199b4aaf3efa" },
-    const work_id = localStorage.getItem("prompt_id")
+    const prompt_id = localStorage.getItem("prompt_id")
     const data = {
       "template": tempPrmptText,
-      "model_id": modelList[modelId].id,
-      "model": modelList[modelId].name,
-      "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": null, "frequency_penalty": null },
+      "model_id": '2',
+      "model": 'gpt-3.5-turbo-1106',
+      "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": 'null', "do_sample": false, "typical_p": 'null', "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": 'null', "frequency_penalty": 'null' },
       "config": { "stop": stop, "top_k": topK, "top_p": topP, "truncate": '', "do_sample": doSample, "typical_p": typeP, "watermark": watermark, "max_tokens": maxToken, "temperature": temperature, "return_full_text": prePenalty, "frequency_penalty": frequency },
       "input": { "character1": "val", "character2": "lucky", "relationship": "friend" },
       "created_at": new Date(),
@@ -128,7 +129,7 @@ export default function Prompt() {
       "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f"
     }
 
-    if (work_id === '0') {
+    if (prompt_id === '0') {
 
       createPrompt(data).
         then((res: any) => {
@@ -138,181 +139,205 @@ export default function Prompt() {
           }
         })
         .catch(err => {
-          console.log("Error!")
+          console.log("Error!", err)
         })
 
     } else {
 
-        updatePrompt(data, work_id).
-          then(res => {
-            if (res.status === 200) {
-              console.log("Success!")
-            }
-          })
-          .catch(err => {
-            console.log("Error!", err)
-          })
+      updatePrompt(data, prompt_id).
+        then(res => {
+          if (res.status === 200) {
+            console.log("Success!")
+          }
+        })
+        .catch(err => {
+          console.log("Error!", err)
+        })
+    }
+  }
+
+  const handlePromptHide = () => {
+    if (syspromHide) {
+      setSyspromHide(false)
+    } else {
+      setSyspromHide(true)
+    }
+
+  }
+
+  const setContent = () => {
+
+    const strData =localStorage.getItem('prompt_data')
+  
+    if(strData)
+    {
+      console.log('here :: ',strData)
+      const data =JSON.parse(strData)
+      data.userId = data.userId  
+      setAttach('')
+      setPromptId(data.id)
+      setModelId(data.model_id)
+      setStop(data.config.stop)
+      setTopk(data.config.top_k)
+      setTopP(data.config.top_p)
+      setDoSample(data.config.do_sample) 
+      setTypeP(data.config.typical_p) 
+      setWatermark(data.config.watermark)
+      setMaxToken(data.config.max_tokens)
+      setTemperature(data.config.temperature)
+      setFullText(data.config.return_full_text) 
+      setFrequency(data.config.frequency_penalty)
+      setTempPrmtText(data.template) 
+      setSysPrmtText(data.system_template) 
+      setInputs(data.input) 
+    }
+  }
+
+  const handleInput = (index: any, text: any) => {
+    sel_input_id = index
+    setMsgText(text)
+    setMsgDlgFlag(true)
+  }
+
+  const handleLLM = () => {
+    hideLLM ? setHideLLM(false) : setHideLLM(true)
+  }
+
+  const handleTmpPrmp = (e: any) => {
+    setTempPrmtText(e.target.value);
+    const regex = /\{\{[\w\s]+\}\}/g;
+
+    const matches = e.target.value.match(regex);
+    if (matches) {
+      const newState: any = {};
+      matches.forEach((element: any) => {
+        const inputKey = element.substring(2, element.length - 2);;
+        
+        newState[inputKey] = '';
+      });
+      setInputs(newState);
+    } else {
+      if (e.target.value.includes('{{')) {
+        setInputs([])
       }
     }
+  };
 
-    const handlePromptHide = () => {
-      if (syspromHide) {
-        setSyspromHide(false)
-      } else {
-        setSyspromHide(true)
-      }
+  console.log('here :', inputs)
 
+  const handleSysPrmp = (e: any) => {
+    setSysPrmtText(e.target.value)
+  }
+
+  const handleMsgClose = () => {
+
+
+    setMsgDlgFlag(false)
+    const sel_input = inputs[sel_input_id];
+    console.log(inputs)
+    // sel_input.someProperty = msgText;
+
+  }
+
+  const handleMsgBox = (e: any) => {
+    setMsgText(e)
+  }
+
+  const handleHome = () => {
+
+    savePrompt()
+    router.push('/dashboard/editor')
+
+  }
+
+  const handleStop = (e: any) => {
+    setStop(e.target.value)
+  }
+
+  const handleTopK = (e: any) => {
+    setTopk(e.target.value)
+  }
+
+  const handleTopP = (e: any) => {
+    setTopP(e.target.value)
+  }
+
+  const handleMaxToken = (e: any) => {
+    setMaxToken(e.target.value)
+  }
+
+  const handleTempr = (e: any) => {
+    setTemperature(e.target.value)
+  }
+
+  const handlePrePenalty = (e: any) => {
+    setPrePenalty(e.target.value)
+  }
+
+  const handleFreqPenal = (e: any) => {
+    setFrequency(e.target.value)
+  }
+
+  const handleWaterMark = () => {
+    if (watermark) {
+      setWatermark(false)
+    } else {
+      setWatermark(true)
     }
 
-    const handleInput = (index: any, text: any) => {
-      sel_input_id = index
-      setMsgText(text)
-      setMsgDlgFlag(true)
-    }
+  }
 
-    const handleLLM = () => {
-      hideLLM ? setHideLLM(false) : setHideLLM(true)
-    }
+  const handleRunPrompt = () => {
 
-    const handleTmpPrmp = (e: any) => {
-      setTempPrmtText(e.target.value)
-    }
+  }
 
-    const handleSysPrmp = (e: any) => {
-      setSysPrmtText(e.target.value)
-    }
+  const handleClose = () => {
 
-    const handleMsgClose = () => {
-      alert('ef')
-      setMsgDlgFlag(false)
-      const sel_input = inputs[sel_input_id];
-      console.log(inputs )
-      // sel_input.someProperty = msgText;
+    const data = {
+      "template": tempPrmptText,
+      "model_id": '2',
+      "model": 'gpt-3.5-turbo-1106',
+      "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": 'null', "do_sample": false, "typical_p": 'null', "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": 'null', "frequency_penalty": 'null' },
+      "config": { "stop": stop, "top_k": topK, "top_p": topP, "truncate": '', "do_sample": doSample, "typical_p": typeP, "watermark": watermark, "max_tokens": maxToken, "temperature": temperature, "return_full_text": prePenalty, "frequency_penalty": frequency },
+      "input": { "character1": "val", "character2": "lucky", "relationship": "friend" },
+      "created_at": new Date(),
+      "updated_at": new Date(),
+      "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f"
+    } 
 
-    }
+    localStorage.setItem('prompt_data', JSON.stringify(data))
+    router.back()
+  }
 
-    const handleMsgBox = (e: any) => {
-      setMsgText(e.target.value)
-    }
-
-    const handleHome = () => {
-
-      savePrompt()
-      router.push('/dashboard/editor')
-
-    }
-
-    const handleStop = (e: any) => {
-      setStop(e.target.value)
-    }
-
-    const handleTopK = (e: any) => {
-      setTopk(e.target.value)
-    }
-
-    const handleTopP = (e: any) => {
-      setTopP(e.target.value)
-    }
-
-    const handleMaxToken = (e: any) => {
-      setMaxToken(e.target.value)
-    }
-
-    const handleTempr = (e: any) => {
-      setTemperature(e.target.value)
-    }
-
-    const handlePrePenalty = (e: any) => {
-      setPrePenalty(e.target.value)
-    }
-
-    const handleFreqPenal = (e: any) => {
-      setFrequency(e.target.value)
-    }
-
-    const handleWaterMark = () => {
-      if (watermark) {
-        setWatermark(false)
-      } else {
-        setWatermark(true)
-      }
-
-    }
-
-    const handleRunPrompt = () => {
-
-    }
-
-    function QueSection() {
-      return (<div className='flex gap-4'>
-        <div className='w-full'>
-          <div className='flex'><div className='text-[16px] font-bold text-[#747476] flex items-center gap-1'>User Prompt <FaInfoCircle className='text-[#747476]' /></div></div>
-          <div className='mt-2'>
-            <textarea
-              placeholder="Enter your description"
-              value={tempPrmptText}
-              className="w-full  h-[370px] text-[18px] bg-[transparent] outline-none border-none focus:border-none resize-none"
-              onChange={handleTmpPrmp}
-            />
-          </div>
-        </div>
-        {
-          syspromHide && (
-            <div className='w-full'>
-              <div className=' flex gap-1 items-center'><p className='text-[16px] font-bold text-[#747476]'>System Prompt</p> <FaInfoCircle className='text-[#747476]' /></div>
-              <div className='mt-2'>
-                <textarea
-                  placeholder="Enter your description"
-                  value={sysPrmptText}
-                  className="w-full  h-[370px] text-[18px] bg-[transparent] outline-none border-none focus:border-none resize-none"
-                  onChange={handleSysPrmp}
-                />
-              </div>
-            </div>
-          )
-        }
-
-      </div>);
-    }
-    function OutSection() {
-      return (
-        <div className='w-full'>
-          <div className='bg-[#09090B] p-4 rounded-[8px]'>
-            <div className='font-bold'>OUTPUT</div>
-            <textarea
-              placeholder="To test your prompt, click 'Run'.\ once you are ready, make your API go live with 'Publish'!"
-              className="w-full bg-[transparent] p-2  h-[370px] outline-none border-none focus:border-none resize-none"
-              value={outputText}
-              readOnly
-            />
-          </div>
-
-        </div>
-      );
-    }
-
-    function MessageBox() {
-      return (
-        <div className={`${msgDlgFlag ? 'absolute' : 'hidden'} absolute w-full h-full z-20 flex items-center justify-center`}>
-          <div className='bg-[#18181C] w-full h-full max-w-[700px] max-h-[500px] z-50 border border-[#9CA3AF] hover:border-[#4F4F54] p-6 rounded-[16px]'>
-            <div className='text-[white] flex items-center px-2 pt-1 pb-1 font-bold justify-end'>
-              <FaExpand className='cursor-pointer' onClick={handleMsgClose} />
-            </div>
-            <textarea
-              placeholder="Enter your description"
-              value={msgText}
-              className="w-full h-[85%] text-[18px] text-[white] bg-[transparent] mt-4 outline-none border-none focus:border-none resize-none"
-              onChange={handleMsgBox}
-            />
-          </div>
-          <div className='absolute inset-0 backdrop-blur-sm  w-full h-full opacity-75 bg-[#1A1A1D]'></div>
+  return (
+    <>
+    {
+      nodeCall && nodeCall!.startsWith('t') && (
+        <div>
+          <button className='text-white bg-[#3F3F46] rounded-[8px] w-[80px] h-[40px] mx-4 mt-2 mb-2' onClick={handleClose}>Close</button>
         </div>
       )
+      
     }
-
-    return (
+      
       <div className="text-white bg-[#222224] px-4 h-full">
-        {msgDlgFlag && (<MessageBox />)}
+        {msgDlgFlag && (
+          <div className={`${msgDlgFlag ? 'absolute' : 'hidden'} absolute w-full h-full z-20 flex items-center justify-center`}>
+            <div className='bg-[#18181C] w-full h-full max-w-[700px] max-h-[500px] z-50 border border-[#9CA3AF] hover:border-[#4F4F54] p-6 rounded-[16px]'>
+              <div className='text-[white] flex items-center px-2 pt-1 pb-1 font-bold justify-end'>
+                <FaExpand className='cursor-pointer' onClick={handleMsgClose} />
+              </div>
+              <textarea
+                placeholder="Enter your description"
+                className="w-full h-[85%]  text-[18px] text-[white] bg-[transparent] mt-4 outline-none border-none focus:border-none resize-none"
+                style={{ height: "100%!important" }}
+                value={msgText}
+                onChange={(e) => handleMsgBox(e.target.value)}
+              />
+            </div>
+            <div className='absolute inset-0 backdrop-blur-sm  w-full h-full opacity-75 bg-[#1A1A1D]'></div>
+          </div>
+        )}
         <div className="flex justify-between text-[16px] pt-5">
           <div className="flex gap-8 items-center">
             <p className="text-[#95F0DF] bg-[#09090B] px-6 pt-2 pb-2 rounded-[8px] font-bold cursor-pointer">Editor</p>
@@ -323,8 +348,9 @@ export default function Prompt() {
             <button className="bg-[#09090B] px-3 pt-2 pb-2 rounded-[8px]" onClick={handleHome}><FaHome className='text-[white] text-[18px]' /></button>
             <input className="bg-[#09090B] px-5 pt-2 pb-2 rounded-[8px] font-bold outline-none border-none focus:border-none" value={`[Demo] Story`} />
             <div className="bg-[#09090B] px-3 pt-2 pb-2 rounded-[8px] text-[#747476] font-bold flex items-center gap-2 cursor-pointer"><FaCloudUploadAlt className='text-[white]' />Published</div>
-            <p className="bg-[#09090B] px-2 rounded-[8px] text-[12px] font-bold border border-[#747476] flex items-center gap-1"><div className='w-[6px] h-[6px] bg-[#4ADE80] rounded-full' />LIVE</p>
-
+            <div className="bg-[#09090B] px-2 rounded-[8px] text-[12px] font-bold border border-[#747476] flex items-center gap-1">
+              <div className='w-[6px] h-[6px] bg-[#4ADE80] rounded-full' />LIVE
+            </div>
           </div>
           <div onClick={handleRunPrompt}>
             <p className="w-[75px] h-[40px] bg-[#FAFAFA] text-[black] flex justify-center  items-center font-bold rounded-[8px]"> <FaCaretRight className='' />Run</p>
@@ -333,8 +359,47 @@ export default function Prompt() {
         <div className="flex text-[14px] pt-5 gap-4">
           <div id="main_content" className='w-full pt-4 pb-4'>
             <Split direction="vertical" className='h-full'>
-              <QueSection />
-              <OutSection />
+              <div className='flex gap-4'>
+                <div className='w-full'>
+                  <div className='flex'><div className='text-[16px] font-bold text-[#747476] flex items-center gap-1'>User Prompt <FaInfoCircle className='text-[#747476]' /></div></div>
+                  <div className='mt-2'>
+                    <textarea
+                      placeholder="Enter your description"
+                      value={tempPrmptText}
+                      className="w-full  h-[370px] text-[18px] bg-[transparent] outline-none border-none focus:border-none resize-none"
+                      onChange={handleTmpPrmp}
+                    />
+                  </div>
+                </div>
+                {
+                  syspromHide && (
+                    <div className='w-full'>
+                      <div className=' flex gap-1 items-center'><p className='text-[16px] font-bold text-[#747476]'>System Prompt</p> <FaInfoCircle className='text-[#747476]' /></div>
+                      <div className='mt-2'>
+                        <textarea
+                          placeholder="Enter your description"
+                          value={sysPrmptText}
+                          className="w-full  h-[370px] text-[18px] bg-[transparent] outline-none border-none focus:border-none resize-none"
+                          onChange={handleSysPrmp}
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+
+              </div>
+              <div className='w-full'>
+                <div className='bg-[#09090B] p-4 rounded-[8px]'>
+                  <div className='font-bold'>OUTPUT</div>
+                  <textarea
+                    placeholder="To test your prompt, click 'Run'.\ once you are ready, make your API go live with 'Publish'!"
+                    className="w-full bg-[transparent] p-2  h-[370px] outline-none border-none focus:border-none resize-none"
+                    value={outputText}
+                    readOnly
+                  />
+                </div>
+
+              </div>
             </Split>
           </div>
           <div id="sidebar" className='max-w-[250px]'>
@@ -400,7 +465,7 @@ export default function Prompt() {
             <div className="bg-[#09090B] mt-3 px-4 pt-2 pb-3 rounded-[8px]">
               Input
               <div className='pt-3'>
-                {tempInputs && Object.entries(tempInputs).map((one, index) => (
+                {inputs && Object.entries(inputs).map((one, index) => (
                   <div className='flex justify-between pt-2'>
                     <p className=' text-[#95F0DF] border border-[#324444] bg-[#262F2F] px-1 rounded-[4px]'>{one[0]}</p>
                     <div className='cursor-pointer' onClick={() => handleInput(index, one[1])}><FaExpand /></div>
@@ -426,5 +491,6 @@ export default function Prompt() {
           </div>
         </div>
       </div>
-    );
-  }
+    </>
+  );
+}

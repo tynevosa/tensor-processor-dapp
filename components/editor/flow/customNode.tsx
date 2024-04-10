@@ -39,6 +39,9 @@ const CustomNode = (data: any, isConnectable: any) => {
   }
 
   const handlelink = () => {
+
+    localStorage.setItem("nodeCall", 't-'+ data.id)
+    localStorage.setItem("prompt_data", JSON.stringify(data.data))
     router.push('/dashboard/editor/prompt')
   }
 
@@ -71,7 +74,7 @@ const CustomNode = (data: any, isConnectable: any) => {
       "userId":"0ca9a6e2-cc92-44a3-9862-199b4aaf3efa"
     }
 
-    const response: AxiosResponse<any, any> =await nodeRun(requestData)
+    const response: AxiosResponse<any, any> = await nodeRun(requestData, data.id)
     const one_result = response.data.content
     setResult(one_result)
   }

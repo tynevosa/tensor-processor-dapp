@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const host = process.env.NEXT_PUBLIC_API_URL
-axios.defaults.headers['tpu-api-key'] = "U2FsdGVkX18qrN7nHPpQRpx366XamJKN6hIyBAw0yGQ63PPa6lkQy7pVyR58zAhyf9QEsi2rw6erkhlCK6E3WA=="
+axios.defaults.headers['tpu-api-key'] = "U2FsdGVkX1+4jfkexWfyIsQ9KJCkVLDX89/UuOChcDNDbT+qw46mi4AyYjdKkenuhfawSy+tml4vNY4WoFvwNw=="
 
 export const setAuthorization = (token:string) => {
      axios.defaults.headers.Authorization = token

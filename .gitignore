@@ -37,5 +37,3 @@ yarn-error.log*
 next-env.d.ts
 pnpm-lock.yaml
 package-lock.json
-/*.env
-/package-lock.json
