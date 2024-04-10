@@ -2,17 +2,16 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 // components
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { buttonTab, inputTab, ouputTab } from "@/constants/constant";
+import { buttonTab } from "@/constants/constant";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Playground from "@/components/models/playground";
+import { Playground } from "@/components/models/playground";
 import { API } from "@/components/models/api";
-import Info from "@/components/models/info";
+import { Info } from "@/components/models/info";
 
 type Props = {
   params: {
@@ -57,28 +56,6 @@ const ModelDetailPage = ({ params }: Props) => {
                 {model.run_count} runs
               </span>
             </div>
-          </div>
-          <div className="flex md:mt-0 mt-5 flex-row items-center gap-6">
-            <Link href={"github"} className="flex flex-row gap-2">
-              <Image
-                src={"/images/model/github.svg"}
-                alt="court"
-                width={24}
-                height={24}
-                className="h-full w-full"
-              />
-              <span className="text-[#97AEF3] text-lg">Github</span>
-            </Link>
-            <Link href={"license"} className="flex flex-row gap-2">
-              <Image
-                src={"/images/model/court-law.svg"}
-                alt="court"
-                width={24}
-                height={24}
-                className="h-full w-full"
-              />
-              <span className="text-[#97AEF3] text-lg">License</span>
-            </Link>
           </div>
         </div>
 

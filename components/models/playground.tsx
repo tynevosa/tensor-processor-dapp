@@ -26,6 +26,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "../ui/spinner";
+import { saveAs } from "file-saver";
 
 type Props = {
   defaultInput: InputType;
@@ -33,7 +34,11 @@ type Props = {
   model: string;
 };
 
-const Playground: FC<Props> = ({ defaultInput, model, defaultOutput }) => {
+export const Playground: FC<Props> = ({
+  defaultInput,
+  model,
+  defaultOutput,
+}) => {
   const [input, setInput] = React.useState<InputType>(defaultInput);
   const [output, setOutput] = React.useState<string[]>(defaultOutput);
 
@@ -48,6 +53,10 @@ const Playground: FC<Props> = ({ defaultInput, model, defaultOutput }) => {
 
   const predictModel = () => {
     mutation.mutate({ model, input });
+  };
+
+  const saveImage = () => {
+    saveAs(output[0], `${input.prompt?.slice(5)}.png`);
   };
 
   return (
@@ -305,7 +314,11 @@ const Playground: FC<Props> = ({ defaultInput, model, defaultOutput }) => {
                   height={20}
                   alt="setting"
                 />
-                <span className="text-base text-white hidden lg:flex">
+
+                <span
+                  className="text-base text-white hidden lg:flex"
+                  onClick={saveImage}
+                >
                   Download
                 </span>
               </button>
@@ -338,5 +351,3 @@ const Playground: FC<Props> = ({ defaultInput, model, defaultOutput }) => {
     </>
   );
 };
-
-export default Playground;
