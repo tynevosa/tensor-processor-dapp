@@ -19,7 +19,7 @@ export const BillingHistory: React.FC<BillingHistoryProps> = ({
   logo,
 }) => {
   return (
-    <div className="px-6 flex font-chakra-petch py-8 border-b border-[#1A1A22] w-full ">
+    <div className="px-6 flex font-chakra-petch py-8 border-b  border-[#1A1A22] w-full ">
       <div className="flex-1 text-lg font-semibold  ">{date}</div>
       <div className=" flex-1 text-ellipsis pr-5 text-lg text-[#97AEF3] overflow-hidden font-semibold ">
         {transactionId}
