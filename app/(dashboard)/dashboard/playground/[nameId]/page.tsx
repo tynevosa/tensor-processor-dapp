@@ -2,25 +2,20 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-
-// components
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import { buttonTab } from "@/constants/constant";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Playground } from "@/components/models/playground";
-import { API } from "@/components/models/api";
-import { Info } from "@/components/models/info";
+import { Playground } from "@/components/playground/playground";
+import { API } from "@/components/playground/api";
+import { Info } from "@/components/playground/info";
+import { TInputValue } from "@/types/type";
+import { ModelProvider } from "@/components/contexts/model-context";
 
 type Props = {
   params: {
     nameId: string;
   };
-};
-
-type TInputValue = {
-  [key: string]: any;
 };
 
 const ModelDetailPage = ({ params }: Props) => {
@@ -104,12 +99,13 @@ const ModelDetailPage = ({ params }: Props) => {
           ))}
         </div>
         {activeBtn === "Playground" ? (
-          <Playground
-            schema={model?.api_schema}
-            defaultInput={inputSchemas}
-            model={model?.name ?? ""}
-            defaultOutput={model?.default_example?.output ?? ""}
-          />
+          <ModelProvider>
+            <Playground
+              schema={model?.api_schema}
+              defaultExample={model?.default_example}
+              modelId={model?.name ?? ""}
+            />
+          </ModelProvider>
         ) : activeBtn === "API" ? (
           <API />
         ) : (

@@ -1,7 +1,6 @@
 import type {
   FilterOptions,
   GPUNumberRange,
-  GPUType,
   ModelType,
   sideItem,
   navItem,
@@ -9,7 +8,7 @@ import type {
 
 export const sideItems: sideItem[] = [
   {
-    href: "/dashboard/models",
+    href: "/dashboard/playground",
     icon: "boxes",
     name: "Models",
   },
@@ -32,7 +31,7 @@ export const sideItems: sideItem[] = [
 
 export const navItems: navItem[] = [
   {
-    href: "/dashboard/models",
+    href: "/dashboard/playground",
     icon: "/images/navbar/model.svg",
     name: "Playground",
   },

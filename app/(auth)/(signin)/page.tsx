@@ -55,7 +55,7 @@ const Page = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/dashboard/models");
+      router.push("/dashboard/playground");
     }
   }, [isLoggedIn, router]);
 
@@ -77,7 +77,7 @@ const Page = () => {
             <span
               className={cn(
                 "text-4xl font-bold text-center bg-text-gradient bg-clip-text text-transparent",
-                WhyteInktrap.className,
+                WhyteInktrap.className
               )}
             >
               Welcome back
