@@ -54,6 +54,8 @@ export default function AdminPage() {
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
+  console.log(modelDatas);
+
   // console.log(modelDatas?.map((item) => item?.name));
 
   return (
@@ -66,30 +68,20 @@ export default function AdminPage() {
           <AddModel />
         </div>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6 px-10 lg:px-6">
-          {modelDatas.map(
-            (
-              {
-                cover_image_url = "/images/model.svg",
-                description,
-                name,
-                run_count,
-              },
-              index,
-            ) => {
-              return (
-                <EditModel key={index}>
-                  <div className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px] text-left">
-                    <ModelCard
-                      cover_image_url={cover_image_url}
-                      name={name}
-                      description={description}
-                      run_count={run_count}
-                    />
-                  </div>
-                </EditModel>
-              );
-            },
-          )}
+          {modelDatas.map((item, index) => {
+            return (
+              <EditModel key={index} modelData={item}>
+                <div className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px] text-left">
+                  <ModelCard
+                    cover_image_url={item?.cover_image_url}
+                    name={item?.name}
+                    description={item?.description}
+                    run_count={item?.run_count}
+                  />
+                </div>
+              </EditModel>
+            );
+          })}
         </div>
         <Loader isPending={isPending} modelDatas={modelDatas} />
       </div>

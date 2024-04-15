@@ -72,7 +72,7 @@ export const AddModelForm = (props: Props) => {
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
-    console.log(values);
+    console.log(payload);
   }
   return (
     <div>

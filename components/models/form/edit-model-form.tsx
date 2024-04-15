@@ -5,25 +5,30 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ModelSchema } from "@/schema/model";
+import { ModelInfoType } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+  modelData: ModelInfoType;
+};
 
-export const EditModelForm = (props: Props) => {
+export const EditModelForm = ({ modelData }: Props) => {
   const [inputField, setInputField] = useState<string>("");
   const [inputFieldArr, setInputFieldArr] = useState<string[]>([]);
 
   const [collectionField, setCollectionField] = useState<number>(0);
   const [collectionFieldArr, setCollectionFieldArr] = useState<number[]>([]);
+
+  const [availability, setAvailability] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
@@ -68,12 +73,24 @@ export const EditModelForm = (props: Props) => {
       short_desc: values?.short_desc,
       description: values?.description,
       input_fields: inputFieldArr,
-      availability: false,
+      availability: availability,
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
-    console.log(values);
+    console.log(payload);
   }
+
+  useEffect(() => {
+    form.setValue("name", modelData?.name);
+    form.setValue("description", modelData?.description);
+    form.setValue("short_desc", modelData?.short_desc);
+    form.setValue("replicate_link", modelData?.replicate_link);
+    setAvailability(modelData?.availability);
+    setCollectionFieldArr(modelData?.collection_id)
+    setInputFieldArr(modelData?.api_schema?.Input?.rendered)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modelData]);
+
   return (
     <div>
       <Form {...form}>
@@ -203,6 +220,13 @@ export const EditModelForm = (props: Props) => {
               </FormItem>
             )}
           />
+          <div className="flex items-center gap-2 mt-2">
+            <h1 className="font-medium text-black text-sm">Availibility</h1>
+            <Switch
+              checked={availability}
+              onCheckedChange={(field) => setAvailability(field)}
+            />
+          </div>
           <Button type="submit" className="w-full">
             Submit
           </Button>
