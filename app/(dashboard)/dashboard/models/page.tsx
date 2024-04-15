@@ -9,6 +9,7 @@ import { useInView } from "react-intersection-observer";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
+import { Loader } from "@/components/ui/loader";
 
 export default function Page() {
   const [page, setPage] = useState(1);
@@ -34,7 +35,7 @@ export default function Page() {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         )
         .then((res) => res.data),
   });
@@ -70,7 +71,7 @@ export default function Page() {
                 name,
                 run_count,
               },
-              index
+              index,
             ) => {
               return (
                 <Link
@@ -129,16 +130,10 @@ export default function Page() {
                   </div>
                 </Link>
               );
-            }
+            },
           )}
         </div>
-        <div
-          className={cn("flex justify-center items-center  mt-10", {
-            "mt-[20%]": modelDatas.length === 0,
-          })}
-        >
-          {isPending === "fetching" && <Spinner />}
-        </div>
+        <Loader isPending={isPending} modelDatas={modelDatas} />
       </div>
     </ScrollArea>
   );

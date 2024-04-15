@@ -15,7 +15,7 @@ export default function DashboardLayout({
   return (
     <ParamsProvider>
       <div className="flex flex-col w-full h-full">
-        <Header admin />
+        <Header />
         <main className="flex flex-col bg-black h-full overflow-hidden">
           {children}
         </main>
