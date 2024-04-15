@@ -1,18 +1,14 @@
 "use client";
+
+import { AddModel } from "@/components/models/add-model";
+import { ModelCard } from "@/components/models/model-card";
+import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModelInfoType } from "@/types/type";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import axios from "axios";
-import { cn } from "@/lib/utils";
-import { Spinner } from "@/components/ui/spinner";
-import { Loader } from "@/components/ui/loader";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { ModelCard } from "@/components/models/model-card";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function AdminPage() {
   const [page, setPage] = useState(1);
@@ -66,12 +62,7 @@ export default function AdminPage() {
           <h1 className="ml-10 lg:ml-6 font-bold text-3xl text-white">
             Admin Panel
           </h1>
-          <Button
-            variant="secondary"
-            className="mr-10 lg:mr-6 font-semibold text-black text-xl"
-          >
-            <Plus /> Add
-          </Button>
+          <AddModel />
         </div>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6 px-10 lg:px-6">
           {modelDatas.map(
@@ -85,7 +76,13 @@ export default function AdminPage() {
               index,
             ) => {
               return (
-               <ModelCard key={index} cover_image_url={cover_image_url} name={name} description={description} run_count={run_count} />
+                <ModelCard
+                  key={index}
+                  cover_image_url={cover_image_url}
+                  name={name}
+                  description={description}
+                  run_count={run_count}
+                />
               );
             },
           )}
