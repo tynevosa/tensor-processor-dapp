@@ -13,9 +13,14 @@ import { GPUInfoType } from "@/types/type";
 import { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import useDebounce from "@/components/hooks/use-debounce";
+import { Spinner } from "@/components/ui/spinner";
+import { useReveal } from "@/components/contexts/marketplace-context";
+import Image from "next/image";
+import { ModelDetialsBar } from "@/components/marketplace/model-details-bar";
 
 const Page: FC = () => {
   const { param } = useParam();
+  const { reveal } = useReveal();
   const debounce = useDebounce(param, 500);
 
   const [dataSource, setDataSource] = useState<GPUInfoType[]>([]);
@@ -32,7 +37,7 @@ const Page: FC = () => {
         order: Object.values(SortOptions[param.order]),
         allocated_storage: param.diskSpace,
         type: param.type,
-        limit: 64,
+        limit: 10,
         ...(param.showIncompatible && { show_incompatible: { eq: true } }),
         ...(!param.visibleUnverified && { verified: { eq: true } }),
         ...(param.gpuName != "Any GPU" && {
@@ -45,15 +50,16 @@ const Page: FC = () => {
         reliability2: { gte: param.reliability / 100 },
       };
 
-      const response = await axios.post(`${host}/api/v1/list`, query);
+      const response = await axios.post(`/api/machine/search`, query);
 
       if (response.status !== 200) {
         throw new Error("Failed to fetch data from server");
       }
 
       const data = await response.data;
-      if (data && data.list.offers) {
-        setDataSource(data.list.offers.map((item: any) => item as GPUInfoType));
+      // console.log(data);
+      if (data && data.offers) {
+        setDataSource(data.offers.map((item: any) => item as GPUInfoType));
       }
     } catch (error) {
       console.error(error);
@@ -75,22 +81,47 @@ const Page: FC = () => {
     fetchData();
   }, [debounce, fetchData]);
 
+  console.log(reveal);
   return (
-    <ScrollArea className="w-full h-full pr-5">
-      <div className="flex flex-col gap-6 items-stretch py-8">
-        <span className="text-3xl text-white font-bold">
-          List of Tensor Processors
+    <div className="overflow-auto flex flex-row h-full">
+      <div className="flex flex-col w-9/12 h-full">
+        <span className="text-xl border border-[#242835] text-white font-bold bg-[#121218] px-6 py-8 w-full">
+          Tensor Processors
         </span>
-        {dataSource.map((item, key) => (
-          <ModelCard {...item} key={key} />
-        ))}
-        {dataSource.length === 0 && (
-          <div className="text-white text-2xl text-center py-52">
-            No machines
+        <ScrollArea className="h-full w-full">
+          <div className="flex flex-col w-full">
+            <div className="px-6 flex flex-col gap-6 items-stretch py-8 mb-20">
+              {dataSource.map((item, key) => (
+                <ModelCard {...item} key={key} />
+              ))}
+              {dataSource.length === 0 && (
+                <div className="text-white text-2xl text-center py-52">
+                  <Spinner />
+                </div>
+              )}
+            </div>
           </div>
+        </ScrollArea>
+      </div>
+      <div className="flex flex-col w-3/12 border-l border-[#242835] sticky top-100 h-full">
+        {reveal.host_id === 0 ? (
+          <div className="flex items-center justify-center flex-col gap-3 mt-96">
+            <Image
+              src={"/images/marketplace/empty.svg"}
+              width={72}
+              height={72}
+              alt="empty"
+            />
+            <p className="text-white font-semibold">Need a Processor?</p>
+            <p className="text-[#242835] font-semibold">
+              Reveal a processor details to rent
+            </p>
+          </div>
+        ) : (
+          <ModelDetialsBar modelDetail={reveal} />
         )}
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 

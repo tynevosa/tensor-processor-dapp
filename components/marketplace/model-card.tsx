@@ -13,8 +13,11 @@ import { Separator } from "../ui/separator";
 import { useRef } from "react";
 import { GPUInfoType } from "@/types/type";
 import { HOURS_A_DAY } from "@/constants/constant";
+import { useReveal } from "../contexts/marketplace-context";
+import Image from "next/image";
 
 export const ModelCard = (props: GPUInfoType) => {
+  const { setReveal } = useReveal();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -73,7 +76,14 @@ export const ModelCard = (props: GPUInfoType) => {
               <span className="text-base text-white">Reliability</span>
             </div>
             <span className="text-white text-xl font-semibold capitalize">
-              {props.verification}
+              {props.verification === "verified" && (
+                <Image
+                  src="/images/marketplace/verified.svg"
+                  alt="verified"
+                  width={24}
+                  height={24}
+                />
+              )}
             </span>
           </div>
         </div>
@@ -104,7 +114,7 @@ export const ModelCard = (props: GPUInfoType) => {
                           props.gpu_lanes
                         }x`}
                       </span>
-                      <span className="font-semibold text-sm">{`${props.pcie_bw.toFixed(
+                      <span className="font-semibold text-sm">{`${props.pcie_bw?.toFixed(
                         1
                       )} GB/s`}</span>
                     </div>
@@ -208,9 +218,10 @@ export const ModelCard = (props: GPUInfoType) => {
           ).toFixed(2)}/hr`}</span>
           <Button
             variant={"secondary"}
+            onClick={() => setReveal(props)}
             className="bg-[#97AEF3] py-3 px-9 gap-2 hover:bg-[#97aef3] hover:opacity-70 transition-all font-semibold text-lg"
           >
-            Rent
+            Reveal
           </Button>
         </div>
       </CardFooter>

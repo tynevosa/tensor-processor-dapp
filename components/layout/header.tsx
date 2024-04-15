@@ -35,7 +35,7 @@ const NavbarItem = ({
     <div
       className={cn(
         "relative side-item transition-all transition-duration-500 ",
-        { "side-item-hover": focused },
+        { "side-item-hover": focused }
       )}
     >
       <Link href={href}>

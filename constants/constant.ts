@@ -30,6 +30,19 @@ export const sideItems: sideItem[] = [
   },
 ];
 
+export const marketplaceBtn = [
+  {
+    name: "Instance Config",
+    key: "instance",
+    url: "/images/marketplace/instance.svg",
+  },
+  {
+    name: "Filter Options",
+    key: "filter",
+    url: "/images/marketplace/option.svg",
+  },
+];
+
 export const navItems: navItem[] = [
   {
     href: "/dashboard/models",
@@ -266,13 +279,26 @@ export const initialParam: FilterOptions = {
   diskSpace: 8,
   duration: 3,
   reliability: 90,
+  per_hour: 5.65,
+  tflops_hour: 20,
+  tb_upload: 100,
+  tb_download: 100,
+  gpu_count: 16,
+  tflops: 16,
+  per_gpu_ram: 2,
+  cpu_core: 512,
+  cpu_ram: 10,
+  cpu_ghz: 10,
   type: "ask",
   gpuNumber: "any",
   gpuName: "Any GPU",
   geolocation: "Planet Earth",
   order: "Auto Sort",
   visibleUnverified: false,
-  showIncompatible: false,
+  showIncompatible: true,
+  unavailable: false,
+  staticIpAddress: false,
+  secureCloud: false,
 };
 
 export const HOURS_A_DAY = 24 * 60 * 60;
@@ -313,3 +339,40 @@ export const ouputTab = [
   { name: "Preview", value: "preview" },
   { name: "Json", value: "json" },
 ];
+
+export const InitialGPUInfo = {
+  host_id: 0,
+  duration: 0,
+  reliability: 0,
+  verification: "",
+  geolocation: "",
+  num_gpus: 0,
+  gpu_name: "",
+  total_flops: 0,
+  cuda_max_good: 0,
+  gpu_ram: 0,
+  gpu_mem_bw: 0,
+
+  mobo_name: "",
+  pci_gen: 0,
+  gpu_lanes: 0,
+  pcie_bw: 0,
+  inet_up: 0,
+  inet_down: 0,
+  direct_port_count: 0,
+
+  cpu_name: "",
+  cpu_cores: 0,
+  cpu_cores_effective: 0,
+  cpu_ram: 0,
+  ratio: 0,
+
+  disk_name: "",
+  disk_bw: 0,
+  disk_space: 0,
+
+  dlperf: 0,
+  dlperf_per_dphtotal: 0,
+
+  storage_total_cost: 0,
+};

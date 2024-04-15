@@ -50,6 +50,16 @@ export type FilterOptions = {
   diskSpace: number;
   duration: number;
   reliability: number;
+  per_hour: number;
+  tflops_hour: number;
+  tb_upload: number;
+  tb_download: number;
+  gpu_count: number;
+  tflops: number;
+  per_gpu_ram: number;
+  cpu_core: number;
+  cpu_ram: number;
+  cpu_ghz: number;
   prompt_str: number;
   control_dep_str: number;
   inference_steps: number;
@@ -62,6 +72,9 @@ export type FilterOptions = {
   order: string;
   visibleUnverified: boolean;
   showIncompatible: boolean;
+  unavailable: boolean;
+  staticIpAddress: boolean;
+  secureCloud: boolean;
 };
 
 export type GPUInfoType = {
