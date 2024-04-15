@@ -1,6 +1,7 @@
 "use client";
 
 import { AddModel } from "@/components/models/add-model";
+import { EditModel } from "@/components/models/edit-model";
 import { ModelCard } from "@/components/models/model-card";
 import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -76,13 +77,16 @@ export default function AdminPage() {
               index,
             ) => {
               return (
-                <ModelCard
-                  key={index}
-                  cover_image_url={cover_image_url}
-                  name={name}
-                  description={description}
-                  run_count={run_count}
-                />
+                <EditModel key={index}>
+                  <div className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px] text-left">
+                    <ModelCard
+                      cover_image_url={cover_image_url}
+                      name={name}
+                      description={description}
+                      run_count={run_count}
+                    />
+                  </div>
+                </EditModel>
               );
             },
           )}

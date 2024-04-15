@@ -17,10 +17,7 @@ export const ModelCard = ({
   description,
 }: Props) => {
   return (
-    <Link
-      href={`/dashboard/models/${name}`}
-      className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
-    >
+    <>
       <div className="relative overflow-hidden">
         {cover_image_url?.toLowerCase().endsWith(".mp4") ? (
           <video
@@ -66,6 +63,6 @@ export const ModelCard = ({
           {description}
         </p>
       </div>
-    </Link>
+    </>
   );
 };
