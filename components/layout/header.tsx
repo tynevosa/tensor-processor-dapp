@@ -72,7 +72,7 @@ const NavbarItem = ({
   );
 };
 
-export const Header = () => {
+export const Header = ({ admin } : {admin?: boolean}) => {
   const profile = "/images/navbar/profile.svg";
   const address = useAddress();
   const copy = (str: string) => {
@@ -88,7 +88,7 @@ export const Header = () => {
         <p className="font-bold text-3xl text-white">TPU</p>
       </div>
       <div className="lg:flex flex-row justify-center gap-7 hidden w-6/12">
-        {navItems.map((item, idx) => (
+        {!admin && navItems.map((item, idx) => (
           <NavbarItem
             key={idx}
             title={item.name}
