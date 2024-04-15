@@ -1,11 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Split from "react-split";
-import { createPrompt, getModelList, getPrompt, updatePrompt, updateWorkflow } from '../api';
+import { createPrompt, getModelList, getPrompt, updatePrompt } from '../api';
 import { FaHome, FaCloudUploadAlt, FaCaretRight, FaInfoCircle, FaExpand, FaCompressAlt, } from "react-icons/fa";
 import { useRouter } from 'next/navigation'
-import { Switch, Textarea, input } from "@nextui-org/react";
-import { TemplateContext } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { Switch} from "@nextui-org/react";
 
 let sel_input_id = 0;
 
@@ -13,9 +12,10 @@ export default function Prompt() {
 
   const [hideLLM, setHideLLM] = useState(false)
   const [attach, setAttach] = useState('')
-  const [promptId, setPromptId] = useState<any>()
-  const [modelId, setModelId] = useState<any>()
-  const [modelList, setModelList] = useState<any>()
+  const [selPrompt,setSelPrompt] = useState<any>()
+  const [modelId, setModelId] = useState<any>(0)
+  const [modelList, setModelList] = useState<any>([])
+  const [selectedModel, setSelectedModel] = useState<any>()
   const [syspromHide, setSyspromHide] = useState<boolean>(true)
   const [stop, setStop] = useState(2)
   const [topK, setTopk] = useState(40)
@@ -27,8 +27,7 @@ export default function Prompt() {
   const [temperature, setTemperature] = useState(0.7)
   const [fullText, setFullText] = useState()
   const [frequency, setFrequency] = useState(1.85)
-  const [dataset, setDataset] = useState()
-  const [tempPrmptText, setTempPrmtText] = useState("You can create custom inputs by entering / and specify their values under 'Input' Here's an example: Write me an article that's word_count words long about article_content ")
+  const [tempPrmptText, setTempPrmtText] = useState("You can create custom inputs by entering {{}} and specify their values under 'Input' Here's an example: Write me an article that's word_count words long about article_content ")
   const [sysPrmptText, setSysPrmtText] = useState("You are a helpful assistant.")
   const [outputText, setOutputText] = useState()
   const [msgDlgFlag, setMsgDlgFlag] = useState(false)
@@ -38,19 +37,10 @@ export default function Prompt() {
   const [prePenalty, setPrePenalty] = useState()
   const [nodeCall, setNodeCall] = useState<string | null>('false')
 
-  const tempInputs = {
-    'interaction': 'friendship',
-    'character_1': 'val',
-    'character_2': 'me'
-  }
-
-
   let flag = false
   const fetchData = async () => {
 
     const storedWorkflowId = localStorage.getItem('prompt_id');
-    setPromptId(storedWorkflowId);
-
     if (storedWorkflowId == '0') {
 
     } else {
@@ -79,27 +69,27 @@ export default function Prompt() {
   };
 
   useEffect(() => {
-    
+
     const node_call = localStorage.getItem('nodeCall')
     setNodeCall(node_call)
 
     if (!flag) {
 
       getModelList()
-      .then(res => {
-        setModelList(res.data)
-      })
-      .catch((err) => {
-        console.log("Err :", err)
-      })
+        .then(res => {
+          setModelList(res.data)
+          console.log("model ::", res.data)
+        })
+        .catch((err) => {
+          console.log("Err :", err)
+        })
 
       flag = true
-      if(nodeCall && node_call!.startsWith('t'))
-      {
+      if (nodeCall && node_call!.startsWith('t')) {
         setContent()
 
-      }else{
-        
+      } else {
+
         fetchData();
       }
     }
@@ -119,14 +109,14 @@ export default function Prompt() {
     const prompt_id = localStorage.getItem("prompt_id")
     const data = {
       "template": tempPrmptText,
-      "model_id": '2',
-      "model": 'gpt-3.5-turbo-1106',
+      "model_id": modelId,
+      "model": modelList[modelId],
       "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": 'null', "do_sample": false, "typical_p": 'null', "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": 'null', "frequency_penalty": 'null' },
       "config": { "stop": stop, "top_k": topK, "top_p": topP, "truncate": '', "do_sample": doSample, "typical_p": typeP, "watermark": watermark, "max_tokens": maxToken, "temperature": temperature, "return_full_text": prePenalty, "frequency_penalty": frequency },
-      "input": { "character1": "val", "character2": "lucky", "relationship": "friend" },
+      "supported_inputs": { "character1": "val", "character2": "lucky", "relationship": "friend" },
       "created_at": new Date(),
       "updated_at": new Date(),
-      "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f"
+      // "user_id": 1
     }
 
     if (prompt_id === '0') {
@@ -135,7 +125,7 @@ export default function Prompt() {
         then((res: any) => {
           if (res.status === 200) {
 
-            localStorage.setItem("workflow_id", res.data.id.toString())
+            localStorage.setItem("prompt_id", res.data.id.toString())
           }
         })
         .catch(err => {
@@ -167,32 +157,44 @@ export default function Prompt() {
 
   const setContent = () => {
 
-    const strData =localStorage.getItem('prompt_data')
-  
-    if(strData)
-    {
-      console.log('here :: ',strData)
-      const data =JSON.parse(strData)
-      data.userId = data.userId  
+    const strData = localStorage.getItem('prompt_data')
+    
+    if (strData) {
+
+      const data = JSON.parse(strData)
+      setSelPrompt(data)
+      data.userId = data.userId
       setAttach('')
-      setPromptId(data.id)
+      localStorage.setItem( "prompt_id",data.id)
       setModelId(data.model_id)
       setStop(data.config.stop)
       setTopk(data.config.top_k)
       setTopP(data.config.top_p)
-      setDoSample(data.config.do_sample) 
-      setTypeP(data.config.typical_p) 
+      setDoSample(data.config.do_sample)
+      setTypeP(data.config.typical_p)
       setWatermark(data.config.watermark)
       setMaxToken(data.config.max_tokens)
       setTemperature(data.config.temperature)
-      setFullText(data.config.return_full_text) 
+      setFullText(data.config.return_full_text)
       setFrequency(data.config.frequency_penalty)
-      setTempPrmtText(data.template) 
-      setSysPrmtText(data.system_template) 
-      setInputs(data.input) 
+      setTempPrmtText(data.template)
+      setSysPrmtText(data.system_template)
+      setInputs(data.input)
+
+      const regex = /\{\{\s+[\w\s]+\s+\}\}/g;
+
+    const matches = data.template.match(regex);
+    if (matches) {
+      const newState: any = {};
+      matches.forEach((element: any) => {
+        const inputKey = element.substring(2, element.length - 2);;
+
+        newState[inputKey] = '';
+      });
+      setInputs(newState);
     }
   }
-
+  }
   const handleInput = (index: any, text: any) => {
     sel_input_id = index
     setMsgText(text)
@@ -205,14 +207,14 @@ export default function Prompt() {
 
   const handleTmpPrmp = (e: any) => {
     setTempPrmtText(e.target.value);
-    const regex = /\{\{[\w\s]+\}\}/g;
+    const regex = /\{\{\s+[\w\s]+\s+\}\}/g;
 
     const matches = e.target.value.match(regex);
     if (matches) {
       const newState: any = {};
       matches.forEach((element: any) => {
         const inputKey = element.substring(2, element.length - 2);;
-        
+
         newState[inputKey] = '';
       });
       setInputs(newState);
@@ -223,8 +225,6 @@ export default function Prompt() {
     }
   };
 
-  console.log('here :', inputs)
-
   const handleSysPrmp = (e: any) => {
     setSysPrmtText(e.target.value)
   }
@@ -234,7 +234,17 @@ export default function Prompt() {
 
     setMsgDlgFlag(false)
     const sel_input = inputs[sel_input_id];
-    console.log(inputs)
+    const data = {
+      "template": tempPrmptText,
+      "model_id": modelId,
+      "model": modelList[modelId],
+      "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": 'null', "do_sample": false, "typical_p": 'null', "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": 'null', "frequency_penalty": 'null' },
+      "config": { "stop": stop, "top_k": topK, "top_p": topP, "truncate": '', "do_sample": doSample, "typical_p": typeP, "watermark": watermark, "max_tokens": maxToken, "temperature": temperature, "return_full_text": prePenalty, "frequency_penalty": frequency },
+      "supported_inputs": { "character1": "val", "character2": "lucky", "relationship": "friend" },
+      "created_at": new Date(),
+      "updated_at": new Date(),
+      // "user_id": 1
+    }
     // sel_input.someProperty = msgText;
 
   }
@@ -291,35 +301,52 @@ export default function Prompt() {
 
   }
 
-  const handleClose = () => {
+  const handleSelectChange = (e:any) => {
 
+    const foundModel = modelList.find((one:any, index:number) => {
+      return one.name === e.target.value;
+    });
+    
+    if (foundModel) {
+      const index = modelList.indexOf(foundModel);
+      setModelId(index);
+      setSelectedModel(foundModel);
+    }
+       
+  }
+
+  const handleClose = () => {
+    console.log('here', selPrompt.model)
+    
     const data = {
       "template": tempPrmptText,
-      "model_id": '2',
-      "model": 'gpt-3.5-turbo-1106',
+      "model_id": selPrompt.model_id,
+      "model": selPrompt.model,
       "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": 'null', "do_sample": false, "typical_p": 'null', "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": 'null', "frequency_penalty": 'null' },
       "config": { "stop": stop, "top_k": topK, "top_p": topP, "truncate": '', "do_sample": doSample, "typical_p": typeP, "watermark": watermark, "max_tokens": maxToken, "temperature": temperature, "return_full_text": prePenalty, "frequency_penalty": frequency },
-      "input": { "character1": "val", "character2": "lucky", "relationship": "friend" },
-      "created_at": new Date(),
+      "supported_inputs": inputs,
+      "system_template":sysPrmptText,
+      "created_at": selPrompt.created_at,
       "updated_at": new Date(),
-      "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f"
-    } 
+    }
 
     localStorage.setItem('prompt_data', JSON.stringify(data))
+    console.log(data)
     router.back()
   }
 
+  console.log(modelList)
   return (
     <>
-    {
-      nodeCall && nodeCall!.startsWith('t') && (
-        <div>
-          <button className='text-white bg-[#3F3F46] rounded-[8px] w-[80px] h-[40px] mx-4 mt-2 mb-2' onClick={handleClose}>Close</button>
-        </div>
-      )
-      
-    }
-      
+      {
+        nodeCall && nodeCall!.startsWith('t') && (
+          <div>
+            <button className='text-white bg-[#3F3F46] rounded-[8px] w-[80px] h-[40px] mx-4 mt-2 mb-2' onClick={handleClose}>Close</button>
+          </div>
+        )
+
+      }
+
       <div className="text-white bg-[#222224] px-4 h-full">
         {msgDlgFlag && (
           <div className={`${msgDlgFlag ? 'absolute' : 'hidden'} absolute w-full h-full z-20 flex items-center justify-center`}>
@@ -410,14 +437,12 @@ export default function Prompt() {
               </div>
               <div className="flex justify-between text-bold pt-4">
                 <p>Model</p>
-                <select className='bg-[transparent] border border-none text-[white]'>
-                  {
-                    modelList && modelList.map((one: any) => (<>
-                      <option value={`GPT 3.5 Turbo`} >GPT 3.5 Turbo</option>
-                    </>))
-                  }
-                  <option value={`GPT 3.5 Turbo`} >GPT 3.5 Turbo</option>
+                <select className='bg-transparent border border-none text-white focus:outline-none text-right' value={ selectedModel && selectedModel.name} onChange={handleSelectChange}>
+                  {modelList && modelList.map((one: any, index: any) => (
+                    <option key={one.name} value={modelList[index].name} className='bg-[black]' id={index}>{modelList[index].name}</option>
+                  ))}
                 </select>
+
 
               </div>
               <div className="flex justify-between">

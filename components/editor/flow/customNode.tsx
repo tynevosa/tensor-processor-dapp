@@ -16,7 +16,7 @@ const CustomNode = (data: any, isConnectable: any) => {
   const [result , setResult] = useState('')
   const router = useRouter()
 
-  const jsonArray = Object.entries(data.data.input);
+  const jsonArray = Object.entries(data.data.supported_inputs);
 
   const handleCollapseClikced = () => {
 
@@ -68,7 +68,7 @@ const CustomNode = (data: any, isConnectable: any) => {
       "template":data.data.template,
       "model_id":data.data.model_id,
       "model":data.data.model,
-      "input":data.data.input,
+      "supported_inputs":data.data.supported_inputs,
       "system_template":data.data.sys_template,
       "id":data.id,
       "userId":"0ca9a6e2-cc92-44a3-9862-199b4aaf3efa"
@@ -134,7 +134,7 @@ const CustomNode = (data: any, isConnectable: any) => {
             <div className="w-full">
               <div onClick={handleCollapseClikced} className='flex justify-between'>
                 <Image alt='star-icon' src={checkedIcon} className={`w-3 h-2 mt-1 ${iCollapse ? ' rotate-0 ' : ' rotate-180 '}`} />
-                <div className='text-white text-[14px]'>INPUT <span className='rounded-2 bg-[#1F212E] text-[#8599D6]'>0/2</span></div>
+                <div className='text-white text-[14px]'>INPUT <span className='rounded-2 bg-[#1F212E] text-[#8599D6]'>0/{jsonArray.length}</span></div>
               </div>
               <div className={iCollapse ? '' : 'hidden'}>
                 {jsonArray && jsonArray.map((one: any, index: number) => (

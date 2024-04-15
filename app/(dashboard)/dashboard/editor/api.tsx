@@ -38,6 +38,10 @@ export const  getWorkflowList = async () => {
     return res
 }
 
+export const publicWorkFlow = async (data:any, id:any) => {
+    const res = await axios.put(`${host}/workflow/publish/${id}`, data)
+    return res
+}
 
  export const deleteWorkflow = async (workflow_id: number) => {
     const res = await axios.delete(`${host}/workflow/delete/${workflow_id}`)
@@ -72,6 +76,10 @@ export const nodeRun = async (params:any, id:any) => {
 }
 
 export const getModelList = async () => {
-    const res = await axios.get(`${host}/model/list`)
+    const data = {
+        "page": 1,
+        "count": 100
+    }
+    const res = await axios.post(`${host}/model/list`, data)
     return res
 }

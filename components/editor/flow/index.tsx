@@ -16,11 +16,12 @@ import CustomEdge from './customEdge'
 import SlideBar from './slidebar';
 import OutputBar from './outsidebar'
 import ExcuteBar from './excutebar';
-import { getWorkflow, createWorkflow, updateWorkflow, nodeRun } from '@/app/(dashboard)/dashboard/editor/api';
+import { getWorkflow, createWorkflow, updateWorkflow, nodeRun, publicWorkFlow } from '@/app/(dashboard)/dashboard/editor/api';
 
 import 'reactflow/dist/style.css';
 import '@/styles/overview.css';
 import { FaBolt, FaExpand } from "react-icons/fa";
+
 
 const initialNodes = [
   {
@@ -46,10 +47,18 @@ const initialNodes = [
     },
     data: {
       label: 'Outpoint',
+      workflow_outputs: {
+        "2-0": {
+          id: "2-0",
+          key: "output",
+          value: "wdw"
+        }
+      } // Added closing brace here
     },
     position: { x: 300, y: 60 },
   }
 ];
+
 
 const edges: Edge<any>[] = [];
 
@@ -83,6 +92,8 @@ const OverviewFlow: React.FC = () => {
   const [msgText, setMsgText] = useState('')
   const [msgDlgFlag, setMsgDlgFlag] = useState(true)
   const [msgTitle, setMsgTitle] = useState('')
+  const [outResult, setOutResult] = useState('')
+  const [isRunning, setIsRunning] = useState(false)
 
   const fetchData = async () => {
 
@@ -95,18 +106,56 @@ const OverviewFlow: React.FC = () => {
       await getWorkflow(storedWorkflowId)
         .then(res => {
 
-          setNodes(res.data.nodes)
+          res.data.nodes.forEach((element: any) => {
+
+            if (element.id === '1') {
+              element.type = 'input'
+
+            } else if (element.id === '2') {
+
+              element.type = 'output'
+            } else {
+
+              element.type = 'customNode'
+            }
+          })
+
+         
           id = res.data.nodes.length - 1
           setEdges(res.data.edges)
           setTitle(res.data.name)
           const inputs: any = []
+          const noode_flag = localStorage.getItem('nodeCall')
+
+          if (noode_flag && noode_flag!.startsWith('t')) {
+            console.log(nodes)
+            console.log(noode_flag.slice(2))
+            const prompt: any | null = localStorage.getItem('prompt_data')
+            const promptdata = JSON.parse(prompt)
+            console.log(promptdata)
+            res.data.nodes.forEach((element:any) => {
+              if (element.id === noode_flag.slice(2)) {
+                element.data = promptdata
+              }
+
+            });
+
+            localStorage.removeItem('prompt_data')
+            localStorage.removeItem('prompt_id')
+            localStorage.removeItem('nodeCall')
+          }
+
+          setNodes(res.data.nodes)
+
           res.data.nodes.forEach((one: any, index: number) => {
-            if (one.type != 'input') {
-              const data = { id: index, param: one.data.input }
+            if (one.id != '1' && one.id != '2') {
+              console.log('heree', one)
+              const data = { id: index, param: one.data.supported_inputs }
               inputs.push(data)
             }
           })
           setQeustions(inputs)
+
 
         })
         .catch(err => {
@@ -114,31 +163,13 @@ const OverviewFlow: React.FC = () => {
         });
     }
   };
- 
-  useEffect(() => {
 
+  useEffect(() => {
+    //alert('e')
     if (!flag) {
 
       flag = true
       fetchData();
-
-      const noode_flag = localStorage.getItem('nodeCall')
-      if(noode_flag && noode_flag!.startsWith('t'))
-      {
-        const prompt:any|null = localStorage.getItem('prompt_data')
-        const promptdata = JSON.parse(prompt)
-        nodes.forEach(element => {
-          if(element.id === noode_flag!.split('-')[1])
-          {
-            element.data = promptdata
-          }
-
-        });
-        localStorage.removeItem('prompt_data')
-        localStorage.removeItem('prompt_id')
-        localStorage.removeItem('nodecall')
-      }
-      
     }
 
     return () => {
@@ -152,29 +183,46 @@ const OverviewFlow: React.FC = () => {
   }, [nodes]);
 
   const jsonStructData = [
-    { "template": "I want to make funny story to hear my young sister\n{{ character1 }}{{ character2 }}\nrelationship\n{{ relationship }}\nmake funny story", "model_id": 9, "model": "mistral-7b-instruct", "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": null, "frequency_penalty": null }, "config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": true, "frequency_penalty": 0 }, "input": { "character1": "val", "character2": "lucky", "relationship": "friend" }, "system_template": "You are a helpful assistant.", "id": "6294", "userId": "0ca9a6e2-cc92-44a3-9862-199b4aaf3efa" },
-    { "template": "Context: {{ informations }}\n\nQuestion: {{ question }}", "model_id": 2, "model": "gpt-3.5-turbo-1106", "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "input": { "informations": "lucky", "question": "who are you" }, "system_template": "You are a chatbot. Your task is to answer questions based on the context. If the answer is not in the context, respond with &quot;I have no information on that&quot; and nothing more than that.", "id": "6278", "userId": "0ca9a6e2-cc92-44a3-9862-199b4aaf3efa" },
-    { "template": "Read this article and forsee which 3 popular search terms might bring the article up in a Google search. Provide a numbered list of these search terms.\n\nArticle: {{ article }} \n\nOutput:", "model_id": 2, "model": "gpt-3.5-turbo-1106", "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "input": { "article": "about drawing" }, "system_template": "You are an SEO expert", "id": "6280", "userId": "0ca9a6e2-cc92-44a3-9862-199b4aaf3efa" },
-    { "template": "Rewrite &quot;{{ answer }}&quot; into the style of a cute puppy managing a pet store. Do not add new information.", "model_id": 2, "model": "gpt-3.5-turbo-1106", "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "input": { "answer": "I am not bot" }, "system_template": "You are a chat bot.", "id": "6279", "userId": "0ca9a6e2-cc92-44a3-9862-199b4aaf3efa" }
+    { "template": "I want to make funny story to hear my young sister\n{{ character1 }}{{ character2 }}\nrelationship\n{{ relationship }}\nmake funny story", "model_id": 1, "model": { "name": "llama-2-70b", "providers": { "id": 1, "name": "openai" }, "config_steps": { "stop": { "max": 4, "min": 0 }, "top_k": { "max": 100, "min": 1, "step": 1 }, "top_p": { "max": 1, "min": 0, "step": 0.01 }, "truncate": { "max": null, "min": 0 }, "typical_p": { "max": 1, "min": 0.01, "step": 0.01 }, "max_tokens": { "max": 4096, "min": 1, "step": 1 }, "temperature": { "max": 2, "min": 0, "step": 0.05 }, "presence_penalty": { "max": 2, "min": -2, "step": 0.01 }, "frequency_penalty": { "max": 2, "min": -2, "step": 0.01 } } }, "default_config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": null, "frequency_penalty": null }, "config": { "stop": [], "top_k": 40, "top_p": 0.95, "truncate": null, "do_sample": false, "typical_p": null, "watermark": false, "max_tokens": 4096, "temperature": 0.7, "return_full_text": true, "frequency_penalty": 0 }, "supported_inputs": { "character1": "val", "character2": "lucky", "relationship": "friend" }, "system_template": "You are a helpful assistant.", "id": "6294", "userId": 1 },
+    { "template": "Context: {{ informations }}\n\nQuestion: {{ question }}", "model_id": 1, "model": { "name": "llama-2-70b", "providers": { "id": 1, "name": "openai" }, "config_steps": { "stop": { "max": 4, "min": 0 }, "top_k": { "max": 100, "min": 1, "step": 1 }, "top_p": { "max": 1, "min": 0, "step": 0.01 }, "truncate": { "max": null, "min": 0 }, "typical_p": { "max": 1, "min": 0.01, "step": 0.01 }, "max_tokens": { "max": 4096, "min": 1, "step": 1 }, "temperature": { "max": 2, "min": 0, "step": 0.05 }, "presence_penalty": { "max": 2, "min": -2, "step": 0.01 }, "frequency_penalty": { "max": 2, "min": -2, "step": 0.01 } } }, "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "supported_inputs": { "informations": "lucky", "question": "who are you" }, "system_template": "You are a chatbot. Your task is to answer questions based on the context. If the answer is not in the context, respond with &quot;I have no information on that&quot; and nothing more than that.", "id": "6278", "userId": 1 },
+    { "template": "Read this article and forsee which 3 popular search terms might bring the article up in a Google search. Provide a numbered list of these search terms.\n\nArticle: {{ article }} \n\nOutput:", "model_id": 1, "model": { "name": "llama-2-70b", "providers": { "id": 1, "name": "openai" }, "config_steps": { "stop": { "max": 4, "min": 0 }, "top_k": { "max": 100, "min": 1, "step": 1 }, "top_p": { "max": 1, "min": 0, "step": 0.01 }, "truncate": { "max": null, "min": 0 }, "typical_p": { "max": 1, "min": 0.01, "step": 0.01 }, "max_tokens": { "max": 4096, "min": 1, "step": 1 }, "temperature": { "max": 2, "min": 0, "step": 0.05 }, "presence_penalty": { "max": 2, "min": -2, "step": 0.01 }, "frequency_penalty": { "max": 2, "min": -2, "step": 0.01 } } }, "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "supported_inputs": { "article": "about drawing" }, "system_template": "You are an SEO expert", "id": "6280", "userId": 1 },
+    { "template": "Rewrite &quot;{{ answer }}&quot; into the style of a cute puppy managing a pet store. Do not add new information.", "model_id": 1, "model": { "name": "llama-2-70b", "providers": { "id": 1, "name": "openai" }, "config_steps": { "stop": { "max": 4, "min": 0 }, "top_k": { "max": 100, "min": 1, "step": 1 }, "top_p": { "max": 1, "min": 0, "step": 0.01 }, "truncate": { "max": null, "min": 0 }, "typical_p": { "max": 1, "min": 0.01, "step": 0.01 }, "max_tokens": { "max": 4096, "min": 1, "step": 1 }, "temperature": { "max": 2, "min": 0, "step": 0.05 }, "presence_penalty": { "max": 2, "min": -2, "step": 0.01 }, "frequency_penalty": { "max": 2, "min": -2, "step": 0.01 } } }, "default_config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "config": { "stop": [], "top_k": 40, "top_p": 1, "max_tokens": 4096, "temperature": 0.7, "presence_penalty": 0, "frequency_penalty": 0 }, "supported_inputs": { "answer": "I am not bot" }, "system_template": "You are a chat bot.", "id": "6279", "userId": 1 }
   ];
 
-  const saveWorkFlow = () => {
+  const saveWorkFlow = async () => {
 
-    const work_id = localStorage.getItem("workflow_id")
+    const work_id : any = localStorage.getItem("workflow_id")
+    const copynodes = nodes.map(one => one)
+
+    copynodes.forEach(element => {
+      console.log(element.type)
+      if (element.id === "1") {
+        element.type = 'workflow_input'
+
+      } else if (element.id === "2") {
+        element.type = 'workflow_output'
+      } else {
+        element.type = 'workflow_prompt'
+      }
+    })
+
+    console.log('wef', copynodes)
+    console.log('ang', nodes)
+    const data : any = {
+      "name": title,
+      "nodes": copynodes,
+      "edges": edgesEle,
+      "created_at": new Date(),
+      "updated_at": new Date(),
+      // "user_id": 1,
+      "sequence": []
+    }
+
+    console.log(data)
 
     if (work_id === '0') {
 
-      const data = {
-        "name": title,
-        "nodes": nodes,
-        "edges": edgesEle,
-        "created_at": new Date(),
-        "updated_at": new Date(),
-        "user_id": "7fcc92e1-03cf-4834-a6d2-924bc81c797f",
-        "sequence": []
-      }
-      console.log(data)
-      createWorkflow(data).
+      await createWorkflow(data).
         then(res => {
           if (res.status === 200) {
 
@@ -187,16 +235,8 @@ const OverviewFlow: React.FC = () => {
 
     } else {
 
-      const data = {
-        "name": title,
-        "nodes": nodes,
-        "edges": edgesEle,
-        "created_at": new Date(),
-        "updated_at": new Date(),
-        "sequence": [],
-      }
-      console.log(data)
-      updateWorkflow(data, work_id).
+      data['id'] = parseInt(work_id)
+      await updateWorkflow(data, work_id).
         then(res => {
           if (res.status === 200) {
             console.log("Success!")
@@ -234,7 +274,7 @@ const OverviewFlow: React.FC = () => {
         y: event.clientY,
       });
       const prompt = jsonStructData[type]
-      const inputs = prompt.input
+      const inputs = prompt.supported_inputs
       const newNode = {
         id: getId(),
         type: 'customNode',
@@ -248,14 +288,54 @@ const OverviewFlow: React.FC = () => {
     [reactFlowInstance, setNodes],
   );
 
+  const publicwork = async () => {
+
+    const work_id: any = localStorage.getItem("workflow_id")
+    const copynodes = nodes.map(one => one)
+
+    copynodes.forEach(element => {
+      if (element.id === '1') {
+        element.type = 'workflow_input'
+      } else if (element.id === '2') {
+        element.type = 'workflow_output'
+      } else {
+        element.type = 'workflow_prompt'
+      }
+    })
+
+    const data = {
+      id: parseInt(work_id),
+      name: title,
+      nodes: copynodes,
+      edges: edgesEle,
+      created_at: new Date(),
+      updated_at: new Date(),
+      status: true,
+      // user_id: 1,
+      sequence: []
+    }
+
+    await publicWorkFlow(data, work_id)
+
+    nodes.forEach(element => {
+      if (element.id === '1') {
+        element.type = 'input'
+      } else if (element.id === '2') {
+        element.type = 'output'
+      } else {
+        element.type = 'custom'
+      }
+    })
+  }
+
   const handleRunPromp = async () => {
-
-    await saveWorkFlow()
-
+    
+    setIsRunning(true)
     edgesEle.forEach((oneEdge: any, index) => {
 
-      if (oneEdge.targetHandle === null) {
-        const value = oneEdge.target + '-' + oneEdge.source;
+      if (oneEdge.targetHandle === null || oneEdge.targetHandle === "0") {
+        // const value = oneEdge.target + '-' + oneEdge.source;
+        const value = oneEdge.target + '-' + '0';
         edgesEle[index].targetHandle = value;
       }
 
@@ -276,13 +356,25 @@ const OverviewFlow: React.FC = () => {
       }
     });
 
+     await saveWorkFlow()
+     await publicwork()
+
     const jsonArray = JSON.stringify(data);
     const comitData = {
       input: data
     }
     const workflow_id = localStorage.getItem('workflow_id');
-    const result = await nodeRun(comitData, workflow_id)
-    console.log(result)
+    await nodeRun(comitData, workflow_id)
+    .then((result:any) => {
+      console.log(result)
+      setOutResult(result.data.output)
+    })
+    .catch((err:any) => {
+      console.log("runErr :" , err)
+      setIsRunning(false)
+    })
+   
+    setIsRunning(false)
     // nodes.forEach(async oneNode => {
     //   if (oneNode.type != 'input') {
     //     const requestData = {
@@ -327,7 +419,13 @@ const OverviewFlow: React.FC = () => {
     setTitle(e.target.value)
   }
 
+  const outputResult = () => {
 
+    setMsgText(outResult)
+    setMsgDlgFlag(false);
+    setMsgTitle('Result')
+
+  }
 
   const handleInputChange = (id: any, index: any, text: string, title: string) => {
     change_input_id = id;
@@ -345,6 +443,12 @@ const OverviewFlow: React.FC = () => {
 
   const handleMsgClose = () => {
 
+    if(msgTitle === 'Result')
+    {
+      setMsgDlgFlag(true)
+      return
+    }
+
     const string = msgText;
     const indexes = change_input_id.split("-");
 
@@ -352,15 +456,15 @@ const OverviewFlow: React.FC = () => {
       if (i === change_node_index) {
         console.log(node.data)
         const updatedInput = {
-          ...node.data.input,
-          [Object.keys(node.data.input)[indexes[2]]]: string
+          ...node.data.supported_inputs,
+          [Object.keys(node.data.supported_inputs)[indexes[2]]]: string
         };
 
         return {
           ...node,
           data: {
             ...node.data,
-            input: updatedInput
+            supported_inputs: updatedInput
           }
         };
       } else {
@@ -373,7 +477,7 @@ const OverviewFlow: React.FC = () => {
     const inputs: any = []
     updatedNodes.forEach((one: any, index: number) => {
       if (one.type != 'input') {
-        const data = { id: index, param: one.data.input }
+        const data = { id: index, param: one.data.supported_inputs }
         inputs.push(data)
       }
     })
@@ -423,8 +527,8 @@ const OverviewFlow: React.FC = () => {
               <Background color="#aaa" gap={16} />
             </ReactFlow>
             <SlideBar workflow={title} titleChange={handleTitleChange} />
-            <OutputBar question={questions} queChange={handleInputChange} />
-            <ExcuteBar run={handleRunPromp} />
+            <OutputBar question={questions} queChange={handleInputChange} output={outResult} showResult={outputResult}/>
+            <ExcuteBar run={handleRunPromp} runState={isRunning} />
           </div>
         </ReactFlowProvider>
       </div>
