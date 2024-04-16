@@ -46,7 +46,6 @@ export default function AdminPage() {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
-  // console.log(isPending);
 
   useEffect(() => {
     if (modelPage?.length > 0) {
@@ -55,9 +54,6 @@ export default function AdminPage() {
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
-  // console.log(modelDatas);
-
-  // console.log(modelDatas?.map((item) => item?.name));
 
   return (
     <ScrollArea className="w-full h-full">
