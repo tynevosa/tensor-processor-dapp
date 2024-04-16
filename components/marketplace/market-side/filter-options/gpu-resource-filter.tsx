@@ -26,9 +26,9 @@ export const GpuFilter = () => {
           </div>
           <Slider
             defaultValue={[gpu_count]}
-            max={100}
-            min={11.31}
-            step={0.01}
+            max={16}
+            min={0}
+            step={1}
             className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
             onValueChange={(value) => updateParam("gpu_count", value[0])}
           />

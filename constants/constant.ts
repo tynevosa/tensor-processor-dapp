@@ -281,8 +281,8 @@ export const initialParam: FilterOptions = {
   reliability: 90,
   per_hour: 5.65,
   tflops_hour: 20,
-  tb_upload: 100,
-  tb_download: 100,
+  tb_upload: 90,
+  tb_download: 90,
   gpu_count: 16,
   tflops: 16,
   per_gpu_ram: 2,
@@ -307,6 +307,13 @@ export const buttonTab = [
   { name: "Playground", url: "/images/model/play.svg" },
   { name: "API", url: "/images/model/api.svg" },
   { name: "Info", url: "/images/model/file-w.svg" },
+];
+
+export const templateTab = [
+  { name: "All" },
+  { name: "Recommended" },
+  { name: "Popular" },
+  { name: "Recent" },
 ];
 
 export const outputBtn = [
@@ -376,3 +383,30 @@ export const InitialGPUInfo = {
 
   storage_total_cost: 0,
 };
+
+export const templateModel = [
+  {
+    name: "pytorch",
+    description: "2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "oobabooga",
+    description: "text-generation-webui:defaultsnapshot-2023-12-31",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "pytorch",
+    description: " 2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "pytorch",
+    description: " 2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+];

@@ -27,8 +27,8 @@ export const PriceFilter = () => {
           </div>
           <Slider
             defaultValue={[per_hour]}
-            max={100}
-            min={11.31}
+            max={128}
+            min={0}
             step={0.01}
             className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
             onValueChange={(value) => updateParam("per_hour", value[0])}
@@ -43,7 +43,7 @@ export const PriceFilter = () => {
         <Slider
           defaultValue={[tflops_hour]}
           max={100}
-          step={1}
+          step={0.01}
           className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
           onValueChange={(value) => updateParam("tflops_hour", value[0])}
         />
@@ -56,7 +56,7 @@ export const PriceFilter = () => {
         <Slider
           defaultValue={[tb_upload]}
           max={100}
-          step={1}
+          step={0.01}
           className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
           onValueChange={(value) => updateParam("tb_upload", value[0])}
         />
@@ -69,7 +69,7 @@ export const PriceFilter = () => {
         <Slider
           defaultValue={[tb_download]}
           max={100}
-          step={1}
+          step={0.01}
           className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
           onValueChange={(value) => updateParam("tb_download", value[0])}
         />

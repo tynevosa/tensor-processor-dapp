@@ -23,7 +23,7 @@ export const ModelDetialsBar: React.FC<ModelDetailsProps> = ({
   const ratio = modelDetail.cpu_cores_effective / modelDetail.cpu_cores;
   return (
     <>
-      <div className="flex flex-col px-8">
+      <div className="md:flex flex-col px-8 hidden">
         <div className="flex flex-col justify-center items-center">
           <div className="relative">
             <Image

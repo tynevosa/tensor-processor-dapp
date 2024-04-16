@@ -1,6 +1,5 @@
 import { MarketplaceProvider } from "@/components/contexts/marketplace-context";
 import { ParamsProvider } from "@/components/contexts/param-context";
-import { MarketSidebar } from "@/components/layout/market-side";
 
 export default function MarketplaceLayout({
   children,
@@ -10,10 +9,7 @@ export default function MarketplaceLayout({
   return (
     <ParamsProvider>
       <MarketplaceProvider>
-        <div className="w-full h-screen flex gap-0">
-          <MarketSidebar />
-          <div className="flex-grow">{children}</div>
-        </div>
+        <div className="w-full h-screen flex gap-0">{children}</div>
       </MarketplaceProvider>
     </ParamsProvider>
   );
