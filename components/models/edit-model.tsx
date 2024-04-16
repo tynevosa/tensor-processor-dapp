@@ -11,10 +11,11 @@ import { ModelInfoType } from "@/types/type";
 
 type Props = {
   children: React.ReactNode;
-  modelData: ModelInfoType
+  modelData: ModelInfoType;
+  page: number;
 };
 
-export const EditModel = ({ children, modelData }: Props) => {
+export const EditModel = ({ children, modelData, page }: Props) => {
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
@@ -22,7 +23,7 @@ export const EditModel = ({ children, modelData }: Props) => {
         <DialogHeader>
           <DialogTitle>Edit model</DialogTitle>
         </DialogHeader>
-        { modelData ? <EditModelForm modelData={modelData} /> : <p>Something went wrong.</p>}
+        { modelData ? <EditModelForm page={page} modelData={modelData} /> : <p>Something went wrong.</p>}
       </DialogContent>
     </Dialog>
   );

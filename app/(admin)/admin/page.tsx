@@ -23,6 +23,7 @@ export default function AdminPage() {
     error,
   } = useQuery({
     queryKey: ["models-list", page],
+    // queryKey: ["models-list"],
     queryFn: () =>
       axios
         .post(
@@ -49,12 +50,12 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (modelPage?.length > 0) {
-      setModelDatas((prev) => [...prev, ...modelPage]);
+      setModelDatas(modelPage); // Append new data to existing state
     }
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
-  console.log(modelDatas);
+  // console.log(modelDatas);
 
   // console.log(modelDatas?.map((item) => item?.name));
 
@@ -65,12 +66,12 @@ export default function AdminPage() {
           <h1 className="ml-10 lg:ml-6 font-bold text-3xl text-white">
             Admin Panel
           </h1>
-          <AddModel />
+          <AddModel page={page} />
         </div>
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-6 px-10 lg:px-6">
           {modelDatas.map((item, index) => {
             return (
-              <EditModel key={index} modelData={item}>
+              <EditModel key={index} modelData={item} page={page}>
                 <div className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px] text-left">
                   <ModelCard
                     cover_image_url={item?.cover_image_url}

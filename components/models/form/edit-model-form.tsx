@@ -12,28 +12,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { ModelSchema } from "@/schema/model";
 import { ModelInfoType } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Loader, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type Props = {
   modelData: ModelInfoType;
+  page: number;
 };
 
-export const EditModelForm = ({ modelData }: Props) => {
+export const EditModelForm = ({ modelData, page }: Props) => {
   const [inputField, setInputField] = useState<string>("");
   const [inputFieldArr, setInputFieldArr] = useState<string[]>([]);
+  const [editData, setEditData] = useState<any>();
 
   const [collectionField, setCollectionField] = useState<number>(0);
   const [collectionFieldArr, setCollectionFieldArr] = useState<number[]>([]);
 
   const [availability, setAvailability] = useState<boolean>(false);
+  const [coverImageUrl, setCoverImageUrl] = useState<string>("");
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
     defaultValues: {
-      cover_image_url: "",
       name: "",
       short_desc: "",
       description: "",
@@ -63,11 +67,29 @@ export const EditModelForm = ({ modelData }: Props) => {
         prevArr.filter((_, index) => index !== i),
       );
   };
+  const { mutate: editModelData, isPending: isEditing } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await axios.put(
+          `/api/model/update/${modelData?.name}`,
+          editData,
+        );
+        console.log(res);
+      } catch (error) {
+        throw new Error("Something went wrong");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["models-list", page] });
+    },
+    onError: () => console.log("Something went wrong"),
+  });
 
   function onSubmit(values: z.infer<typeof ModelSchema>) {
     const payload = {
-      cover_image_url:
-        "https://tpu-marketplace.b-cdn.net/Cover%20Image/Whisper%20Jet.jpg", // Todo : Add Image Picker
+      //   cover_image_url:
+      //     "https://tpu-marketplace.b-cdn.net/Cover%20Image/Whisper%20Jet.jpg", // Todo : Add Image Picker
+      cover_image_url: coverImageUrl,
       name: values?.name,
       urls: {},
       short_desc: values?.short_desc,
@@ -77,8 +99,13 @@ export const EditModelForm = ({ modelData }: Props) => {
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
-    console.log(payload);
+    setEditData(payload);
+    if (editData) {
+      editModelData();
+    }
   }
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     form.setValue("name", modelData?.name);
@@ -86,8 +113,9 @@ export const EditModelForm = ({ modelData }: Props) => {
     form.setValue("short_desc", modelData?.short_desc);
     form.setValue("replicate_link", modelData?.replicate_link);
     setAvailability(modelData?.availability);
-    setCollectionFieldArr(modelData?.collection_id)
-    setInputFieldArr(modelData?.api_schema?.Input?.rendered)
+    setCollectionFieldArr(modelData?.collection_id);
+    setInputFieldArr(modelData?.api_schema?.Input?.rendered);
+    setCoverImageUrl(modelData?.cover_image_url);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelData]);
 
@@ -227,8 +255,12 @@ export const EditModelForm = ({ modelData }: Props) => {
               onCheckedChange={(field) => setAvailability(field)}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Submit
+          <Button
+            type="submit"
+            disabled={isEditing === true}
+            className="w-full"
+          >
+            Submit {isEditing === true && <Loader color="#fff" size={14} />}
           </Button>
         </form>
       </Form>

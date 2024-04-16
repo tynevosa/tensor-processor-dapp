@@ -10,7 +10,9 @@ import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { AddModelForm } from "./form/add-model-form";
 
-type Props = {};
+type Props = {
+  page: number;
+};
 
 export const AddModel = (props: Props) => {
   return (
@@ -27,7 +29,7 @@ export const AddModel = (props: Props) => {
         <DialogHeader>
           <DialogTitle>Add a model</DialogTitle>
         </DialogHeader>
-        <AddModelForm />
+        <AddModelForm page={props.page} />
       </DialogContent>
     </Dialog>
   );

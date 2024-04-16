@@ -11,24 +11,27 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ModelSchema } from "@/schema/model";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Plus, X, Loader } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+  page: number
+};
 
 export const AddModelForm = (props: Props) => {
   const [inputField, setInputField] = useState<string>("");
   const [inputFieldArr, setInputFieldArr] = useState<string[]>([]);
-
+  const [addPayload, setAddPayload] = useState<any>();
   const [collectionField, setCollectionField] = useState<number>(0);
   const [collectionFieldArr, setCollectionFieldArr] = useState<number[]>([]);
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
     defaultValues: {
-      cover_image_url: "",
       name: "",
       short_desc: "",
       description: "",
@@ -68,12 +71,31 @@ export const AddModelForm = (props: Props) => {
       short_desc: values?.short_desc,
       description: values?.description,
       input_fields: inputFieldArr,
-      availability: false,
+      availability: true,
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
     console.log(payload);
+    setAddPayload(payload);
+    if (addPayload) {
+      addModel();
+    }
   }
+  const queryClient = useQueryClient();
+  const { mutate: addModel, isPending: isSubmitting } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await axios.post(`/api/model/add`, addPayload);
+        console.log(res);
+      } catch (error) {
+        throw new Error("Something went wrong");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["models-list", props.page] });
+    },
+    onError: () => console.log("Something went wrong"),
+  });
   return (
     <div>
       <Form {...form}>
@@ -203,8 +225,12 @@ export const AddModelForm = (props: Props) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Submit
+          <Button
+            type="submit"
+            disabled={isSubmitting === true}
+            className="w-full"
+          >
+            Submit {isSubmitting === true && <Loader color="#fff" size={14} />}
           </Button>
         </form>
       </Form>
