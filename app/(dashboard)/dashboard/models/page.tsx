@@ -49,7 +49,10 @@ export default function Page() {
 
   useEffect(() => {
     if (modelPage?.length > 0) {
-      setModelDatas((prev) => [...prev, ...modelPage]);
+      const modelData = modelPage?.filter(
+        (item: ModelInfoType) => item?.availability === true,
+      );
+      setModelDatas((prev) => [...prev, ...modelData]);
     }
   }, [modelPage]);
 
