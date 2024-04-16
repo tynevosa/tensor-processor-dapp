@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadImage } from "@/lib/utils";
 import { ModelSchema } from "@/schema/model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +31,6 @@ export const AddModelForm = (props: Props) => {
   const [collectionField, setCollectionField] = useState<number>(0);
   const [collectionFieldArr, setCollectionFieldArr] = useState<number[]>([]);
   const [image, setImage] = useState<File>();
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
@@ -63,30 +63,6 @@ export const AddModelForm = (props: Props) => {
       setCollectionFieldArr((prevArr) =>
         prevArr.filter((_, index) => index !== i),
       );
-  };
-
-  const uploadImage = async (imageFile: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", imageFile);
-
-      const response = await axios.post(
-        "/api/model/upload/cover_image",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-      console.log("Image uploaded successfully:", response.data);
-
-      return response.data;
-    } catch (error) {
-      // Handle errors
-      console.error("Error uploading image:", error);
-      throw new Error("Error uploading image");
-    }
   };
 
   async function onSubmit(values: z.infer<typeof ModelSchema>) {

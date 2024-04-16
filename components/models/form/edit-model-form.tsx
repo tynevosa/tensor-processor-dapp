@@ -7,8 +7,10 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadImage } from "@/lib/utils";
 import { ModelSchema } from "@/schema/model";
 import { ModelInfoType } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +36,7 @@ export const EditModelForm = ({ modelData, page }: Props) => {
 
   const [availability, setAvailability] = useState<boolean>(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
+  const [image, setImage] = useState<File>();
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
@@ -85,10 +88,8 @@ export const EditModelForm = ({ modelData, page }: Props) => {
     onError: () => console.log("Something went wrong"),
   });
 
-  function onSubmit(values: z.infer<typeof ModelSchema>) {
-    const payload = {
-      //   cover_image_url:
-      //     "https://tpu-marketplace.b-cdn.net/Cover%20Image/Whisper%20Jet.jpg", // Todo : Add Image Picker
+  async function onSubmit(values: z.infer<typeof ModelSchema>) {
+    let payload = {
       cover_image_url: coverImageUrl,
       name: values?.name,
       urls: {},
@@ -99,6 +100,14 @@ export const EditModelForm = ({ modelData, page }: Props) => {
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
+    if (image) {
+      const cover_image = await uploadImage(image);
+      if (cover_image && cover_image?.url !== "") {
+        payload = { ...payload, cover_image_url: cover_image?.url };
+      }
+    }
+    // console.log(payload);
+    
     setEditData(payload);
     if (editData) {
       editModelData();
@@ -248,6 +257,19 @@ export const EditModelForm = ({ modelData, page }: Props) => {
               </FormItem>
             )}
           />
+          <div className="flex flex-col gap-2 w-full">
+            <Label htmlFor="picture-edit">Upload new</Label>
+            <Input
+              id="picture-edit"
+              type="file"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setImage(e.target.files[0]);
+                }
+              }}
+              className="flex-1 bg-white text-black"
+            />
+          </div>
           <div className="flex items-center gap-2 mt-2">
             <h1 className="font-medium text-black text-sm">Availibility</h1>
             <Switch
