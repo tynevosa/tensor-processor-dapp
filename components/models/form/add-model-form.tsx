@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ModelSchema } from "@/schema/model";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type Props = {
-  page: number
+  page: number;
 };
 
 export const AddModelForm = (props: Props) => {
@@ -28,6 +29,8 @@ export const AddModelForm = (props: Props) => {
   const [addPayload, setAddPayload] = useState<any>();
   const [collectionField, setCollectionField] = useState<number>(0);
   const [collectionFieldArr, setCollectionFieldArr] = useState<number[]>([]);
+  const [image, setImage] = useState<File>();
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
 
   const form = useForm<z.infer<typeof ModelSchema>>({
     resolver: zodResolver(ModelSchema),
@@ -62,10 +65,33 @@ export const AddModelForm = (props: Props) => {
       );
   };
 
-  function onSubmit(values: z.infer<typeof ModelSchema>) {
-    const payload = {
-      cover_image_url:
-        "https://tpu-marketplace.b-cdn.net/Cover%20Image/Whisper%20Jet.jpg", // Todo : Add Image Picker
+  const uploadImage = async (imageFile: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      const response = await axios.post(
+        "/api/model/upload/cover_image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      console.log("Image uploaded successfully:", response.data);
+
+      return response.data;
+    } catch (error) {
+      // Handle errors
+      console.error("Error uploading image:", error);
+      throw new Error("Error uploading image");
+    }
+  };
+
+  async function onSubmit(values: z.infer<typeof ModelSchema>) {
+    let payload = {
+      cover_image_url: "",
       name: values?.name,
       urls: {},
       short_desc: values?.short_desc,
@@ -75,7 +101,22 @@ export const AddModelForm = (props: Props) => {
       replicate_link: values?.replicate_link,
       collection_id: collectionFieldArr,
     };
-    console.log(payload);
+    if (!image) {
+      console.log("Select a image");
+      return;
+    }
+    const cover_image = await uploadImage(image);
+    if (!cover_image) {
+      console.log("Error");
+      return;
+    }
+    payload = { ...payload, cover_image_url: cover_image?.url };
+
+    // if (payload.cover_image_url === "") {
+    //   console.log("No cover image url uploaded");
+    //   return;
+    // }
+    // console.log(payload, "payload");
     setAddPayload(payload);
     if (addPayload) {
       addModel();
@@ -225,6 +266,19 @@ export const AddModelForm = (props: Props) => {
               </FormItem>
             )}
           />
+          <div className="flex flex-col gap-2 w-full">
+            <Label htmlFor="picture">Picture</Label>
+            <Input
+              id="picture"
+              type="file"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setImage(e.target.files[0]);
+                }
+              }}
+              className="flex-1 bg-white text-black"
+            />
+          </div>
           <Button
             type="submit"
             disabled={isSubmitting === true}
