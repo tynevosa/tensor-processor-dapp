@@ -5,11 +5,12 @@ import { Slider } from "@/components/ui/slider";
 export const GpuFilter = () => {
   const { param, setParam } = useParam();
 
-  const { gpu_count, tflops, per_gpu_ram } = param;
+  const { gpu_count, tflops, per_gpu_ram, tflops_hour } = param;
 
   const updateParam = (key: string, value: any) => {
     setParam({ ...param, [key]: value });
   };
+
   return (
     <div className="flex flex-col gap-6 items-stretch">
       <div className="flex flex-col gap-7">
@@ -22,7 +23,7 @@ export const GpuFilter = () => {
         <div className="flex flex-col gap-4 items-stretch">
           <div className="flex justify-between text-white">
             <span className="text-base font-semibold">Gpu Count</span>
-            <span className="text-base font-bold">{`${gpu_count} %`}</span>
+            <span className="text-base font-bold">{`${gpu_count}`}</span>
           </div>
           <Slider
             defaultValue={[gpu_count]}
@@ -37,12 +38,12 @@ export const GpuFilter = () => {
       <div className="flex flex-col gap-4 items-stretch">
         <div className="flex justify-between text-white">
           <span className="text-base font-semibold">TFLOPs</span>
-          <span className="text-base font-bold">{`${tflops} days`}</span>
+          <span className="text-base font-bold">{`${tflops}`}</span>
         </div>
         <Slider
           defaultValue={[tflops]}
-          max={100}
-          step={1}
+          max={8192}
+          step={0.01}
           className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
           onValueChange={(value) => updateParam("tflops", value[0])}
         />
@@ -50,12 +51,16 @@ export const GpuFilter = () => {
       <div className="flex flex-col gap-4 items-stretch">
         <div className="flex justify-between text-white">
           <span className="text-base font-semibold">Per GPU RAM</span>
-          <span className="text-base font-bold">{`${per_gpu_ram} days`}</span>
+          <span className="text-base font-bold">{`${
+            per_gpu_ram > 1024
+              ? (per_gpu_ram / 1024).toFixed(2) + " TB"
+              : per_gpu_ram.toFixed(2) + " GB"
+          } `}</span>
         </div>
         <Slider
           defaultValue={[per_gpu_ram]}
-          max={100}
-          step={1}
+          max={4096}
+          step={0.01}
           className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
           onValueChange={(value) => updateParam("per_gpu_ram", value[0])}
         />

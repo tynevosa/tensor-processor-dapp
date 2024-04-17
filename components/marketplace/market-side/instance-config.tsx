@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import createImage from "@/public/create-template-icon.png";
 import { useParam } from "@/components/contexts/param-context";
+import { useRouter } from "next/navigation";
 
 export const InstanceConfig = () => {
   const { param, setParam } = useParam();
@@ -25,6 +26,8 @@ export const InstanceConfig = () => {
   };
 
   const [open, setOpen] = useState<boolean>(false);
+
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-10">
@@ -133,6 +136,7 @@ export const InstanceConfig = () => {
                   <Image src={createImage} alt="createTemplate" />
                   <Button
                     variant={"ghost"}
+                    onClick={() => router.push("marketplace/template")}
                     className="!text-white !bg-transparent hover:opacity-70"
                   >
                     + CREATE TEMPLATE

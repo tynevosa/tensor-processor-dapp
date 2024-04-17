@@ -20,7 +20,6 @@ export default function Template() {
     queryFn: () =>
       axios.get("/api/machine/list/templates").then((res) => res.data),
   });
-  console.log(modelPage);
   const [activeBtn, setActiveBtn] = useState(templateTab[0]?.name);
 
   const router = useRouter();
@@ -35,7 +34,7 @@ export default function Template() {
         </div>
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row mb-3 mt-10 border-b border-gray-800 gap-6 w-full justify-between">
-            <div className="flex flex-row w-11/12 gap-8">
+            <div className="flex flex-row w-8/12 gap-8">
               {templateTab.map((item, index) => (
                 <button
                   className={`${
@@ -50,13 +49,13 @@ export default function Template() {
                 </button>
               ))}
             </div>
-            <div className="flex w-2/12 justify-end">
+            <div className="flex w-4/12 justify-end">
               <button
                 className="text-[#97AEF3] py-2 px-2 gap-2 uppercase flex flex-row text-base"
-                onClick={() => router.push("template/editor")}
+                onClick={() => router.push("template/edit")}
               >
                 <Plus />
-                <span>create template</span>
+                <span className="hidden md:flex">create template</span>
               </button>
             </div>
           </div>

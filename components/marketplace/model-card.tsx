@@ -150,10 +150,13 @@ export const ModelCard = (props: GPUInfoType) => {
                       </span>
                       <span className="font-semibold text-sm">
                         {`${normalizeCapacity(
-                          props.cpu_ram,
+                          props.cpu_ram_space,
                           0,
                           false
-                        )}/${normalizeCapacity(props.cpu_ram * ratio, 0)}`}
+                        )}/${normalizeCapacity(
+                          props.cpu_ram_space * ratio,
+                          0
+                        )}`}
                       </span>
                     </div>
                   </div>

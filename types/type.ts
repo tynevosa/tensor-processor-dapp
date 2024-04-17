@@ -58,7 +58,7 @@ export type FilterOptions = {
   tflops: number;
   per_gpu_ram: number;
   cpu_core: number;
-  cpu_ram: number;
+  cpu_ram_space: number;
   cpu_ghz: number;
   prompt_str: number;
   control_dep_str: number;
@@ -101,7 +101,7 @@ export type GPUInfoType = {
   cpu_name: string;
   cpu_cores: number;
   cpu_cores_effective: number;
-  cpu_ram: number;
+  cpu_ram_space: number;
   ratio: number;
 
   disk_name: string;

@@ -1,55 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import { Slider } from "../ui/slider";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { Separator } from "../ui/separator";
-import { Checkbox } from "../ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ChevronDownIcon, RefreshCw } from "lucide-react";
-import {
-  GPUNames,
-  GPUNums,
-  GPUTypes,
-  Geolocations,
-  SortOptions,
-  initialParam,
-  marketplaceBtn,
-} from "@/constants/constant";
-import { useParam } from "../contexts/param-context";
-import type { GPUType } from "@/types/type";
+import { marketplaceBtn } from "@/constants/constant";
 
-import createImage from "@/public/create-template-icon.png";
 import { InstanceConfig } from "../marketplace/market-side/instance-config";
 import { FilterOptions } from "../marketplace/market-side/filter-option";
 
 export const MarketSidebar = () => {
-  const { param, setParam } = useParam();
-  const {
-    diskSpace,
-    duration,
-    reliability,
-    type,
-    gpuNumber,
-    gpuName,
-    geolocation,
-    order,
-    visibleUnverified,
-    showIncompatible,
-  } = param;
-
-  const updateParam = (key: string, value: any) => {
-    setParam({ ...param, [key]: value });
-  };
-
   // Dialog Open Status
   const [open, setOpen] = useState<boolean>(false);
   const [activeBtn, setActiveBtn] = useState(marketplaceBtn[0]?.name);

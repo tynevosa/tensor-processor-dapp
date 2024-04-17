@@ -10,6 +10,7 @@ export const AvailabilityFilter = () => {
   const updateParam = (key: string, value: any) => {
     setParam({ ...param, [key]: value });
   };
+
   return (
     <div className="flex flex-col gap-6 items-stretch">
       <div className="flex flex-col gap-7">

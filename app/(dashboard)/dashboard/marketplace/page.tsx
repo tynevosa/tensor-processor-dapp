@@ -8,6 +8,7 @@ import {
   Geolocations,
   HOURS_A_DAY,
   SortOptions,
+  initialParam,
 } from "@/constants/constant";
 import { GPUInfoType } from "@/types/type";
 import { FC, useCallback, useEffect, useState } from "react";
@@ -18,12 +19,13 @@ import { useReveal } from "@/components/contexts/marketplace-context";
 import Image from "next/image";
 import { ModelDetialsBar } from "@/components/marketplace/model-details-bar";
 import { MarketSidebar } from "@/components/layout/market-side";
+import { useInView } from "react-intersection-observer";
 
 const Page: FC = () => {
   const { param } = useParam();
   const { reveal } = useReveal();
   const debounce = useDebounce(param, 500);
-
+  const { ref, inView } = useInView();
   const [dataSource, setDataSource] = useState<GPUInfoType[]>([]);
 
   const fetchData = useCallback(async () => {
@@ -33,18 +35,32 @@ const Page: FC = () => {
         disk_space: { gte: param.diskSpace },
         duration: { gte: param.duration * HOURS_A_DAY },
         rentable: { eq: true },
-        num_gpus: GPUNums[param.gpuNumber],
+        num_gpus: { gte: param.gpu_count },
         sort_option: SortOptions[param.order],
         order: Object.values(SortOptions[param.order]),
         allocated_storage: param.diskSpace,
         type: param.type,
         limit: 10,
-        ...(!param.per_hour && { dph_total: { gte: param.per_hour / 100 } }),
-        ...(!param.tb_upload && {
-          inet_up_cost: { gte: param.tb_upload / 100 },
+        ...(param.per_hour !== initialParam.per_hour && {
+          dph_total: { gte: param.per_hour / 100 },
         }),
-        ...(!param.tb_download && {
-          inet_down_cost: { gte: param.tb_download / 100 },
+        ...(param.tflops !== initialParam.tflops && {
+          total_flops: { gte: param.tflops },
+        }),
+        ...(param.per_gpu_ram !== initialParam.per_gpu_ram && {
+          flops_per_dphtotal: { gte: param.per_gpu_ram },
+        }),
+        ...(param.tb_upload !== initialParam.tb_upload && {
+          inet_up_cost: { gte: param.tb_upload / 100000 },
+        }),
+        ...(param.cpu_core !== initialParam.cpu_core && {
+          cpu_cores_effective: { gte: param.cpu_core },
+        }),
+        ...(param.cpu_ram_space !== initialParam.cpu_ram_space && {
+          cpu_ram: { gte: param.cpu_ram_space },
+        }),
+        ...(param.tb_download !== initialParam.tb_download && {
+          inet_down_cost: { gte: param.tb_download / 10000 },
         }),
         ...(param.showIncompatible && { show_incompatible: { eq: true } }),
         ...(!param.visibleUnverified && { verified: { eq: true } }),
@@ -66,7 +82,6 @@ const Page: FC = () => {
       }
 
       const data = await response.data;
-      // console.log(data);
       if (data && data.offers) {
         setDataSource(data.offers.map((item: any) => item as GPUInfoType));
       }
@@ -74,26 +89,30 @@ const Page: FC = () => {
       console.error(error);
     }
   }, [
+    param.cpu_core,
     param.diskSpace,
     param.duration,
     param.geolocation,
     param.gpuName,
-    param.gpuNumber,
     param.order,
     param.reliability,
     param.showIncompatible,
     param.type,
     param.visibleUnverified,
-    param.unavailable,
     param.staticIpAddress,
-    param.secureCloud,
+    param.per_hour,
+    param.tb_download,
+    param.tb_upload,
+    param.per_gpu_ram,
+    param.gpu_count,
+    param.tflops,
+    param.cpu_ram_space,
   ]);
 
   useEffect(() => {
     fetchData();
   }, [debounce, fetchData]);
 
-  console.log(reveal);
   return (
     <>
       <MarketSidebar />
@@ -111,7 +130,9 @@ const Page: FC = () => {
                   ))}
                   {dataSource.length === 0 && (
                     <div className="text-white text-2xl text-center py-52">
-                      <Spinner />
+                      <span className="text-white font-semibold">
+                        No machines
+                      </span>
                     </div>
                   )}
                 </div>

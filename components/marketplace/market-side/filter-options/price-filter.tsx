@@ -63,7 +63,7 @@ export const PriceFilter = () => {
       </div>
       <div className="flex flex-col gap-4 items-stretch">
         <div className="flex justify-between text-white">
-          <span className="text-base font-semibold">Max Instance Duration</span>
+          <span className="text-base font-semibold">$TB(Download)</span>
           <span className="text-base font-bold">{`${tb_download}`}</span>
         </div>
         <Slider

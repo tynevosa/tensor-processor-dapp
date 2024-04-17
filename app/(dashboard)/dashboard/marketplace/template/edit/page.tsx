@@ -50,7 +50,7 @@ export default function TemplateEditor() {
                   <SelectContent className="bg-[#121218] border border-[#242835]">
                     <SelectGroup className="w-full">
                       <SelectItem
-                        value={"MDD"}
+                        value={"select"}
                         key={""}
                         className="rounded-sm text-white font-semibold text-base"
                       ></SelectItem>
@@ -193,11 +193,11 @@ export default function TemplateEditor() {
                 <span className=" text-white text-base">
                   Recommended Disk Space
                 </span>
-                <span className=" text-white text-base">8.00 GB</span>
+                <span className=" text-white text-base">8.00 TB</span>
               </div>
               <Slider
                 defaultValue={[8]}
-                max={100}
+                max={1024}
                 min={0}
                 step={1}
                 className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"

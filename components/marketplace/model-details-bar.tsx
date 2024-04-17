@@ -107,10 +107,10 @@ export const ModelDetialsBar: React.FC<ModelDetailsProps> = ({
               )}/${modelDetail.cpu_cores} cpu`}</span>
               <span className="text-white text-sm">
                 {`${normalizeCapacity(
-                  modelDetail.cpu_ram,
+                  modelDetail.cpu_ram_space,
                   0,
                   false
-                )}/${normalizeCapacity(modelDetail.cpu_ram * ratio, 0)}`}
+                )}/${normalizeCapacity(modelDetail.cpu_ram_space * ratio, 0)}`}
               </span>
             </div>
           </div>
