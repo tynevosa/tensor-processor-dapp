@@ -89,7 +89,11 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
         if (outputType === "array") setOutput(output[0]);
         if (outputType === "string") setOutput(output);
       } else {
-        setOutput(output ?? Object.values(output)[0]);
+        if (output.audio_out) {
+          setOutput(output.audio_out);
+        } else {
+          setOutput(output);
+        }
       }
     },
     [schema]

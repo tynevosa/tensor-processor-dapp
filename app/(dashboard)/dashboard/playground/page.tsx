@@ -94,6 +94,7 @@ export default function Page() {
                       </video>
                     ) : (
                       <Image
+                        unoptimized
                         alt="model"
                         src={cover_image_url || "/images/model.svg"}
                         width={400}
