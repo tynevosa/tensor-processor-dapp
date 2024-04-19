@@ -16,6 +16,8 @@ export type GPUType = "ask" | "reserved" | "bid";
 
 export type StyleType = "multi" | "single" | "tripple";
 
+export type NumImagesTypes = "1" | "2" | "3" | "4";
+
 export type GPUNumberRange = {
   gte?: number;
   lte?: number;
@@ -48,8 +50,21 @@ export type FilterOptions = {
   diskSpace: number;
   duration: number;
   reliability: number;
+  per_hour: number;
+  tflops_hour: number;
+  tb_upload: number;
+  tb_download: number;
+  gpu_count: number;
+  tflops: number;
+  per_gpu_ram: number;
+  cpu_core: number;
+  cpu_ram_space: number;
+  cpu_ghz: number;
   prompt_str: number;
   control_dep_str: number;
+  inference_steps: number;
+  guidance_scale: number;
+  num_output: number;
   type: GPUType;
   gpuNumber: string;
   gpuName: string;
@@ -57,6 +72,9 @@ export type FilterOptions = {
   order: string;
   visibleUnverified: boolean;
   showIncompatible: boolean;
+  unavailable: boolean;
+  staticIpAddress: boolean;
+  secureCloud: boolean;
 };
 
 export type GPUInfoType = {
@@ -83,7 +101,7 @@ export type GPUInfoType = {
   cpu_name: string;
   cpu_cores: number;
   cpu_cores_effective: number;
-  cpu_ram: number;
+  cpu_ram_space: number;
   ratio: number;
 
   disk_name: string;
@@ -94,4 +112,15 @@ export type GPUInfoType = {
   dlperf_per_dphtotal: number;
 
   storage_total_cost: number;
+};
+
+export type InputType = {
+  prompt?: string;
+  negative_prompt?: string;
+  width?: number;
+  height?: number;
+  guidance_scale?: number;
+  num_inference_steps?: number;
+  num_outputs?: number;
+  scheduler?: string;
 };
