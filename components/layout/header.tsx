@@ -35,7 +35,7 @@ const NavbarItem = ({
     <div
       className={cn(
         "relative side-item transition-all transition-duration-500 ",
-        { "side-item-hover": focused },
+        { "side-item-hover": focused }
       )}
     >
       <Link href={href}>
@@ -104,9 +104,11 @@ export const Header = () => {
               className="px-8 py-6 font-semibold text-lg"
               variant={"secondary"}
             >
-              {address?.substring(0, 6) +
-                "..." +
-                address?.substring(address.length - 4)}
+              {address
+                ? address?.substring(0, 6) +
+                  "..." +
+                  address?.substring(address.length - 4)
+                : "Loading..."}
               <Image
                 src={profile}
                 width={20}
@@ -120,9 +122,11 @@ export const Header = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="flex flex-col gap-3 border-[#242835] bg-[#01050E] p-4 border rounded-[12px] w-56">
             <p className="flex justify-between items-center font-semibold text-[#A1ACC2] text-base leading-6">
-              {address?.substring(0, 6) +
-                "..." +
-                address?.substring(address.length - 4)}
+              {address
+                ? address?.substring(0, 6) +
+                  "..." +
+                  address?.substring(address.length - 4)
+                : "Loading..."}
               <Copy
                 size={16}
                 className="text-white translate-y-[-1px] cursor-pointer"
