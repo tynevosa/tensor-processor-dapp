@@ -63,7 +63,7 @@ export default function Page() {
           {modelDatas.map(
             (
               {
-                cover_image_url = "/images/model.svg",
+                cover_image_url = "/images/model01.png",
                 description,
                 name,
                 run_count,
@@ -96,10 +96,10 @@ export default function Page() {
                       <Image
                         unoptimized
                         alt="model"
-                        src={cover_image_url || "/images/model.svg"}
+                        src={cover_image_url || "/images/model01.png"}
                         width={400}
                         onError={({ currentTarget }) =>
-                          (currentTarget.src = "/images/model.svg")
+                          (currentTarget.src = "/images/model01.png")
                         }
                         height={264}
                         priority
