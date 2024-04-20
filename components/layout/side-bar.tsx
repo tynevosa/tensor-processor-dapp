@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import logo from "@/public/logo.png";
 import logoText from "@/public/logo-text.png";
-import { Icons } from "../icons";
+import { Icons } from "../ui/icons";
 import { Separator } from "../ui/separator";
 import { sideItems } from "@/constants/constant";
 import { cn } from "@/lib/utils";
@@ -63,10 +63,10 @@ export const Sidebar = () => {
   return (
     <div className="h-screen  lg:flex hidden gap-0">
       <div className="flex flex-col h-full w-64 p-8 gap-24 bg-[#000510]">
-        {/* <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center">
           <Image src={logo} alt="Logo" priority />
           <Image src={logoText} alt="Logo Text" />
-        </div> */}
+        </div>
         <div className="flex-grow flex flex-col gap-6 items-stretch">
           {sideItems.map((item, idx) => (
             <SidebarItem
@@ -78,14 +78,14 @@ export const Sidebar = () => {
           ))}
         </div>
 
-        {/* <SidebarItem
+        <SidebarItem
           title={address ? normalizeAddress(address) : "Loading ..."}
           icon="userRound"
           href="/dashboard"
           selected
-        /> */}
+        />
       </div>
-      {/* <Separator orientation="vertical" className="bg-gray-800" /> */}
+      <Separator orientation="vertical" className="bg-gray-800" />
     </div>
   );
 };

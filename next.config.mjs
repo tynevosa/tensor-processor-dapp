@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["tjzk.replicate.delivery", "replicate.delivery"],
+    // domains: ["tjzk.replicate.delivery", "replicate.delivery"],
     remotePatterns: [
       {
         protocol: "https",

@@ -1,4 +1,4 @@
-const Info = () => {
+export const Info = () => {
   return (
     <div className="flex mt-5 md:flex-row flex-col w-full gap-6">
       <div className="flex flex-col gap-4">
@@ -14,5 +14,3 @@ const Info = () => {
     </div>
   );
 };
-
-export default Info;

@@ -44,7 +44,6 @@ export default function Page() {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
-  // console.log(isPending);
 
   useEffect(() => {
     if (modelPage?.length > 0) {
@@ -53,7 +52,6 @@ export default function Page() {
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
-  // console.log(modelDatas?.map((item) => item?.name));
 
   return (
     <ScrollArea className="w-full h-full">
@@ -74,7 +72,7 @@ export default function Page() {
             ) => {
               return (
                 <Link
-                  href={`/dashboard/models/${name}`}
+                  href={`/dashboard/playground/${name}`}
                   key={index}
                   className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
                 >
@@ -96,6 +94,7 @@ export default function Page() {
                       </video>
                     ) : (
                       <Image
+                        unoptimized
                         alt="model"
                         src={cover_image_url || "/images/model.svg"}
                         width={400}

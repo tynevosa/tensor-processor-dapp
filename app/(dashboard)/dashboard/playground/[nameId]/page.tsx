@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-
-// components
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { buttonTab, inputTab, ouputTab } from "@/constants/constant";
+import { buttonTab } from "@/constants/constant";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Playground from "@/components/models/playground";
-import { API } from "@/components/models/api";
-import Info from "@/components/models/info";
+import { Playground } from "@/components/playground/playground";
+import { API } from "@/components/playground/api";
+import { Info } from "@/components/playground/info";
+import { TInputValue } from "@/types/type";
+import { ModelProvider } from "@/components/contexts/model-context";
 
 type Props = {
   params: {
@@ -22,9 +20,9 @@ type Props = {
 
 const ModelDetailPage = ({ params }: Props) => {
   const [activeBtn, setActiveBtn] = useState(buttonTab[0]?.name);
+  const [inputSchemas, setInputSchemas] = useState<TInputValue>([]);
 
   const { nameId } = params;
-
   const { data: model, error } = useQuery({
     queryKey: ["model-detail"],
     queryFn: () =>
@@ -36,7 +34,26 @@ const ModelDetailPage = ({ params }: Props) => {
         })
         .then((res) => res.data),
   });
-  console.log(model);
+
+  const mappingSchemaToInput = async (properties: any) => {
+    const schemaKeys = Object.keys(properties);
+    let tempInput: any = {};
+    for (let i = 0; i < schemaKeys.length; i++) {
+      const schemaKey = schemaKeys[i];
+      const schemaValue = properties[schemaKey];
+      tempInput[schemaKey] = schemaValue["default"];
+    }
+    setInputSchemas(tempInput);
+  };
+
+  useEffect(() => {
+    if (model) {
+      const properties = model["api_schema"]["Input"]["properties"];
+      if (properties ?? Object.keys(properties)?.length > 0) {
+        mappingSchemaToInput(properties);
+      }
+    }
+  }, [model]);
 
   if (error) return "An error has occurred: " + error.message;
 
@@ -47,38 +64,8 @@ const ModelDetailPage = ({ params }: Props) => {
       <div className="container mx-auto px-10 py-16 w-full h-full gap-10 flex flex-col">
         <div className="flex md:flex-row flex-col md:justify-between justify-center items-start">
           <div className="flex flex-col gap-5">
-            <h1 className="font-bold text-3xl text-white">tpu/ {model.name}</h1>
+            <h1 className="font-bold text-3xl text-white">{model.name}</h1>
             <p className="text-white text-lg">{model.description}</p>
-            <div className="flex flex-row items-center gap-4">
-              <span className="text-[#97AEF3] px-3 py-1.5 bg-[#97AEF31A] rounded-full">
-                Public
-              </span>
-              <span className="text-[#97AEF3] px-3 py-1.5 bg-[#97AEF31A] rounded-full">
-                {model.run_count} runs
-              </span>
-            </div>
-          </div>
-          <div className="flex md:mt-0 mt-5 flex-row items-center gap-6">
-            <Link href={"github"} className="flex flex-row gap-2">
-              <Image
-                src={"/images/model/github.svg"}
-                alt="court"
-                width={24}
-                height={24}
-                className="h-full w-full"
-              />
-              <span className="text-[#97AEF3] text-lg">Github</span>
-            </Link>
-            <Link href={"license"} className="flex flex-row gap-2">
-              <Image
-                src={"/images/model/court-law.svg"}
-                alt="court"
-                width={24}
-                height={24}
-                className="h-full w-full"
-              />
-              <span className="text-[#97AEF3] text-lg">License</span>
-            </Link>
           </div>
         </div>
 
@@ -112,11 +99,13 @@ const ModelDetailPage = ({ params }: Props) => {
           ))}
         </div>
         {activeBtn === "Playground" ? (
-          <Playground
-            defaultInput={model["default_example"]["input"]}
-            model={model.name}
-            defaultOutput={model["default_example"]["output"]}
-          />
+          <ModelProvider>
+            <Playground
+              schema={model?.api_schema}
+              defaultExample={model?.default_example}
+              modelId={model?.name ?? ""}
+            />
+          </ModelProvider>
         ) : activeBtn === "API" ? (
           <API />
         ) : (

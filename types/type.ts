@@ -1,4 +1,4 @@
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 
 export type sideItem = {
   name: string;
@@ -114,13 +114,26 @@ export type GPUInfoType = {
   storage_total_cost: number;
 };
 
-export type InputType = {
-  prompt?: string;
-  negative_prompt?: string;
-  width?: number;
-  height?: number;
-  guidance_scale?: number;
-  num_inference_steps?: number;
-  num_outputs?: number;
-  scheduler?: string;
+export type TInputValue = {
+  [key: string]: any;
+};
+
+export enum EInputType {
+  number = "number",
+  string = "string",
+  select = "select",
+  switch = "switch",
+  slider = "slider",
+  image = "image",
+}
+
+export type TInputSchema = {
+  type: EInputType;
+  description: string;
+  default?: string;
+  title: string;
+  xOrder: number;
+  options?: string[];
+  key: string;
+  formatUrl?: string;
 };
