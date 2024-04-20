@@ -81,7 +81,7 @@ const config = {
           "linear-gradient(90deg, rgba(151, 174, 243, 0) 0%, #97AEF3 100%)",
         "item-gradient":
           "linear-gradient(270deg, rgba(151, 175, 255, 0.3) 0%, rgba(151, 174, 243, 0) 100%)",
-        auth: "url('../public/images/auth-bg.png')",
+        auth: "url('../public/images/auth-bg.jpg')",
         "text-gradient":
           "-webkit-linear-gradient(180deg, #FFFFFF 0%, #B3B3B3 88.94%)",
       },

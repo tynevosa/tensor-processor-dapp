@@ -55,13 +55,13 @@ const Page = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/dashboard/models");
+      router.push("/dashboard/playground");
     }
   }, [isLoggedIn, router]);
 
   return (
     <div className="flex items-stretch w-full h-screen">
-      <div className="bg-[url(/backgrounds/auth-left.png)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
+      <div className="bg-[url(/backgrounds/auth-left.jpg)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
         <div className="flex flex-col flex-grow justify-center items-center gap-12">
           <CardCarousel />
         </div>
@@ -77,7 +77,7 @@ const Page = () => {
             <span
               className={cn(
                 "text-4xl font-bold text-center bg-text-gradient bg-clip-text text-transparent",
-                WhyteInktrap.className,
+                WhyteInktrap.className
               )}
             >
               Welcome back

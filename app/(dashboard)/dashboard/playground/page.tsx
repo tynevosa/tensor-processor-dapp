@@ -9,7 +9,6 @@ import { useInView } from "react-intersection-observer";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
-import { Loader } from "@/components/ui/loader";
 
 export default function Page() {
   const [page, setPage] = useState(1);
@@ -35,7 +34,7 @@ export default function Page() {
             headers: {
               "Content-Type": "application/json",
             },
-          },
+          }
         )
         .then((res) => res.data),
   });
@@ -45,19 +44,14 @@ export default function Page() {
       setPage((prev) => prev + 1);
     }
   }, [inView]);
-  // console.log(isPending);
 
   useEffect(() => {
     if (modelPage?.length > 0) {
-      const modelData = modelPage?.filter(
-        (item: ModelInfoType) => item?.availability === true,
-      );
-      setModelDatas((prev) => [...prev, ...modelData]);
+      setModelDatas((prev) => [...prev, ...modelPage]);
     }
   }, [modelPage]);
 
   if (error) return "An error has occurred: " + error.message;
-  // console.log(modelDatas?.map((item) => item?.name));
 
   return (
     <ScrollArea className="w-full h-full">
@@ -69,16 +63,16 @@ export default function Page() {
           {modelDatas.map(
             (
               {
-                cover_image_url = "/images/model.svg",
+                cover_image_url = "/images/model01.png",
                 description,
                 name,
                 run_count,
               },
-              index,
+              index
             ) => {
               return (
                 <Link
-                  href={`/dashboard/models/${name}`}
+                  href={`/dashboard/playground/${name}`}
                   key={index}
                   className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
                 >
@@ -100,11 +94,12 @@ export default function Page() {
                       </video>
                     ) : (
                       <Image
+                        unoptimized
                         alt="model"
-                        src={cover_image_url || "/images/model.svg"}
+                        src={cover_image_url || "/images/model01.png"}
                         width={400}
                         onError={({ currentTarget }) =>
-                          (currentTarget.src = "/images/model.svg")
+                          (currentTarget.src = "/images/model01.png")
                         }
                         height={264}
                         priority
@@ -133,10 +128,16 @@ export default function Page() {
                   </div>
                 </Link>
               );
-            },
+            }
           )}
         </div>
-        <Loader isPending={isPending} modelDatas={modelDatas} />
+        <div
+          className={cn("flex justify-center items-center  mt-10", {
+            "mt-[20%]": modelDatas.length === 0,
+          })}
+        >
+          {isPending === "fetching" && <Spinner />}
+        </div>
       </div>
     </ScrollArea>
   );
