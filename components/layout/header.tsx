@@ -72,7 +72,7 @@ const NavbarItem = ({
   );
 };
 
-export const Header = () => {
+export const Header = ({ admin }: { admin?: boolean }) => {
   const profile = "/images/navbar/profile.svg";
   const address = useAddress();
   const copy = (str: string) => {
@@ -88,14 +88,15 @@ export const Header = () => {
         <p className="font-bold text-3xl text-white">TPU</p>
       </div>
       <div className="lg:flex flex-row justify-center gap-7 hidden w-6/12">
-        {navItems.map((item, idx) => (
-          <NavbarItem
-            key={idx}
-            title={item.name}
-            icon={item.icon}
-            href={item.href}
-          />
-        ))}
+        {!admin &&
+          navItems.map((item, idx) => (
+            <NavbarItem
+              key={idx}
+              title={item.name}
+              icon={item.icon}
+              href={item.href}
+            />
+          ))}
       </div>
       <div className="flex justify-end w-3/12">
         <DropdownMenu>
@@ -134,9 +135,14 @@ export const Header = () => {
               />
             </p>
             <DropdownMenuSeparator className="bg-[#181D24]" />
-            <p className="hover:bg-[#0E1117] px-3 py-2 rounded-[4px] font-semibold text-[#DADFEA] text-base leading-6">
+            <button
+              onClick={() => {
+                router.push("/dashboard/billing");
+              }}
+              className="hover:bg-[#0E1117] px-3 py-2 rounded-[4px] font-semibold text-[#DADFEA] text-base leading-6 text-start"
+            >
               Billing
-            </p>
+            </button>
             <p
               onClick={() => {
                 logout();

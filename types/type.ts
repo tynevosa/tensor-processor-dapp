@@ -44,6 +44,15 @@ export type ModelInfoType = {
   run_count: number;
   url: string;
   visibility: string;
+  short_desc: string;
+  availability: boolean;
+  replicate_link: string;
+  collection_id: number[];
+  api_schema: {
+    Input: {
+      rendered: string[];
+    };
+  };
 };
 
 export type FilterOptions = {
@@ -136,4 +145,14 @@ export type TInputSchema = {
   options?: string[];
   key: string;
   formatUrl?: string;
+};
+
+export type TBillingSchema = {
+  date: string;
+  transactionId: string;
+  description: string;
+  cost: number;
+  type: number;
+  token: string;
+  logo: string;
 };
