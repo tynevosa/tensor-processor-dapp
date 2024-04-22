@@ -42,17 +42,24 @@ export default function Page() {
     queryFn: () => axios.get("/api/credit/history").then((res) => res.data),
   });
 
+  const {
+    data: user,
+  } = useQuery({
+    queryKey: ["user-info"],
+    queryFn: () => axios.get("/api/credential").then((res) => res.data),
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(billingHistory?.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(billingHistory?.history.length / ITEMS_PER_PAGE);
 
   // Calculate the indices of the first and last items on the current page
   const firstItemIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const lastItemIndex = firstItemIndex + ITEMS_PER_PAGE;
 
   // Slice the billingHistory array to only include items for the current page
-  const currentItems = billingHistory?.slice(firstItemIndex, lastItemIndex);
+  const currentItems = billingHistory?.history.slice(firstItemIndex, lastItemIndex);
 
   // Function to change page
   const goToPage = (pageNumber: number) => {
@@ -64,8 +71,11 @@ export default function Page() {
       <div className="text-white items-center flex flex-col w-full h-[982px] mt-20">
         <div className="flex w-4/5 gap-6 mb-16 ">
           {" "}
-          <WalletBalance />
-          <div className="w-3/5 gap-2 flex flex-col p-4 bg-[#0B0B0E] border border-[#242835] rounded-lg   ">
+          <WalletBalance 
+            balance={user?.balance}
+            total={billingHistory?.total_spent}
+          />
+          {/* <div className="w-3/5 gap-2 flex flex-col p-4 bg-[#0B0B0E] border border-[#242835] rounded-lg   ">
             {billing_tokens.map((token, index) => (
               <BillingTokens
                 key={index}
@@ -75,7 +85,7 @@ export default function Page() {
                 value={token.value}
               />
             ))}
-          </div>
+          </div> */}
         </div>
         <div className="w-4/5 mb-6 ">
           <h1 className="text-2xl font-bold font-chakra-petch  ">

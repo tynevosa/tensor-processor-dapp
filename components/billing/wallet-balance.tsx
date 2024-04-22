@@ -3,7 +3,12 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Popup } from "./pop-up";
 import Image from "next/image";
 
-export const WalletBalance = () => {
+interface WalletBalanceProps {
+  balance: number;
+  total: number;
+}
+
+export const WalletBalance = (props: WalletBalanceProps) => {
   return (
     <div className="w-2/5  p-6 border border-[#242835] rounded-lg  ">
       <div className="flex justify-between items-center">
@@ -12,7 +17,7 @@ export const WalletBalance = () => {
             Total Wallet Balance
           </h1>
           <h1 className="text-white  font-chakra-petch font-semibold text-4xl ">
-            $487.80
+            {`$${props.balance?.toFixed(2)}`}
           </h1>
         </div>
         <Dialog>
@@ -42,10 +47,10 @@ export const WalletBalance = () => {
             />
           </div>
           <h1 className="text-[#EAEAF7] text-2xl font-semibold font-chakra-petch ">
-            $1087.90
+          {`$${props.total?.toFixed(2)}`}
           </h1>
         </div>
-        <div className="flex flex-col gap-3 ">
+        {/* <div className="flex flex-col gap-3 ">
           <div className="text-[#A1ACC2] flex  items-center gap-2 text-sm font-chakra-petch font-medium ">
             Last Bill
             <Image
@@ -58,7 +63,7 @@ export const WalletBalance = () => {
           <h1 className="text-[#EAEAF7] text-2xl font-semibold font-chakra-petch ">
             $69.00
           </h1>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { useAddress } from "@thirdweb-dev/react";
 import Image from "next/image";
 import React from "react";
 interface BillingHistoryProps {
@@ -33,22 +34,23 @@ export const BillingHistory: React.FC<BillingHistoryProps> = ({
   logo,
 }) => {
   const formattedDate = formatDate(created_at);
+  const address = useAddress();
   return (
     <div className="px-6 flex font-chakra-petch py-8 border-b  border-[#1A1A22] w-full ">
       <div className="flex-1 text-lg font-semibold text-white">
         {formattedDate}
       </div>
       <div className=" flex-1 text-ellipsis pr-5 text-lg text-[#97AEF3] overflow-hidden font-semibold ">
-        0xde345hrt54645g343433...
+        {address?.substring(0, 6) + "..." + address?.substring(address.length - 4)}
       </div>
-      <div className="flex-1 text-lg font-semibold">RTX4090 - 20hrs</div>
+      <div className="flex-1 text-lg font-semibold">{type}</div>
       <div
         className={`flex-1 text-lg font-semibold  ${
           type === 1 ? "text-[#BBF7D0]" : "text-[#FECACA]"
         } `}
       >
         {type === 1 ? "+" : "-"}
-        {cost?.toFixed(2)} USD
+        {cost?.toFixed(4)} USD
       </div>
       <div className="flex-1 flex gap-2 items-center ">
         <Image
