@@ -17,7 +17,6 @@ export const Popup: React.FC = ({}) => {
   const [txid, setTxid] = useState("");
   const timer = useRef<NodeJS.Timeout>();
   const [loading, setLoading] = useState(false);
-  console.log(step, transactionInitiated, transactionUrl, txid);
 
   const [creditsAmount, setCreditsAmount] = useState("");
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +49,6 @@ export const Popup: React.FC = ({}) => {
       },
       body: JSON.stringify({ amount: creditsAmount }),
     });
-    console.log(res);
     if (!res.ok) {
       setStep("failed");
       toast({
@@ -63,7 +61,6 @@ export const Popup: React.FC = ({}) => {
     }
 
     const data = await res.json();
-    console.log(data);
     if (data.url) {
       setTransactionUrl(data.url);
       setTxid(data.tx);
@@ -108,9 +105,6 @@ export const Popup: React.FC = ({}) => {
     return () => clearInterval(timer.current);
   }, [step]);
 
-  const handleCancel = () => {
-    console.log("Cancelled");
-  };
   //   if (!isConnected) {
   //     return (
   //       <div className="bg-black flex flex-col justify-evenly text-center items-center h-[336px] text-white">
