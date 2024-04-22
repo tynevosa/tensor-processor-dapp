@@ -4,6 +4,7 @@ import { BillingHistory } from "@/components/billing/billing-history";
 import { BillingTokens } from "@/components/billing/billing-tokens";
 import { WalletBalance } from "@/components/billing/wallet-balance";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { TBillingSchema } from "@/types/type";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -77,9 +78,11 @@ export default function Page() {
     queryFn: () => axios.get("/api/credit/history").then((res) => res.data),
   });
 
+  console.log(billingHistory);
+
   return (
-    <ScrollArea className="w-full justify-center items-center  ">
-      <div className="text-white justify-center items-center flex flex-col w-full h-[982px]">
+    <ScrollArea className="w-full justify-center items-center">
+      <div className="text-white items-center flex flex-col w-full h-[982px] mt-20">
         <div className="flex w-4/5 gap-6 mb-16 ">
           {" "}
           <WalletBalance />
@@ -119,16 +122,16 @@ export default function Page() {
               token
             </div>
           </div>
-          {billing_history.map((history, index) => (
+          {billingHistory?.map((history: any, index: string) => (
             <BillingHistory
               key={index}
-              date={history.date}
-              transactionId={history.transactionId}
-              description={history.description}
-              cost={history.cost}
-              type={history.type}
-              token={history.token}
-              logo={history.logo}
+              created_at={history?.created_at}
+              transactionId={history?.transactionId}
+              description={history?.description}
+              cost={history?.cost}
+              type={history?.type}
+              token={history?.token}
+              logo={history?.logo}
             />
           ))}
         </div>

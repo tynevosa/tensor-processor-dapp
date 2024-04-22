@@ -50,9 +50,9 @@ export type ModelInfoType = {
   collection_id: number[];
   api_schema: {
     Input: {
-      rendered: string[]
-    }
-  }
+      rendered: string[];
+    };
+  };
 };
 
 export type FilterOptions = {
@@ -145,4 +145,14 @@ export type TInputSchema = {
   options?: string[];
   key: string;
   formatUrl?: string;
+};
+
+export type TBillingSchema = {
+  date: string;
+  transactionId: string;
+  description: string;
+  cost: number;
+  type: number;
+  token: string;
+  logo: string;
 };
