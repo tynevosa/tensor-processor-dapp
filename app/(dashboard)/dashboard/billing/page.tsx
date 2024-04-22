@@ -1,9 +1,13 @@
+"use client";
+
 import { BillingHistory } from "@/components/billing/billing-history";
 import { BillingTokens } from "@/components/billing/billing-tokens";
 import { WalletBalance } from "@/components/billing/wallet-balance";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const page = () => {
+export default function Page() {
   const billing_tokens = [
     {
       token: "USDT",
@@ -64,9 +68,18 @@ const page = () => {
     },
   ];
 
+  const {
+    data: billingHistory,
+    fetchStatus: isPending,
+    error,
+  } = useQuery({
+    queryKey: ["billing-history"],
+    queryFn: () => axios.get("/api/credit/history").then((res) => res.data),
+  });
+
   return (
     <ScrollArea className="w-full justify-center items-center  ">
-      <div className="text-white justify-center items-center flex flex-col w-full h-[982px]    ">
+      <div className="text-white justify-center items-center flex flex-col w-full h-[982px]">
         <div className="flex w-4/5 gap-6 mb-16 ">
           {" "}
           <WalletBalance />
@@ -122,6 +135,4 @@ const page = () => {
       </div>
     </ScrollArea>
   );
-};
-
-export default page;
+}
