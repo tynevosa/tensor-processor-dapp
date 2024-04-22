@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Popup } from "./pop-up";
+import Image from "next/image";
 
 export const WalletBalance = () => {
   return (
@@ -16,7 +17,13 @@ export const WalletBalance = () => {
         </div>
         <Dialog>
           <DialogTrigger className="bg-[#97AEF3] hover:bg-[#8194ced5] py-3 px-3 rounded-lg flex gap-2 text-[#0C0C0C] text-lg font-semibold font-chakra-petch justify-center items-center ">
-            <img src="/images/billing/addSquare.svg" alt="add" /> Top up
+            <Image
+              src="/images/billing/addSquare.svg"
+              alt="add"
+              width={24}
+              height={24}
+            />{" "}
+            Top up
           </DialogTrigger>
           <DialogContent className="bg-[#0B0B0E] border-[#242835] rounded-none w-[668px]">
             <Popup />
@@ -27,7 +34,12 @@ export const WalletBalance = () => {
         <div className="flex flex-col gap-3 ">
           <div className="text-[#A1ACC2] flex  items-center gap-2 text-sm font-chakra-petch font-medium ">
             Total Credit Utilized
-            <img src="/images/billing/infoCircle.svg" alt="info" />
+            <Image
+              src="/images/billing/infoCircle.svg"
+              alt="info"
+              width={24}
+              height={24}
+            />
           </div>
           <h1 className="text-[#EAEAF7] text-2xl font-semibold font-chakra-petch ">
             $1087.90
@@ -36,7 +48,12 @@ export const WalletBalance = () => {
         <div className="flex flex-col gap-3 ">
           <div className="text-[#A1ACC2] flex  items-center gap-2 text-sm font-chakra-petch font-medium ">
             Last Bill
-            <img src="/images/billing/infoCircle.svg" alt="info" />
+            <Image
+              src="/images/billing/infoCircle.svg"
+              alt="info"
+              height={24}
+              width={24}
+            />
           </div>
           <h1 className="text-[#EAEAF7] text-2xl font-semibold font-chakra-petch ">
             $69.00

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 interface BillingHistoryProps {
   created_at: string;
@@ -50,7 +51,7 @@ export const BillingHistory: React.FC<BillingHistoryProps> = ({
         {cost?.toFixed(2)} USD
       </div>
       <div className="flex-1 flex gap-2 items-center ">
-        <img
+        <Image
           src={"/images/billing/Tether.svg"}
           alt="logo"
           width={22}
