@@ -103,15 +103,43 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
     outputTypeValidate(defaultExample["output"]);
   }, [schema, defaultExample, outputTypeValidate]);
 
-  const mutation = useMutation({
-    mutationFn: (input: any) => axios.post("/api/prediction", input),
-    onSuccess: (data) => {
-      outputTypeValidate(data.data.output);
-      setTime(data.data.time);
-    },
-  });
+  const [predictionStatus, setPredictionStatus] = useState('');
 
-  const predictModel = () => mutation.mutate({ model, input });
+  const predictModel = async () => {
+    try {
+      const response = await axios.post("/api/prediction", {model, input});
+      setPredictionStatus(response.data.status);
+      pollPredictionStatus(response.data.id);
+    } catch (error) {
+      console.error("Error initiating prediction:", error);
+    }
+  };
+
+  const pollPredictionStatus = async (id: number) => {
+    try {
+      const response = await axios.get(`/api/prediction/status/${id}`);
+      if (response.data.status !== 'pending') {
+        setPredictionStatus(response.data.status);
+        if (response.data.status === 'success') {
+          fetchPredictionResult(response.data.prediction_id);
+        }
+      } else {
+        setTimeout(() => pollPredictionStatus(id), 1000); // Poll again after 1 second
+      }
+    } catch (error) {
+      console.error("Error polling prediction status:", error);
+    }
+  };
+
+  const fetchPredictionResult = async (id: number) => {
+    try {
+      const response = await axios.get(`/api/prediction/result/${id}`);
+      outputTypeValidate(response.data.output);
+      setTime(response.data.time);
+    } catch (error) {
+      console.error("Error fetching prediction result:", error);
+    }
+  };
 
   return (
     <>
@@ -144,7 +172,7 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
               <OutputComponent
                 time={time}
                 output={output}
-                isPending={mutation.isPending}
+                isPending={predictionStatus === "pending"}
               />
             </div>
           </div>

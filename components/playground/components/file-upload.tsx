@@ -125,18 +125,6 @@ export const FileUploadComponent: React.FC<Props> = ({
           )}
         </div>
       </div>
-      <div className="w-full gap-3 flex flex-col">
-        <div className="w-full py-4 bg-[#0B0B0E]  rounded-sm border-2 border-[#242835] border-dotted flex flex-row gap-2 items-center justify-start px-3">
-          <Image
-            src={"/images/model/camera.svg"}
-            alt="images"
-            width={20}
-            height={20}
-          />
-          <WebcamComponent />
-        </div>
-        <p className="text-lg text-gray-400">{description}</p>
-      </div>
     </>
   );
 };
