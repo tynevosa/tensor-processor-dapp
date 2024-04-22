@@ -8,12 +8,13 @@ import {
 import { navItems } from "@/constants/constant";
 import { cn } from "@/lib/utils";
 import logo from "@/public/logo.png";
-import { useAddress, useLogout } from "@thirdweb-dev/react";
+import { useAddress, useLogout, useUser } from "@thirdweb-dev/react";
 import { Copy, Power } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { useEffect } from "react";
 
 type NavbarItemProps = {
   title: string;
@@ -81,6 +82,14 @@ export const Header = ({ admin } : {admin?: boolean}) => {
   const { logout, isLoading } = useLogout();
 
   const router = useRouter();
+
+  const { isLoggedIn } = useUser();
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+  
   return (
     <div className="flex justify-between items-center border-[#242835] bg-[#000510] px-8 py-4 border-b w-full text-white">
       <div className="flex justify-start items-center gap-3 w-3/12">
@@ -140,7 +149,6 @@ export const Header = ({ admin } : {admin?: boolean}) => {
             <p
               onClick={() => {
                 logout();
-                router.push("/");
               }}
               className="flex items-center gap-[5px] hover:bg-[#0E1117] px-3 py-2 rounded-[4px] font-semibold text-[#DADFEA] text-base leading-6 cursor-pointer"
             >
