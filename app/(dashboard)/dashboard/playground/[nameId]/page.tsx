@@ -99,17 +99,19 @@ const ModelDetailPage = ({ params }: Props) => {
           ))}
         </div>
         <ModelProvider>
-          {activeBtn === "Playground" ? (
+          <div className={`${activeBtn === "Playground" ? "" : "hidden"}`}>
             <Playground
               schema={model?.api_schema}
               defaultExample={model?.default_example}
               modelId={model?.name ?? ""}
             />
-          ) : activeBtn === "API" ? (
+          </div>
+          <div className={`${activeBtn === "API" ? "" : "hidden"}`}>
             <API />
-          ) : (
+          </div>
+          <div className={`${activeBtn === "Info" ? "" : "hidden"}`}>
             <Info />
-          )}
+          </div>
         </ModelProvider>
       </div>
     </ScrollArea>
