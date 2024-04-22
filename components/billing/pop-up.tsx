@@ -44,7 +44,10 @@ export const Popup: React.FC = ({}) => {
     setStep("initiating");
     setLoading(true);
     const res = await fetch("/api/credit/invoice", {
-      method: "get",
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ amount: creditsAmount }),
     });
     console.log(res);
