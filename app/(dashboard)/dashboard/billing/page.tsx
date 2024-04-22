@@ -7,6 +7,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { TBillingSchema } from "@/types/type";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
+
+const ITEMS_PER_PAGE = 4;
 
 export default function Page() {
   const billing_tokens = [
@@ -30,45 +33,6 @@ export default function Page() {
     },
   ];
 
-  const billing_history = [
-    {
-      date: "Feb 13, 2024   19: 24: 00",
-      transactionId: "0xde345hrt54645g343433...",
-      description: "Top up",
-      cost: 24.76,
-      type: 1,
-      token: "DAI",
-      logo: "/images/billing/Dai.svg",
-    },
-    {
-      date: "Feb 13, 2024   19: 24: 00",
-      transactionId: "0xde345hrt54645g343433...",
-      description: "RTX4090 - 20hrs",
-      cost: 21.0,
-      type: 0,
-      token: "DAI",
-      logo: "/images/billing/Dai.svg",
-    },
-    {
-      date: "Feb 13, 2024   19: 24: 00",
-      transactionId: "0xde345hrt54645g343433...",
-      description: "Top up",
-      cost: 24.76,
-      type: 1,
-      token: "USDC",
-      logo: "/images/billing/USDC.svg",
-    },
-    {
-      date: "Feb 13, 2024   19: 24: 00",
-      transactionId: "0xde345hrt54645g343433...",
-      description: "RTX4090 - 20hrs",
-      cost: 10.0,
-      type: 0,
-      token: "USDT",
-      logo: "/images/billing/Tether.svg",
-    },
-  ];
-
   const {
     data: billingHistory,
     fetchStatus: isPending,
@@ -78,7 +42,22 @@ export default function Page() {
     queryFn: () => axios.get("/api/credit/history").then((res) => res.data),
   });
 
-  console.log(billingHistory);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(billingHistory?.length / ITEMS_PER_PAGE);
+
+  // Calculate the indices of the first and last items on the current page
+  const firstItemIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const lastItemIndex = firstItemIndex + ITEMS_PER_PAGE;
+
+  // Slice the billingHistory array to only include items for the current page
+  const currentItems = billingHistory?.slice(firstItemIndex, lastItemIndex);
+
+  // Function to change page
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <ScrollArea className="w-full justify-center items-center">
@@ -122,18 +101,63 @@ export default function Page() {
               token
             </div>
           </div>
-          {billingHistory?.map((history: any, index: string) => (
-            <BillingHistory
-              key={index}
-              created_at={history?.created_at}
-              transactionId={history?.transactionId}
-              description={history?.description}
-              cost={history?.cost}
-              type={history?.type}
-              token={history?.token}
-              logo={history?.logo}
-            />
-          ))}
+          <div>
+            {currentItems?.map((history: any, index: string) => (
+              <BillingHistory
+                key={index}
+                created_at={history?.created_at}
+                transactionId={history?.transactionId}
+                description={history?.description}
+                cost={history?.cost}
+                type={history?.type}
+                token={history?.token}
+                logo={history?.logo}
+              />
+            ))}
+
+            {/* Pagination Controls */}
+            <div className="flex justify-end items-center gap-2 my-4 mr-4">
+              <button
+                className={`px-4 py-2 text-sm font-medium text-white bg-[#121218] rounded-md ${
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-[#121218]"
+                }`}
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    className={`px-3 py-1 text-sm font-medium rounded-md ${
+                      currentPage === pageNumber
+                        ? "bg-[#121218] text-white"
+                        : "text-[#97aef3] bg-[#121218] hover:bg-[#121218] hover:text-white"
+                    }`}
+                    onClick={() => goToPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                )
+              )}
+
+              <button
+                className={`px-4 py-2 text-sm font-medium text-white bg-[#121218] rounded-md ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-[#121218]"
+                }`}
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </ScrollArea>
