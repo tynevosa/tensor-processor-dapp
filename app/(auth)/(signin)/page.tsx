@@ -61,7 +61,7 @@ const Page = () => {
 
   return (
     <div className="flex items-stretch w-full h-screen">
-      <div className="bg-[url(/backgrounds/auth-left.png)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
+      <div className="bg-[url(/backgrounds/auth-left.jpg)] lg:flex flex-col justify-stretch items-stretch hidden bg-cover bg-center py-12 w-1/2">
         <div className="flex flex-col flex-grow justify-center items-center gap-12">
           <CardCarousel />
         </div>

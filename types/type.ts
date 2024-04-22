@@ -44,12 +44,31 @@ export type ModelInfoType = {
   run_count: number;
   url: string;
   visibility: string;
+  short_desc: string;
+  availability: boolean;
+  replicate_link: string;
+  collection_id: number[];
+  api_schema: {
+    Input: {
+      rendered: string[];
+    };
+  };
 };
 
 export type FilterOptions = {
   diskSpace: number;
   duration: number;
   reliability: number;
+  per_hour: number;
+  tflops_hour: number;
+  tb_upload: number;
+  tb_download: number;
+  gpu_count: number;
+  tflops: number;
+  per_gpu_ram: number;
+  cpu_core: number;
+  cpu_ram_space: number;
+  cpu_ghz: number;
   prompt_str: number;
   control_dep_str: number;
   inference_steps: number;
@@ -62,6 +81,9 @@ export type FilterOptions = {
   order: string;
   visibleUnverified: boolean;
   showIncompatible: boolean;
+  unavailable: boolean;
+  staticIpAddress: boolean;
+  secureCloud: boolean;
 };
 
 export type GPUInfoType = {
@@ -88,7 +110,7 @@ export type GPUInfoType = {
   cpu_name: string;
   cpu_cores: number;
   cpu_cores_effective: number;
-  cpu_ram: number;
+  cpu_ram_space: number;
   ratio: number;
 
   disk_name: string;
@@ -123,4 +145,14 @@ export type TInputSchema = {
   options?: string[];
   key: string;
   formatUrl?: string;
+};
+
+export type TBillingSchema = {
+  date: string;
+  transactionId: string;
+  description: string;
+  cost: number;
+  type: number;
+  token: string;
+  logo: string;
 };
