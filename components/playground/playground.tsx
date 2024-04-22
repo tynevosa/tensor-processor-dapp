@@ -63,22 +63,28 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
       return normalize({ ...rest, options, title, type: "enum" }, propertyName);
     });
 
-    let defaultValue = {};
+    let defaultValue: any = {};
 
     Object.keys(validInputs).map((item) => {
       const key = item as string;
       if (validInputs[key]["default"] != undefined)
         defaultValue = { ...defaultValue, [key]: validInputs[key]["default"] };
     });
-    setInput(defaultValue);
+
+    let apiDefaultValue: any = {};
+    origin.forEach(item => {
+      apiDefaultValue[item.key] = defaultExample.input[item.key];
+    });
+
+    setInput(apiDefaultValue);
     setInputSchema(origin);
     setModel(modelId);
     return () => {
-      setInput({});
-      setModel("");
-      setInputSchema([]);
-      setOutput("");
-      setTime(defaultExample["metrics"]["predict_time"].toFixed(2));
+      // setInput({});
+      // setModel("");
+      // setInputSchema([]);
+      // setOutput("");
+      // setTime(defaultExample["metrics"]["predict_time"].toFixed(2));
     };
   }, [schema, modelId, defaultExample, setInput, setModel, setTime]);
 
@@ -106,9 +112,9 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
   const [predictionStatus, setPredictionStatus] = useState('');
 
   const predictModel = async () => {
+    setPredictionStatus("pending");
     try {
       const response = await axios.post("/api/prediction", {model, input});
-      setPredictionStatus(response.data.status);
       pollPredictionStatus(response.data.id);
     } catch (error) {
       console.error("Error initiating prediction:", error);
@@ -155,10 +161,11 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
                     Reset
                   </button>
                   <button
-                    className="bg-[#97AEF3] text-white md:text-lg text-base md:px-11 px-4 py-3 rounded-sm font-semibold"
+                    className="bg-[#4a6bce] text-white md:text-lg text-base md:px-11 px-4 py-3 rounded-sm font-semibold"
                     onClick={predictModel}
+                    disabled={predictionStatus === "pending"}
                   >
-                    Run
+                    {predictionStatus === "pending" ? "Running..." : "Run"}
                   </button>
                 </div>
               </div>

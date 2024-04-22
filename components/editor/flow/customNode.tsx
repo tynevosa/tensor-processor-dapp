@@ -41,7 +41,6 @@ const CustomNode = (data: any, isConnectable: any) => {
                 width: "10px",
                 height: "10px",
               }}
-              onConnect={(params) => console.log("handle onConnect", params)}
               isConnectable={isConnectable}
             />
           ))}

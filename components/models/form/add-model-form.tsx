@@ -78,12 +78,10 @@ export const AddModelForm = (props: Props) => {
       collection_id: collectionFieldArr,
     };
     if (!image) {
-      console.log("Select a image");
       return;
     }
     const cover_image = await uploadImage(image);
     if (!cover_image) {
-      console.log("Error");
       return;
     }
     payload = { ...payload, cover_image_url: cover_image?.url };
@@ -103,7 +101,6 @@ export const AddModelForm = (props: Props) => {
     mutationFn: async () => {
       try {
         const res = await axios.post(`/api/model/add`, addPayload);
-        console.log(res);
       } catch (error) {
         throw new Error("Something went wrong");
       }

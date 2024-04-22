@@ -77,7 +77,6 @@ export const EditModelForm = ({ modelData, page }: Props) => {
           `/api/model/update/${modelData?.name}`,
           editData,
         );
-        console.log(res);
       } catch (error) {
         throw new Error("Something went wrong");
       }
