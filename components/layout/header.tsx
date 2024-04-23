@@ -52,8 +52,8 @@ const NavbarItem = ({
             height={25}
             width={25}
             style={{
-              width: "auto",
-              height: "auto",
+              width: "100%",
+              height: "100%",
               filter: focused
                 ? "invert(92%) saturate(10000%) hue-rotate(203deg)"
                 : "none",
@@ -89,7 +89,7 @@ export const Header = ({ admin }: { admin?: boolean }) => {
       router.push("/");
     }
   }, [isLoggedIn, router]);
-  
+
   return (
     <div className="flex justify-between items-center border-[#242835] bg-[#000510] px-8 py-4 border-b w-full text-white">
       <div className="flex justify-start items-center gap-3 w-3/12">
@@ -122,8 +122,8 @@ export const Header = ({ admin }: { admin?: boolean }) => {
               <Image
                 src={profile}
                 width={20}
-                height={30}
-                style={{ width: "auto", height: "auto" }}
+                height={20}
+                style={{ width: "auto" }}
                 className="ml-1"
                 alt="profile"
                 priority

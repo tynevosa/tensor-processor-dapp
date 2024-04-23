@@ -1,13 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import CodeBlockComponent from "@/components/ui/code-block";
-import { CopyBlock, dracula } from 'react-code-blocks';
+import React, { useState } from "react";
 import { useModel } from "../contexts/model-context";
+import { CodeBlock } from "react-code-block";
+import { useCopyToClipboard } from "react-use";
 
 export const API = () => {
   const { model, input } = useModel();
-  const codeTemplate: {[key: string]: string} = {
-"python": `from tensor_processor import Tpu
+  const codeTemplate: { [key: string]: string } = {
+    python: `from tensor_processor import Tpu
 
 tensor = Tpu( apiKey = YOUR_TPU_API_KEY )
 
@@ -19,7 +18,7 @@ output = tensor.prediction(
 print(output)
 `,
 
-"typescript": `import Tpu from "@tynevosa/tensor-processor";
+    typescript: `import Tpu from "@tynevosa/tensor-processor";
 
 const tensor: Tpu = new Tpu({
   apiKey: YOUR_TPU_API_KEY,
@@ -32,10 +31,15 @@ tensor.prediction({
 .then((output) => {
   console.log(output);
 });
-`
+`,
   };
-  const supportedLangs = ['typescript', 'python'];
+  const supportedLangs = ["typescript", "python"];
   const [activeLang, setActiveLang] = useState(supportedLangs[0]);
+  const [state, copyToClipboard] = useCopyToClipboard();
+
+  const copyCode = () => {
+    copyToClipboard(codeTemplate[activeLang]);
+  };
   return (
     <div className="flex py-[10px] w-full">
       <div className="p-4 space-y-2 max-w-full">
@@ -50,20 +54,30 @@ tensor.prediction({
               key={lang}
               onClick={() => setActiveLang(lang)}
             >
-              <p className="flex flex-row text-base font-semibold">
-                {lang}
-              </p>
+              <p className="flex flex-row text-base font-semibold">{lang}</p>
             </button>
           ))}
         </div>
         <div className="flex overflow-x-scroll">
-          <CopyBlock
-            language={activeLang}
-            text={codeTemplate[activeLang]}
-            theme={dracula}
-            wrapLines={true}
-            codeBlock
-          />
+          <CodeBlock code={codeTemplate[activeLang]} language={activeLang}>
+            <div className="relative">
+              <CodeBlock.Code className="bg-gray-900 !p-6 rounded-xl shadow-lg">
+                <div className="table-row">
+                  <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+                  <CodeBlock.LineContent className="table-cell">
+                    <CodeBlock.Token />
+                  </CodeBlock.LineContent>
+                </div>
+              </CodeBlock.Code>
+
+              <button
+                className="bg-white rounded-full px-3.5 py-1.5 absolute top-2 right-2 text-sm font-semibold"
+                onClick={copyCode}
+              >
+                {state.value ? "Copied!" : "Copy code"}
+              </button>
+            </div>
+          </CodeBlock>
         </div>
       </div>
     </div>

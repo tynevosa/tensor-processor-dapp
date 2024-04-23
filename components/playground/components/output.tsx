@@ -3,8 +3,7 @@ import { AudioComponent } from "./audio";
 import { ImageComponent } from "./image";
 import { VideoComponent } from "./video";
 import { ThreeDComponent } from "./3d-data";
-
-import { saveAs } from "file-saver";
+import { TextComponent } from "./text";
 
 interface OutputComponentProps {
   isPending: boolean;
@@ -19,14 +18,13 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
 }) => {
   let component = null;
   const type = output.toString().split(".").reverse().at(0) ?? "";
-  const saveImage = () => {
-    saveAs(output, type);
-  };
   switch (type) {
     case "mp4":
+    case "avi":
       component = <VideoComponent src={output} isPending={isPending} />;
       break;
     case "png":
+    case "jpg":
       component = <ImageComponent src={output} isPending={isPending} />;
       break;
     case "mp3":
@@ -37,6 +35,7 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
       component = <ThreeDComponent src={output} isPending={isPending} />;
       break;
     default:
+      component = <TextComponent src={output} isPending={isPending} />;
       break;
   }
   return (
@@ -58,12 +57,13 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
             alt="setting"
           />
 
-          <span
+          <a
+            href={output}
             className="text-base text-white hidden lg:flex"
-            onClick={saveImage}
+            download={true}
           >
             Download
-          </span>
+          </a>
         </button>
       </div>
     </div>

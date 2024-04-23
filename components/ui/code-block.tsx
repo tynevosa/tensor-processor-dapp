@@ -1,5 +1,5 @@
 import React from "react";
-import { CodeBlock, CopyBlock, atomOneDark } from "react-code-blocks";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 
 interface MyCoolCodeBlockProps {
   code: string;
