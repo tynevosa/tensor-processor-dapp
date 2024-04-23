@@ -2,6 +2,7 @@ import Image from "next/image";
 import { AudioComponent } from "./audio";
 import { ImageComponent } from "./image";
 import { VideoComponent } from "./video";
+import { ThreeDComponent } from "./3d-data";
 
 import { saveAs } from "file-saver";
 
@@ -31,6 +32,9 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
     case "mp3":
     case "wav":
       component = <AudioComponent src={output} isPending={isPending} />;
+      break;
+    case "glb":
+      component = <ThreeDComponent src={output} isPending={isPending} />;
       break;
     default:
       break;
