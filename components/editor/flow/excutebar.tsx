@@ -1,12 +1,20 @@
 import React from 'react';
-import { FaHourglass,FaPlay  } from "react-icons/fa";
+import Image from "next/image";
+import {
+  Boxes,
+  TrendingUp,
+  LayoutDashboard,
+  UserRound,
+  LucideIcon,
+} from "lucide-react";
 
-type ExcuteProps = {
-  run:() => void,
-  runState: any
-}
 
-const ExcuteBar : React.FC<ExcuteProps> = ({run, runState}) => {
+function ExcuteBar() {
+
+  const onDragStart = (event: any, nodeType: any) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   return (
     <div className=' absolute z-2 bottom-side'>
@@ -23,8 +31,8 @@ const ExcuteBar : React.FC<ExcuteProps> = ({run, runState}) => {
           </div>
         </div>
 
-        <div className='cursor-pointer hover:bg-[white] rounded-[8px] gap-3 items-center px-10 bg-[#97AEF3] pt-2  pb-2' onClick={run}>
-          <div className='flex text-[black] text-[20px] font-bold items-center gap-3'>{runState?(<FaHourglass />) : (<FaPlay />)}  {runState?'Running...':'Run'}</div>
+        <div className='cursor-pointer hover:bg-[white] rounded-[8px] gap-3 items-center px-10 bg-[#97AEF3] pt-2  pb-2'>
+          <div className='text-[black] text-[20px] font-bold'>Run</div>
         </div>
       </div>
     </div>
