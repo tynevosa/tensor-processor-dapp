@@ -6,7 +6,9 @@ export const TextComponent: React.FC<{ src: string; isPending: boolean }> = ({
 }) => {
   return (
     <div
-      className="flex border-gray-800 rounded-sm px-3 py-3"
+      className={`flex border-gray-800 rounded-sm  px-3 py-3 ${
+        isPending ? "opacity-20" : ""
+      }`}
       style={{ borderWidth: "1px" }}
     >
       <p className="text-white">{src}</p>
