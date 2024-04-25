@@ -1,15 +1,14 @@
 import type {
   FilterOptions,
   GPUNumberRange,
-  GPUType,
   ModelType,
   sideItem,
-  navItem
+  navItem,
 } from "@/types/type";
 
 export const sideItems: sideItem[] = [
   {
-    href: "/dashboard/models",
+    href: "/dashboard/playground",
     icon: "boxes",
     name: "Models",
   },
@@ -30,6 +29,42 @@ export const sideItems: sideItem[] = [
   },
 ];
 
+export const marketplaceBtn = [
+  {
+    name: "Instance Config",
+    key: "instance",
+    url: "/images/marketplace/instance.svg",
+  },
+  {
+    name: "Filter Options",
+    key: "filter",
+    url: "/images/marketplace/option.svg",
+  },
+];
+
+export const navItems: navItem[] = [
+  {
+    href: "/dashboard/playground",
+    icon: "/images/navbar/model.svg",
+    name: "Playground",
+  },
+  {
+    href: "/dashboard/marketplace",
+    icon: "/images/navbar/marketplace.svg",
+    name: "Marketplace",
+  },
+  {
+    href: "/dashboard/instance",
+    icon: "/images/navbar/instance.svg",
+    name: "Instance",
+  },
+  {
+    href: "/dashboard/editor",
+    icon: "/images/navbar/editor.svg",
+    name: "Editors",
+  },
+];
+
 export const GPUNums: { [key: string]: GPUNumberRange } = {
   any: { gte: 0, lte: 16 },
   "0x": { gte: 0, lte: 0 },
@@ -44,6 +79,24 @@ export const GPUTypes: { [key: string]: string } = {
   bid: "Interruptible",
   ask: "On-Demand",
   reserved: "Reserved",
+};
+
+export const StyleTypes: { [key: string]: string } = {
+  DDIM: "DDIM",
+  DPMSolverMultistep: "DPMSolverMultistep",
+  HeunDscrete: "HeunDscrete",
+  KarrasDPM: "KarrasDPM",
+  K_EULER_ANCESTRAL: "K_EULER_ANCESTRAL",
+  K_EULER: "K_EULER",
+  PNDM: "PNDM",
+  DPMMSDE: "DPM++2MSDE",
+};
+
+export const NumImages: { [key: number]: number } = {
+  1: 1,
+  2: 2,
+  3: 3,
+  4: 4,
 };
 
 export const GPUNames = [
@@ -217,39 +270,142 @@ export const Models: ModelType[] = [
 ];
 
 export const initialParam: FilterOptions = {
+  prompt_str: 0.2,
+  control_dep_str: 0.8,
+  inference_steps: 5,
+  guidance_scale: 10,
+  num_output: 4,
   diskSpace: 8,
   duration: 3,
   reliability: 90,
+  per_hour: 5.65,
+  tflops_hour: 20,
+  tb_upload: 90,
+  tb_download: 90,
+  gpu_count: 1,
+  tflops: 2841.6,
+  per_gpu_ram: 222.208,
+  cpu_core: 512,
+  cpu_ram_space: 3614.72,
+  cpu_ghz: 500,
   type: "ask",
   gpuNumber: "any",
   gpuName: "Any GPU",
   geolocation: "Planet Earth",
   order: "Auto Sort",
   visibleUnverified: false,
-  showIncompatible: false,
+  showIncompatible: true,
+  unavailable: false,
+  staticIpAddress: false,
+  secureCloud: false,
 };
 
-export const navItems: navItem[] = [
-  {
-    href: "/dashboard/models",
-    icon: "/images/navbar/model.svg",
-    name: "Playground",
-  },
-  {
-    href: "/dashboard/marketplace",
-    icon: "/images/navbar/marketplace.svg",
-    name: "Marketplace",
-  },
-  {
-    href: "/dashboard/instance",
-    icon: "/images/navbar/instance.svg",
-    name: "Instance",
-  },
-  {
-    href: "/dashboard/editor",
-    icon: "/images/navbar/editor.svg",
-    name: "Editors",
-  },
+export const HOURS_A_DAY = 24 * 60 * 60;
+
+export const buttonTab = [
+  { name: "Playground", url: "/images/model/play.svg" },
+  { name: "API", url: "/images/model/api.svg" },
+  { name: "Info", url: "/images/model/file-w.svg" },
 ];
 
-export const HOURS_A_DAY = 24 * 60 * 60;
+export const templateTab = [
+  { name: "All" },
+  { name: "Recommended" },
+  { name: "Popular" },
+  { name: "Recent" },
+];
+
+export const outputBtn = [
+  { name: "Tweeks it", url: "/images/model/settings.svg" },
+  { name: "Share", url: "/images/model/share.svg" },
+  { name: "Download", url: "/images/model/download.svg" },
+  { name: "Report", url: "/images/model/report.svg" },
+];
+
+export const viewModels = [
+  { name: "model01", url: "/images/model01.png" },
+  { name: "model02", url: "/images/model02.png" },
+  { name: "model03", url: "/images/model03.png" },
+  { name: "model04", url: "/images/model04.png" },
+  { name: "model05", url: "/images/model05.png" },
+  { name: "model06", url: "/images/model06.png" },
+];
+
+export const inputTab = [
+  { name: "Form", value: "form" },
+  { name: "Node.js", value: "node.js" },
+  { name: "Python", value: "python" },
+  { name: "Elixir", value: "elixir" },
+  { name: "HTTP", value: "http" },
+  { name: "Cog", value: "cog" },
+  { name: "Docker", value: "docker" },
+];
+
+export const ouputTab = [
+  { name: "Preview", value: "preview" },
+  { name: "Json", value: "json" },
+];
+
+export const InitialGPUInfo = {
+  host_id: 0,
+  duration: 0,
+  reliability: 0,
+  verification: "",
+  geolocation: "",
+  num_gpus: 0,
+  gpu_name: "",
+  total_flops: 0,
+  cuda_max_good: 0,
+  gpu_ram: 0,
+  gpu_mem_bw: 0,
+
+  mobo_name: "",
+  pci_gen: 0,
+  gpu_lanes: 0,
+  pcie_bw: 0,
+  inet_up: 0,
+  inet_down: 0,
+  direct_port_count: 0,
+
+  cpu_name: "",
+  cpu_cores: 0,
+  cpu_cores_effective: 0,
+  cpu_ram_space: 0,
+  ratio: 0,
+
+  disk_name: "",
+  disk_bw: 0,
+  disk_space: 0,
+
+  dlperf: 0,
+  dlperf_per_dphtotal: 0,
+
+  storage_total_cost: 0,
+};
+
+export const templateModel = [
+  {
+    name: "pytorch",
+    description: "2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "oobabooga",
+    description: "text-generation-webui:defaultsnapshot-2023-12-31",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "pytorch",
+    description: " 2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+  {
+    name: "pytorch",
+    description: " 2.2.0 Cuda 12.1 Devrel",
+    hash: "e4c5e88bc289f4eecb0c955c4e7430d",
+    url: "/images/marketplace/pytorch.svg",
+  },
+];

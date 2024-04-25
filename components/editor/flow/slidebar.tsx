@@ -1,19 +1,11 @@
 'use client'
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from "next/image";
 import starIcon from "@/public/images/star.png"
-import {FaExpandArrowsAlt, FaBolt} from "react-icons/fa";
 
-type SlideProps = {
-  workflow:string;
-  titleChange: (event: ChangeEvent<any>) => void  
-}
-
-const SlideBar: React.FC<SlideProps> = ({workflow , titleChange}) => {
-
+function SlideBar() {
   const [searchTxt, setSearchTxt] = useState()
-  
   const tempPrompts = [
     { name: '(Context) Character Generator', desc: 'Context-TPU' },
     { name: 'Character Generator', desc: 'ChatGpt-3.5-TPU' },
@@ -39,23 +31,23 @@ const SlideBar: React.FC<SlideProps> = ({workflow , titleChange}) => {
       setPrompts(updatedlist)
     }
   }
-  
+
   return (
     <aside className='absolute z-2 items-center justify-center mx-6 mt-6 '>
 
       <div className="flex  m-4 p-2 bg-[#121218]">
         <div className='text-[#535358] text-[16px] font-bold'>Editor / WorkFlow / </div>
-        <input type='edit' className='bg-[#121218] text-[16px] font-bold text-white border border-[#121218]' value={workflow} onChange={titleChange}/>
+        <input type='edit' className='bg-[#121218] text-[16px] font-bold text-white border border-[#121218]' defaultValue={'UNTITLED'} />
       </div>
       <div className=" mt-8 max-w-[330px]">
         <div className='border border-[#1D1F29] border-2 bg-[#121218]'>
-          <div className='text-white border border-[#1D1F29] border-2 px-6 pt-3 pb-3 font-bold flex'><FaBolt  className='text-[24px] text-[yellow] pr-2' />All Prompts</div>
+          <div className='text-white border border-[#1D1F29] border-2 px-6 pt-3 pb-3 font-bold'>All Prompts</div>
           <div className='p-6'>
             <div><input placeholder='Search' className='bg-[#121218] border border-[#24242A] pl-2 w-full text-white' value={searchTxt} onChange={(e) => handleSearch(e)} /></div>
-            <ScrollArea className='max-h-[300px] overflow-y-auto'>
+            <ScrollArea className='max-h-[300px]'>
               {prompts && prompts.map((one, index) => (
-                <div key={index} className='flex mt-3 cursor-pointer hover:bg-[#24242A] pt-2 pb-2 px-2 rounded-[3px] gap-3 items-center' onDragStart={(event:any) => onDragStart(event, index.toString())} draggable>
-                  <Image alt='star-icon' src={starIcon} className='w-8 h-8' />
+                <div key={index} className='flex mt-3 cursor-pointer hover:bg-[#24242A] pt-2 pb-2 px-4 rounded-[3px] gap-3 items-center' onDragStart={(event:any) => onDragStart(event, index.toString())} draggable>
+                  <Image alt='star-icon' src={starIcon} className='w-8 h-8 items-center' />
                   <div>
                     <div className='text-white text-[14px]'>{one.name}</div>
                     <div className='text-[#535358]'>{one.desc}</div>
@@ -68,11 +60,11 @@ const SlideBar: React.FC<SlideProps> = ({workflow , titleChange}) => {
         <div className='border border-[#1D1F29] border-2 mt-8 bg-[#121218]'>
           <div className='text-white border border-[#1D1F29] border-2 px-6 pt-3 pb-3 font-bold'>API</div>
           <div className='p-6 text-white text-[12px]'>
-            {'cURL -cURL'} 
-            {'1. curl -- location https://pms.cho'}
-            {'2. --header Content - tpu:// application h'}
-            {'3. --header -- location https://pms.cho'}
-            {'4. --data input()'}
+            {'cURL -cURL'} <br />
+            {'1. curl -- location https://pms.cho'}<br />
+            {'2. --header Content - tpu:// application h'}<br />
+            {'3. --header -- location https://pms.cho'}<br />
+            {'4. --data input()'}<br/>
           </div>
         </div>
       </div>
