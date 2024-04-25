@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 interface BillingTokensProps {
@@ -16,7 +17,7 @@ export const BillingTokens: React.FC<BillingTokensProps> = ({
   return (
     <div className="flex w-full gap-4 bg-[#121218] hover:bg-[#262633c0] p-4 justify-center rounded-[4px] ">
       <div className="flex-1 flex gap-2 items-center    w-full h-full ">
-        <img src={image} alt="token" />
+        <Image src={image} alt="token" width={24} height={24} />
         <h1 className="text-lg font-semibold font-chakra-petch "> {token} </h1>
       </div>
       <div className="flex-1 py-1 ">

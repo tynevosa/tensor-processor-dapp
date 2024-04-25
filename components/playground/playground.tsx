@@ -63,22 +63,28 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
       return normalize({ ...rest, options, title, type: "enum" }, propertyName);
     });
 
-    let defaultValue = {};
+    let defaultValue: any = {};
 
     Object.keys(validInputs).map((item) => {
       const key = item as string;
       if (validInputs[key]["default"] != undefined)
         defaultValue = { ...defaultValue, [key]: validInputs[key]["default"] };
     });
-    setInput(defaultValue);
+
+    let apiDefaultValue: any = {};
+    origin.forEach(item => {
+      apiDefaultValue[item.key] = defaultExample.input[item.key];
+    });
+
+    setInput(apiDefaultValue);
     setInputSchema(origin);
     setModel(modelId);
     return () => {
-      setInput({});
-      setModel("");
-      setInputSchema([]);
-      setOutput("");
-      setTime(defaultExample["metrics"]["predict_time"].toFixed(2));
+      // setInput({});
+      // setModel("");
+      // setInputSchema([]);
+      // setOutput("");
+      // setTime(defaultExample["metrics"]["predict_time"].toFixed(2));
     };
   }, [schema, modelId, defaultExample, setInput, setModel, setTime]);
 
@@ -103,15 +109,43 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
     outputTypeValidate(defaultExample["output"]);
   }, [schema, defaultExample, outputTypeValidate]);
 
-  const mutation = useMutation({
-    mutationFn: (input: any) => axios.post("/api/prediction", input),
-    onSuccess: (data) => {
-      outputTypeValidate(data.data.output);
-      setTime(data.data.time);
-    },
-  });
+  const [predictionStatus, setPredictionStatus] = useState('');
 
-  const predictModel = () => mutation.mutate({ model, input });
+  const predictModel = async () => {
+    setPredictionStatus("pending");
+    try {
+      const response = await axios.post("/api/prediction", {model, input});
+      pollPredictionStatus(response.data.id);
+    } catch (error) {
+      console.error("Error initiating prediction:", error);
+    }
+  };
+
+  const pollPredictionStatus = async (id: number) => {
+    try {
+      const response = await axios.get(`/api/prediction/status/${id}`);
+      if (response.data.status !== 'pending') {
+        setPredictionStatus(response.data.status);
+        if (response.data.status === 'success') {
+          fetchPredictionResult(response.data.prediction_id);
+        }
+      } else {
+        setTimeout(() => pollPredictionStatus(id), 1000); // Poll again after 1 second
+      }
+    } catch (error) {
+      console.error("Error polling prediction status:", error);
+    }
+  };
+
+  const fetchPredictionResult = async (id: number) => {
+    try {
+      const response = await axios.get(`/api/prediction/result/${id}`);
+      outputTypeValidate(response.data.output);
+      setTime(response.data.time);
+    } catch (error) {
+      console.error("Error fetching prediction result:", error);
+    }
+  };
 
   return (
     <>
@@ -127,10 +161,11 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
                     Reset
                   </button>
                   <button
-                    className="bg-[#97AEF3] text-white md:text-lg text-base md:px-11 px-4 py-3 rounded-sm font-semibold"
+                    className="bg-[#4a6bce] text-white md:text-lg text-base md:px-11 px-4 py-3 rounded-sm font-semibold"
                     onClick={predictModel}
+                    disabled={predictionStatus === "pending"}
                   >
-                    Run
+                    {predictionStatus === "pending" ? "Running..." : "Run"}
                   </button>
                 </div>
               </div>
@@ -144,7 +179,7 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
               <OutputComponent
                 time={time}
                 output={output}
-                isPending={mutation.isPending}
+                isPending={predictionStatus === "pending"}
               />
             </div>
           </div>

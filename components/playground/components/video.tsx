@@ -8,6 +8,7 @@ export const VideoComponent: React.FC<{ src: string; isPending: boolean }> = ({
     <div className="h-[500px] w-full relative">
       <video
         controls
+        key={src}
         className={`w-full h-full ${isPending ? "opacity-20" : ""}`}
       >
         <source src={src} type="video/mp4" />

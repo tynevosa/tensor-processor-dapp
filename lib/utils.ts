@@ -23,7 +23,6 @@ export const uploadImage = async (imageFile: File | undefined) => {
         },
       },
     );
-    console.log("Image uploaded successfully:", response.data);
 
     return response.data;
   } catch (error) {

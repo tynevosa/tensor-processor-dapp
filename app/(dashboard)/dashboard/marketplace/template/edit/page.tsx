@@ -40,7 +40,6 @@ export default function TemplateEditor() {
                 </span>
                 <Select
                   defaultValue={"DDIM"}
-                  onValueChange={(value) => console.log(value)}
                 >
                   <SelectTrigger className="bg-[#121218] border border-[#242835] p-3 rounded-sm text-white font-semibold text-base flex justify-between items-center focus:!ring-0 focus-visible:!ring-0 outline-none h-14">
                     <SelectValue className="w-full !px-3 !py-3">
@@ -76,7 +75,6 @@ export default function TemplateEditor() {
                   <Checkbox
                     checked={true}
                     className="w-6 h-6"
-                    onCheckedChange={(checked: boolean) => console.log(checked)}
                   />
                   Run a jupyter-python notebook (easiest). A browser based GUI
                   with python editor, bash terminal and more. SSH as well.
@@ -85,7 +83,6 @@ export default function TemplateEditor() {
                   <Checkbox
                     checked={false}
                     className="w-6 h-6"
-                    onCheckedChange={(checked: boolean) => console.log(checked)}
                   />
                   Jupyter direct HTTPS - much faster, but requires first loading
                   our TLS certificate in your browser (one-time).
@@ -96,7 +93,6 @@ export default function TemplateEditor() {
                   <Checkbox
                     checked={false}
                     className="w-6 h-6"
-                    onCheckedChange={(checked: boolean) => console.log(checked)}
                   />
                   Run interactive shell server, SSH.
                 </span>
@@ -104,7 +100,6 @@ export default function TemplateEditor() {
                   <Checkbox
                     checked={false}
                     className="w-6 h-6"
-                    onCheckedChange={(checked: boolean) => console.log(checked)}
                   />
                   Use direct SSH connection - faster than proxy, but limited to
                   machines with open ports. Proxy ssh still available as backup.
@@ -114,7 +109,6 @@ export default function TemplateEditor() {
                 <Checkbox
                   checked={false}
                   className="w-6 h-6"
-                  onCheckedChange={(checked: boolean) => console.log(checked)}
                 />
                 Docker Run: use docker ENTRYPOINT.
               </span>
@@ -201,7 +195,6 @@ export default function TemplateEditor() {
                 min={0}
                 step={1}
                 className="h-3 bg-[#97AEF3] rounded-lg slider-track:h-full"
-                onValueChange={(value) => console.log(value)}
               />
             </div>
           </div>
@@ -213,7 +206,6 @@ export default function TemplateEditor() {
                 <Checkbox
                   checked={false}
                   className="w-6 h-6"
-                  onCheckedChange={(checked: boolean) => console.log(checked)}
                 />
                 Include ReadMe
               </span>
@@ -221,7 +213,6 @@ export default function TemplateEditor() {
                 <Checkbox
                   checked={false}
                   className="w-6 h-6"
-                  onCheckedChange={(checked: boolean) => console.log(checked)}
                 />
                 Public Template
               </span>
