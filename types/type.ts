@@ -1,4 +1,4 @@
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 
 export type sideItem = {
   name: string;
@@ -6,17 +6,7 @@ export type sideItem = {
   href: string;
 };
 
-export type navItem = {
-  name: string;
-  icon: string;
-  href: string;
-};
-
 export type GPUType = "ask" | "reserved" | "bid";
-
-export type StyleType = "multi" | "single" | "tripple";
-
-export type NumImagesTypes = "1" | "2" | "3" | "4";
 
 export type GPUNumberRange = {
   gte?: number;
@@ -30,50 +20,10 @@ export type ModelType = {
   imgSrc?: string;
 };
 
-export type ModelInfoType = {
-  cover_image_url: string;
-  created_at: string;
-  default_example: any;
-  description: string;
-  github_url: string;
-  latest_version: any;
-  license_url?: string;
-  name: string;
-  owner: string;
-  paper_url?: string;
-  run_count: number;
-  url: string;
-  visibility: string;
-  short_desc: string;
-  availability: boolean;
-  replicate_link: string;
-  collection_id: number[];
-  api_schema: {
-    Input: {
-      rendered: string[];
-    };
-  };
-};
-
 export type FilterOptions = {
   diskSpace: number;
   duration: number;
   reliability: number;
-  per_hour: number;
-  tflops_hour: number;
-  tb_upload: number;
-  tb_download: number;
-  gpu_count: number;
-  tflops: number;
-  per_gpu_ram: number;
-  cpu_core: number;
-  cpu_ram_space: number;
-  cpu_ghz: number;
-  prompt_str: number;
-  control_dep_str: number;
-  inference_steps: number;
-  guidance_scale: number;
-  num_output: number;
   type: GPUType;
   gpuNumber: string;
   gpuName: string;
@@ -81,9 +31,12 @@ export type FilterOptions = {
   order: string;
   visibleUnverified: boolean;
   showIncompatible: boolean;
-  unavailable: boolean;
-  staticIpAddress: boolean;
-  secureCloud: boolean;
+};
+
+export type navItem = {
+  name: string;
+  icon: string;
+  href: string;
 };
 
 export type GPUInfoType = {
@@ -110,7 +63,7 @@ export type GPUInfoType = {
   cpu_name: string;
   cpu_cores: number;
   cpu_cores_effective: number;
-  cpu_ram_space: number;
+  cpu_ram: number;
   ratio: number;
 
   disk_name: string;
@@ -123,36 +76,27 @@ export type GPUInfoType = {
   storage_total_cost: number;
 };
 
-export type TInputValue = {
-  [key: string]: any;
-};
-
-export enum EInputType {
-  number = "number",
-  string = "string",
-  select = "select",
-  switch = "switch",
-  slider = "slider",
-  image = "image",
-}
-
-export type TInputSchema = {
-  type: EInputType;
-  description: string;
-  default?: string;
+type PromptModel = {
+  id: number;
+  template: string;
+  generated_prompt: string;
+  result: string;
   title: string;
-  xOrder: number;
-  options?: string[];
-  key: string;
-  formatUrl?: string;
-};
-
-export type TBillingSchema = {
-  date: string;
-  transactionId: string;
-  description: string;
-  cost: number;
-  type: number;
-  token: string;
-  logo: string;
-};
+  model_id: number;
+  config: any;
+  system_template: string;
+  published_template: string;
+  published_system_template: string;
+  published_config: any;
+  tiptap_output: any;
+  tiptap_system_output: any;
+  title_tsvector: string;
+  models: any;
+  vectors: any;
+  supported_inputs: any;
+  supported_system_inputs: any;
+  created_at: string;
+  updated_at: string;
+  published_at: string;
+  user_id: number;
+}

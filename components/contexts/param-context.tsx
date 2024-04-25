@@ -1,7 +1,6 @@
 "use client";
 import { initialParam } from "@/constants/constant";
 import { FilterOptions } from "@/types/type";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, createContext, useContext, useState } from "react";
 
 type ParamsContextType = {
@@ -23,10 +22,8 @@ export const useParam = () => {
 
 export const ParamsProvider = ({ children }: { children: ReactNode }) => {
   const [param, setParam] = useState<FilterOptions>(initialParam);
-  const [client] = useState(() => new QueryClient());
+
   return (
-    <Context.Provider value={{ param, setParam }}>
-      <QueryClientProvider client={client}>{children}</QueryClientProvider>
-    </Context.Provider>
+    <Context.Provider value={{ param, setParam }}>{children}</Context.Provider>
   );
 };
