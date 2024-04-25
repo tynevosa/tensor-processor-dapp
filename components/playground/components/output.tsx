@@ -4,7 +4,6 @@ import { ImageComponent } from "./image";
 import { VideoComponent } from "./video";
 import { ThreeDComponent } from "./3d-data";
 
-import { saveAs } from "file-saver";
 import axios from "axios";
 import { useCallback, useTransition } from "react";
 
@@ -21,9 +20,6 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
 }) => {
   let component = null;
   const type = output.toString().split(".").reverse().at(0) ?? "";
-  const saveImage = () => {
-    saveAs(output, type);
-  };
   const [isDownloading, startDownload] = useTransition();
   const downloadFile = useCallback(() => {
     startDownload(async () => {
