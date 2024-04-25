@@ -4,6 +4,7 @@ import { ImageComponent } from "./image";
 import { VideoComponent } from "./video";
 import { ThreeDComponent } from "./3d-data";
 import { TextComponent } from "./text";
+import  FileSaver from 'file-saver';
 
 interface OutputComponentProps {
   isPending: boolean;
@@ -38,6 +39,16 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
       component = <TextComponent src={output} isPending={isPending} />;
       break;
   }
+
+  const fileDownload = () => {
+   if (type !== "mp4" && type !== "avi" && type !== "png" && type !== "jpg" && type !== "mp3" && type !== "wav" && type !== "glb") {
+      var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+      FileSaver.saveAs(blob, `ouptput.txt`)
+   }
+   else {
+      FileSaver.saveAs(output, `output.${type}`);
+    }
+    }
   return (
     <div>
       {component}
@@ -49,21 +60,16 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
             <span>{"Generated in " + time + " s"}</span>
           )}
         </p>
-        <button className="rounded-sm px-2 py-2 flex flex-row items-center gap-1 bg-gray-600">
+        <button className="rounded-sm px-2 py-2 flex flex-row items-center gap-1 bg-gray-600" onClick={fileDownload}>
           <Image
             src="/images/model/download.svg"
             width={20}
             height={20}
             alt="setting"
           />
-
-          <a
-            href={output}
-            className="text-base text-white hidden lg:flex"
-            download={true}
-          >
+          <span className="text-white">
             Download
-          </a>
+          </span>
         </button>
       </div>
     </div>

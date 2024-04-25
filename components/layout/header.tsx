@@ -83,13 +83,14 @@ export const Header = ({ admin }: { admin?: boolean }) => {
 
   const router = useRouter();
 
-  const { isLoggedIn } = useUser();
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push("/");
-    }
-  }, [isLoggedIn, router]);
+  const { user } = useUser();
 
+  useEffect(() => {
+    if (user === null) {
+    router.push("/");
+  }}, [user])
+
+  
   return (
     <div className="flex justify-between items-center border-[#242835] bg-[#000510] px-8 py-4 border-b w-full text-white">
       <div className="flex justify-start items-center gap-3 w-3/12">
