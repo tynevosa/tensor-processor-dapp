@@ -72,20 +72,14 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
     });
 
     let apiDefaultValue: any = {};
-    origin.forEach(item => {
+    origin.forEach((item) => {
       apiDefaultValue[item.key] = defaultExample.input[item.key];
     });
 
     setInput(apiDefaultValue);
     setInputSchema(origin);
     setModel(modelId);
-    return () => {
-      // setInput({});
-      // setModel("");
-      // setInputSchema([]);
-      // setOutput("");
-      // setTime(defaultExample["metrics"]["predict_time"].toFixed(2));
-    };
+    return () => {};
   }, [schema, modelId, defaultExample, setInput, setModel, setTime]);
 
   const outputTypeValidate = useCallback(
@@ -97,6 +91,8 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
       } else {
         if (output.audio_out) {
           setOutput(output.audio_out);
+        } else if (output.text) {
+          setOutput(output.text);
         } else {
           setOutput(output);
         }
@@ -109,12 +105,12 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
     outputTypeValidate(defaultExample["output"]);
   }, [schema, defaultExample, outputTypeValidate]);
 
-  const [predictionStatus, setPredictionStatus] = useState('');
+  const [predictionStatus, setPredictionStatus] = useState("");
 
   const predictModel = async () => {
     setPredictionStatus("pending");
     try {
-      const response = await axios.post("/api/prediction", {model, input});
+      const response = await axios.post("/api/prediction", { model, input });
       pollPredictionStatus(response.data.id);
     } catch (error) {
       console.error("Error initiating prediction:", error);
@@ -124,9 +120,9 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
   const pollPredictionStatus = async (id: number) => {
     try {
       const response = await axios.get(`/api/prediction/status/${id}`);
-      if (response.data.status !== 'pending') {
+      if (response.data.status !== "pending") {
         setPredictionStatus(response.data.status);
-        if (response.data.status === 'success') {
+        if (response.data.status === "success") {
           fetchPredictionResult(response.data.prediction_id);
         }
       } else {
