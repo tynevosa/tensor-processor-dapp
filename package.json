@@ -10,6 +10,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-react": "^2.2.1",
+    "@nextui-org/react": "^2.2.10",
     "@google/model-viewer": "^3.5.0",
     "@hookform/resolvers": "^3.3.4",
     "@monaco-editor/react": "^4.6.0",
@@ -34,6 +37,14 @@
     "@tanstack/react-query": "^5.28.14",
     "@thirdweb-dev/auth": "^4.1.48",
     "@thirdweb-dev/react": "^4.4.23",
+    "constants": "^0.0.2",
+    "fs": "^0.0.1-security",
+    "nprogress": "^0.2.0",
+    "pnpm": "^8.15.6",
+    "react-icons": "^5.0.1",
+    "react-intersection-observer": "^9.8.2",
+    "react-split": "^2.0.14",
+    "truncate": "^3.0.0",
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -50,7 +61,6 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.0",
-    "react-intersection-observer": "^9.8.1",
     "react-router-dom": "^6.22.3",
     "react-syntax-highlighter": "^15.5.0",
     "react-use": "^17.5.0",
@@ -63,6 +73,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/nprogress": "^0.2.3",
     "@tanstack/eslint-plugin-query": "^5.28.11",
     "@types/node": "^20",
     "@types/react": "^18",
