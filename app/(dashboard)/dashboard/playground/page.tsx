@@ -64,7 +64,7 @@ export default function Page() {
             (
               {
                 cover_image_url = "/images/model01.png",
-                description,
+                short_desc,
                 name,
                 run_count,
               },
@@ -124,7 +124,7 @@ export default function Page() {
                       {name}
                     </p>
                     <p className="font-medium text-[#ffffffa9] text-sm leading-6">
-                      {description}
+                      {short_desc}
                     </p>
                   </div>
                 </Link>
