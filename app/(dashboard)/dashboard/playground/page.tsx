@@ -64,7 +64,7 @@ export default function Page() {
             (
               {
                 cover_image_url = "/images/model01.png",
-                description,
+                short_desc,
                 name,
                 run_count,
               },
@@ -74,6 +74,7 @@ export default function Page() {
                 <Link
                   href={`/dashboard/playground/${name}`}
                   key={index}
+                  ref={ref}
                   className="flex flex-col gap-4 bg-[#121218] p-4 rounded-[8px]"
                 >
                   <div className="relative overflow-hidden">
@@ -123,7 +124,7 @@ export default function Page() {
                       {name}
                     </p>
                     <p className="font-medium text-[#ffffffa9] text-sm leading-6">
-                      {description}
+                      {short_desc}
                     </p>
                   </div>
                 </Link>
@@ -136,7 +137,7 @@ export default function Page() {
             "mt-[20%]": modelDatas.length === 0,
           })}
         >
-          {isPending === "fetching" && <Spinner />}
+          {isPending === "fetching" && !(modelDatas.length > 0) && <Spinner />}
         </div>
       </div>
     </ScrollArea>

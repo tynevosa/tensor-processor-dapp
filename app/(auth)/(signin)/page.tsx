@@ -53,11 +53,9 @@ const Page = () => {
     },
   });
 
-  useEffect(() => {
     if (isLoggedIn) {
       router.push("/dashboard/playground");
     }
-  }, [isLoggedIn, router]);
 
   return (
     <div className="flex items-stretch w-full h-screen">

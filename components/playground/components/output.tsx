@@ -3,9 +3,10 @@ import { AudioComponent } from "./audio";
 import { ImageComponent } from "./image";
 import { VideoComponent } from "./video";
 import { ThreeDComponent } from "./3d-data";
+import { TextComponent } from "./text";
 
 import axios from "axios";
-import { useCallback, useTransition } from "react";
+import { useCallback, useMemo, useTransition } from "react";
 
 interface OutputComponentProps {
   isPending: boolean;
@@ -19,20 +20,53 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
   time,
 }) => {
   let component = null;
-  const type = output.toString().split(".").reverse().at(0) ?? "";
+  const type = useMemo(() => {
+    if (output.includes("https://"))
+      return output.split(".").reverse().at(0) ?? "";
+    else return "txt";
+  }, [output]);
+  switch (type) {
+    case "mp4":
+    case "avi":
+      component = <VideoComponent src={output} isPending={isPending} />;
+      break;
+    case "png":
+    case "jpg":
+      component = <ImageComponent src={output} isPending={isPending} />;
+      break;
+    case "mp3":
+    case "wav":
+      component = <AudioComponent src={output} isPending={isPending} />;
+      break;
+    case "glb":
+      component = <ThreeDComponent src={output} isPending={isPending} />;
+      break;
+    default:
+      component = <TextComponent src={output} isPending={isPending} />;
+      break;
+  }
   const [isDownloading, startDownload] = useTransition();
   const downloadFile = useCallback(() => {
     startDownload(async () => {
       try {
-        const response = await axios.get(output, {
-          responseType: 'blob', // Important to handle binary data
-        })
+        let blob;
+        let fileName;
+        if (type === "txt") {
+          blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+          fileName = "output.txt";
+        } else {
+          const { data } = await axios.get(output, {
+            responseType: 'blob', // Important to handle binary data
+          })
+          blob = new Blob([data]);
+          fileName = output.substring(output.lastIndexOf("/") + 1);
+        }
 
         // Create a temporary link and trigger download
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', output.substring(output.lastIndexOf("/") + 1));
+        link.setAttribute('download', fileName);
         document.body.appendChild(link);
         link.click();
     
@@ -44,23 +78,6 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
       }
     });
   }, [output]);
-  switch (type) {
-    case "mp4":
-      component = <VideoComponent src={output} isPending={isPending} />;
-      break;
-    case "png":
-      component = <ImageComponent src={output} isPending={isPending} />;
-      break;
-    case "mp3":
-    case "wav":
-      component = <AudioComponent src={output} isPending={isPending} />;
-      break;
-    case "glb":
-      component = <ThreeDComponent src={output} isPending={isPending} />;
-      break;
-    default:
-      break;
-  }
   return (
     <div>
       {component}
