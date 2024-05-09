@@ -105,7 +105,8 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
     outputTypeValidate(defaultExample["output"]);
   }, [schema, defaultExample, outputTypeValidate]);
 
-  const [predictionStatus, setPredictionStatus] = useState("");
+  const [predictionStatus, setPredictionStatus] = useState("idle");
+  const [failedMessage, setFailedMessage] = useState("");
 
   const predictModel = async () => {
     setPredictionStatus("pending");
@@ -124,6 +125,9 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
         setPredictionStatus(response.data.status);
         if (response.data.status === "success") {
           fetchPredictionResult(response.data.prediction_id);
+        }
+        if (response.data.status === "failed") {
+          setFailedMessage(response.data.message);
         }
       } else {
         setTimeout(() => pollPredictionStatus(id), 1000); // Poll again after 1 second
@@ -175,7 +179,8 @@ export const Playground: FC<Props> = ({ schema, defaultExample, modelId }) => {
               <OutputComponent
                 time={time}
                 output={output}
-                isPending={predictionStatus === "pending"}
+                loadingStatus={predictionStatus}
+                failedMessage={failedMessage}
               />
             </div>
           </div>

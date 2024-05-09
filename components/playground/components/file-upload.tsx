@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   useDropzone,
   DropzoneRootProps,
@@ -9,6 +9,7 @@ import WebcamComponent from "@/components/ui/web-camera";
 import { createClient } from "@supabase/supabase-js";
 import { v1 } from "uuid";
 import { useModel } from "@/components/contexts/model-context";
+import { setDefaultAutoSelectFamily } from "net";
 
 type Props = {
   title: string;
@@ -27,7 +28,7 @@ export const FileUploadComponent: React.FC<Props> = ({
   property,
 }) => {
   const { input, setInput } = useModel();
-  const [fileName, setFileName] = useState<string>("");
+  const [fileName, setFileName] = useState<string | undefined>(undefined);
 
   const {
     getRootProps,
@@ -58,23 +59,20 @@ export const FileUploadComponent: React.FC<Props> = ({
     maxFiles: 1,
   });
 
-  const onDelete = (e: React.MouseEvent) => {
+  const onDelete = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    const fileName = input.split("/").reverse().at(0) as string;
-    const deleteFile = async (fileName: string) => {
-      const { data, error } = await supabase.storage
+    let tempInput = input;
+    delete tempInput[property];
+    setInput(tempInput);
+    setFileName(undefined);
+    if (!fileName) return;
+    try {
+      const tempFileName = fileName.split("/").reverse().at(0) as string;
+      supabase.storage
         .from("temporary")
-        .remove([fileName]);
-      if (error) {
-        console.log(error);
-      }
-      if (data) {
-        setInput("");
-        setFileName("");
-      }
-    };
-    deleteFile(fileName);
-  };
+        .remove([tempFileName]);
+    } catch (error) { }
+  }, [property, fileName, input, setInput, setFileName]);
 
   return (
     <>
@@ -91,10 +89,10 @@ export const FileUploadComponent: React.FC<Props> = ({
           <span className="lowercase italic text-[#51586C] text-lg">file</span>
         </span>
       </button>
-      <div className="w-full min-w-full bg-[#0B0B0E]  rounded-sm border-2 border-[#242835] border-dotted h-[92px]">
+      <div className="relative w-full min-w-full bg-[#0B0B0E]  rounded-sm border-2 border-[#242835] border-dotted h-[92px]">
         <div
           {...getRootProps()}
-          className="flex flex-col items-start px-3 py-3 justify-start gap-2 !w-full !max-w-full !min-w-full"
+          className="flex flex-col items-start px-3 py-3 justify-start gap-2 !w-full !max-w-full !min-w-full h-full"
         >
           <input {...getInputProps()} />
           <div className="flex flex-row gap-2">
@@ -108,22 +106,22 @@ export const FileUploadComponent: React.FC<Props> = ({
               Drop a file or click to upload
             </p>
           </div>
-          {fileName.length > 0 && (
+          {fileName && (
             <div className="flex gap-1 w-full justify-between">
               <p className="overflow-hidden w-11/12 flex-shrink truncate text-[#51586C] text-lg font-semibold">
                 {fileName}
               </p>
-              <button onClick={onDelete} className="min-w-5">
-                <Image
-                  src={"/images/model/trashcan.svg"}
-                  alt="images"
-                  width={20}
-                  height={20}
-                />
-              </button>
             </div>
           )}
         </div>
+        <button onClick={onDelete} className="absolute right-3 bottom-3 min-w-5">
+          <Image
+            src={"/images/model/trashcan.svg"}
+            alt="images"
+            width={20}
+            height={20}
+          />
+        </button>
       </div>
     </>
   );
