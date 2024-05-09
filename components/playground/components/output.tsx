@@ -6,45 +6,27 @@ import { ThreeDComponent } from "./3d-data";
 import { TextComponent } from "./text";
 
 import axios from "axios";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 
 interface OutputComponentProps {
-  isPending: boolean;
+  loadingStatus: string;
   output: string;
   time: number;
+  failedMessage: string;
 }
 
 const OutputComponent: React.FC<OutputComponentProps> = ({
-  isPending,
+  loadingStatus,
   output,
   time,
+  failedMessage
 }) => {
-  let component = null;
   const type = useMemo(() => {
     if (output.includes("https://"))
       return output.split(".").reverse().at(0) ?? "";
     else return "txt";
   }, [output]);
-  switch (type) {
-    case "mp4":
-    case "avi":
-      component = <VideoComponent src={output} isPending={isPending} />;
-      break;
-    case "png":
-    case "jpg":
-      component = <ImageComponent src={output} isPending={isPending} />;
-      break;
-    case "mp3":
-    case "wav":
-      component = <AudioComponent src={output} isPending={isPending} />;
-      break;
-    case "glb":
-      component = <ThreeDComponent src={output} isPending={isPending} />;
-      break;
-    default:
-      component = <TextComponent src={output} isPending={isPending} />;
-      break;
-  }
+
   const [isDownloading, startDownload] = useTransition();
   const downloadFile = useCallback(() => {
     startDownload(async () => {
@@ -80,16 +62,22 @@ const OutputComponent: React.FC<OutputComponentProps> = ({
   }, [output]);
   return (
     <div>
-      {component}
-      <div className="flex flex-row justify-between items-center mt-5">
+      {
+        ["mp4", "avi"].includes(type) && <VideoComponent src={output} isPending={loadingStatus === "pending"} /> ||
+        ["png", "jpg"].includes(type) && <ImageComponent src={output} isPending={loadingStatus === "pending"} /> ||
+        ["mp3", "wav"].includes(type) && <AudioComponent src={output} isPending={loadingStatus === "pending"} /> ||
+        ["glb"].includes(type) && <ThreeDComponent src={output} isPending={loadingStatus === "pending"} /> ||
+        ["txt"].includes(type) && <TextComponent src={output} isPending={loadingStatus === "pending"} />
+      }
+      <div className="relative flex flex-row items-center mt-5">
         <p className="text-lg text-gray-400 my-3 font-semibold">
-          {isPending ? (
-            <span>Generating...</span>
-          ) : (
-            <span>{"Generated in " + time + " s"}</span>
-          )}
+          {
+            (loadingStatus === "pending" && <span>Generating...</span>) ||
+            (loadingStatus === "failed" && <span className="text-red-500 whitespace-nowrap">{failedMessage}</span>) ||
+            ((loadingStatus === "success" || loadingStatus === "idle") && <>Generated in <span className=" text-green-500">{time}</span> s</>)
+          }
         </p>
-        <button className="rounded-sm px-2 py-2 flex flex-row items-center gap-1 bg-gray-600" 
+        <button className="rounded-sm px-2 py-2 flex flex-row items-center gap-1 bg-gray-600 absolute -right-0" 
           onClick={isDownloading ? undefined : downloadFile}>
           {isDownloading? 
           <div className="grid w-full place-items-center overflow-x-scroll rounded-lg lg:overflow-visible">
